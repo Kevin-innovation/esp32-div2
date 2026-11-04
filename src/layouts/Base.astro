@@ -1,0 +1,86 @@
+---
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
+import '../styles/global.css';
+import { CHECKED } from '../data/sources';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const links = [
+  ['/start/', '처음 시작'],
+  ['/device/', '기기 알아보기'],
+  ['/guide/', '기능 가이드'],
+  ['/lab/', '실전 탐구'],
+  ['/update/', '업데이트·문제 해결'],
+];
+const path = Astro.url.pathname.replace(base, '') || '/';
+---
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'self'; form-action 'self'" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, t = null;
+        d.classList.add('js');
+        try { t = localStorage.getItem('esp32div.theme'); } catch (e) {}
+        if (t !== 'dark' && t !== 'light') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        d.dataset.theme = t;
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">본문으로 건너뛰기</a>
+    <header class="site-head">
+      <div class="wrap site-head__row">
+        <a class="wordmark" href={`${base}/`} aria-label="ESP32-DIV 실험 노트 홈">ESP32-DIV 실험 노트</a>
+        <nav class="nav" aria-label="주요 메뉴">
+          {links.map(([href, label]) => (
+            <a href={`${base}${href}`} aria-current={path.startsWith(href) ? 'page' : undefined}>{label}</a>
+          ))}
+        </nav>
+        <button class="switch" type="button" role="switch" aria-checked="false" id="theme-switch">
+          <span>다크 모드</span>
+          <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+        </button>
+      </div>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-foot">
+      <div class="wrap small">
+        <p>CiferTech의 공식 사이트가 아닙니다. 판매 기기의 하드웨어와 펌웨어는 미검증이며, 자료 확인일은 {CHECKED}입니다.</p>
+        <p><a href="https://github.com/cifertech/ESP32-DIV#readme" rel="noopener">원본 프로젝트의 사용 조건과 경고 보기</a></p>
+      </div>
+    </footer>
+    <script is:inline>
+      (function () {
+        var d = document.documentElement, b = document.getElementById('theme-switch');
+        var sync = function () { b.setAttribute('aria-checked', String(d.dataset.theme === 'dark')); };
+        var chosen = function () { try { return localStorage.getItem('esp32div.theme'); } catch (e) { return null; } };
+        sync();
+        var now = document.querySelector('.nav [aria-current]');
+        if (now) now.parentElement.scrollLeft = now.offsetLeft - now.parentElement.offsetLeft;
+        b.addEventListener('click', function () {
+          d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark';
+          sync();
+          try { localStorage.setItem('esp32div.theme', d.dataset.theme); } catch (e) {}
+        });
+        matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+          if (chosen()) return;
+          d.dataset.theme = e.matches ? 'dark' : 'light';
+          sync();
+        });
+      })();
+    </script>
+  </body>
+</html>

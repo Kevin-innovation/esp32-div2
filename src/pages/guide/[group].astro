@@ -1,0 +1,100 @@
+---
+import Base from '../../layouts/Base.astro';
+import Evidence from '../../components/Evidence.astro';
+import Sources from '../../components/Sources.astro';
+import { GROUPS, wikiUrl, type Group, type Observe, type Lab } from '../../data/guide';
+import { CHECKED } from '../../data/sources';
+import { url } from '../../lib/url';
+
+export function getStaticPaths() {
+  return GROUPS.map((group) => ({ params: { group: group.slug }, props: { group } }));
+}
+
+const { group } = Astro.props as { group: Group };
+const observe = group.features.filter((f): f is Observe => f.kind === 'observe');
+const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
+---
+<Base title={`${group.title} | 기능 가이드`} description={`${group.title} 메뉴의 기능별 목적, 준비, 순서, 결과 해석과 허가 조건을 안내합니다.`}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="small"><a href={url('/guide/')}>기능 가이드</a></p>
+      <h1>{group.title}</h1>
+      <p class="lead">{group.summary}</p>
+    </header>
+    <div class="doc">
+      <div class="doc__main">
+        <section class="prose" aria-label="하드웨어 근거">
+          <p>{group.hardware}</p>
+          <div class="tags"><Evidence kind="doc" /><Evidence kind="unverified" /></div>
+          {group.note && <div class="callout callout--warn"><p>{group.note}</p></div>}
+        </section>
+
+        {observe.map((f) => (
+          <section class="feature" id={f.id} aria-labelledby={`h-${f.id}`}>
+            <h2 id={`h-${f.id}`} style="font-size: var(--text-xl)">{f.ko} <span class="feature__en">{f.en}</span></h2>
+            <dl class="facts">
+              <div><dt>목적</dt><dd>{f.purpose}</dd></div>
+              <div><dt>준비</dt><dd><ul>{f.prep.map((p) => <li>{p}</li>)}</ul></dd></div>
+              <div><dt>메뉴</dt><dd><code>{f.path}</code></dd></div>
+              <div><dt>순서</dt><dd><ol>{f.steps.map((s) => <li>{s}</li>)}</ol></dd></div>
+              <div><dt>결과 해석</dt><dd><ul>{f.read.map((r) => <li>{r}</li>)}</ul></dd></div>
+              <div><dt>종료</dt><dd>{f.exit}</dd></div>
+              <div><dt>문제</dt><dd><ul>{f.trouble.map((t) => <li>{t}</li>)}</ul></dd></div>
+              <div>
+                <dt>지원 버전</dt>
+                <dd>
+                  공식 펌웨어 v1.7.2 메뉴에 있음. {f.manual ? `동봉 설명서에 ${f.manual}로 기재.` : '동봉 설명서에는 없음.'} 이 기기에서는 미검증.
+                  <div class="tags" style="margin-top: var(--space-xs)"><Evidence kind="doc" />{f.manual && <Evidence kind="manual" />}<Evidence kind="unverified" /></div>
+                </dd>
+              </div>
+              <div>
+                <dt>출처</dt>
+                <dd class="small">
+                  {wikiUrl(f.wiki) ? <a href={wikiUrl(f.wiki)!} rel="noopener">공식 위키 {f.en}</a> : <a href="https://github.com/cifertech/ESP32-DIV#readme" rel="noopener">공식 README 기능 표</a>}
+                  <span class="muted"> 확인일 {CHECKED}</span>
+                </dd>
+              </div>
+            </dl>
+          </section>
+        ))}
+
+        {lab.length > 0 && (
+          <section id="lab" aria-labelledby="h-lab">
+            <h2 id="h-lab">실험실 고급 기능</h2>
+            <p>사용 절차는 싣지 않습니다. 다른 사람의 통신과 기기에 영향을 주는 기능이므로 먼저 허가 조건을 확인하세요.</p>
+            <ul class="lab-list">
+              {lab.map((f) => (
+                <li id={f.id}>
+                  <h3>{f.ko} <span class="feature__en">{f.en}</span></h3>
+                  <div class="tags"><Evidence kind="lab" />{f.manual && <Evidence kind="manual" />}<Evidence kind="doc" /><Evidence kind="unverified" /></div>
+                  <dl class="facts">
+                    <div><dt>원리</dt><dd>{f.principle}</dd></div>
+                    <div><dt>영향</dt><dd>{f.impact}</dd></div>
+                    <div><dt>허가 조건</dt><dd>{f.permit}</dd></div>
+                  </dl>
+                  {wikiUrl(f.wiki) && <p class="small"><a href={wikiUrl(f.wiki)!} rel="noopener">공식 위키 {f.en}</a></p>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {group.slug === 'nfc' && (
+          <section class="prose">
+            <h2>다음 단계</h2>
+            <p><a href={url('/lab/nfc/')}>NFC는 지갑·가방 안에서도 인식될까?</a> 실험으로 이어 가세요.</p>
+          </section>
+        )}
+
+        <Sources ids={['codeMenu', 'readme', 'wiki', 'manual', ...(group.slug === 'nfc' ? (['nfcOverview', 'nfcReader'] as const) : [])]} />
+      </div>
+      <nav class="doc__aside toc" aria-label={`${group.title} 기능 목차`}>
+        <h2>이 묶음의 기능</h2>
+        <ol>
+          {observe.map((f) => <li><a href={`#${f.id}`}>{f.ko}</a></li>)}
+          {lab.length > 0 && <li><a href="#lab">실험실 고급 기능 {lab.length}개</a></li>}
+        </ol>
+      </nav>
+    </div>
+  </div>
+</Base>

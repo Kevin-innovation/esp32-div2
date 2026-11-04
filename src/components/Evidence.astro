@@ -1,0 +1,14 @@
+---
+interface Props {
+  kind: 'photo' | 'doc' | 'manual' | 'unverified' | 'lab';
+}
+const LABEL = {
+  photo: '사진 확인',
+  doc: '공식 문서 기준',
+  manual: '설명서 기재',
+  unverified: '이 기기 미검증',
+  lab: '실험실 고급',
+};
+const { kind } = Astro.props;
+---
+<span class={`tag tag--${kind}`}>{LABEL[kind]}</span>

@@ -1,0 +1,139 @@
+---
+import Base from '../../layouts/Base.astro';
+import Evidence from '../../components/Evidence.astro';
+import Plate from '../../components/Plate.astro';
+import Sources from '../../components/Sources.astro';
+import back from '../../assets/device/back.jpg';
+import front from '../../assets/device/front.jpg';
+import ports from '../../assets/device/ports.jpg';
+import sideSwitch from '../../assets/device/switch.jpg';
+
+type Kind = 'photo' | 'doc' | 'manual' | 'unverified' | 'lab';
+interface Part { n: number; id: string; x: number; y: number; title: string; body: string; tags: Kind[] }
+
+const backParts: Part[] = [
+  { n: 1, id: 'back-name', x: 85, y: 32, title: 'ESP32-DIV V2.1 표기', body: '초록 글자로 인쇄되어 있습니다. 공식 위키와 웹 안내, README에서는 V2.1 표기를 찾지 못했습니다. 공식 v2와 어떻게 다른지는 모릅니다.', tags: ['photo', 'unverified'] },
+  { n: 2, id: 'back-nfc', x: 91.5, y: 44, title: 'NFC 표기', body: '공식 문서는 PN532 모듈을 설명합니다. 이 글자 아래에 코일이 있는지, 모듈이 들어 있는지는 확인하지 못했습니다. 동봉 설명서에는 NFC 메뉴가 없습니다.', tags: ['photo', 'unverified'] },
+  { n: 3, id: 'back-gps', x: 70, y: 55, title: 'GPS 표기와 단자', body: '꺾이는 안테나가 이 단자에 달려 있습니다. 공식 문서는 Neo-6M 호환 모듈을 설명합니다. 동봉 설명서에는 GPS 메뉴가 없습니다.', tags: ['photo', 'unverified'] },
+  { n: 4, id: 'back-antenna', x: 58.5, y: 36, title: '2G4 단자 3개', body: '공식 문서는 NRF24 모듈 3개를 설명합니다. 단자와 모듈의 실제 연결은 확인하지 못했습니다.', tags: ['photo', 'unverified'] },
+  { n: 5, id: 'back-433', x: 61, y: 18.5, title: '433M 단자', body: '공식 문서의 CC1101 모듈과 관련 있어 보이지만 내부 연결은 확인하지 못했습니다. 체결부 금속 색이 다른 단자와 다릅니다.', tags: ['photo', 'unverified'] },
+  { n: 6, id: 'back-switch', x: 81, y: 53, title: 'ON, OFF 음각', body: '슬라이드 스위치 쪽에 음각이 있습니다. 실제 켜짐 방향은 직접 확인합니다.', tags: ['photo', 'unverified'] },
+  { n: 7, id: 'back-marks', x: 59, y: 10, title: 'R, B 등 음각', body: '모서리 가까이에 R과 B처럼 보이는 음각, 위쪽에 SD처럼 보이는 음각이 있습니다. 공식 문서의 RESET, BOOT, SD 슬롯과 같은 뜻인지 알 수 없어 의미를 단정하지 않습니다.', tags: ['photo', 'unverified'] },
+];
+
+const frontParts: Part[] = [
+  { n: 1, id: 'front-antennas', x: 31, y: 20, title: '안테나 4개', body: '위쪽 단자 4개에 곧은 안테나가 달려 있습니다. 앞에서 볼 때 가장 왼쪽 안테나만 모양이 다릅니다. 역할은 뒷면 표기로만 구분합니다.', tags: ['photo'] },
+  { n: 2, id: 'front-holes', x: 43.6, y: 47.2, title: '위쪽 작은 구멍 2개', body: 'MK SIGNAL 글자 위에 긴 구멍과 작은 구멍이 있습니다. 표시등, IR 창, 환기구 중 무엇인지 알 수 없습니다.', tags: ['photo', 'unverified'] },
+  { n: 3, id: 'front-brand', x: 62, y: 50, title: 'MK SIGNAL 인쇄', body: '공식 프로젝트 자료에는 없는 표기입니다. 제작자나 판매자를 뜻하는지는 확인하지 못했습니다.', tags: ['photo', 'unverified'] },
+  { n: 4, id: 'front-screen', x: 34, y: 66, title: '터치 화면', body: '설명서와 공식 문서는 2.8인치 ILI9341 화면이라고 적습니다. 사진의 화면에는 보호 필름의 흠집이 보입니다. 크기는 재지 않았습니다.', tags: ['photo', 'manual', 'doc'] },
+  { n: 5, id: 'front-side-antenna', x: 88, y: 40, title: '꺾이는 안테나', body: '옆면 단자에 달린 안테나입니다. 뒷면 기준 GPS 표기 단자입니다.', tags: ['photo'] },
+  { n: 6, id: 'front-switch', x: 70, y: 74, title: '초록 슬라이드 스위치', body: '뒷면의 ON, OFF 음각 옆에 있습니다.', tags: ['photo'] },
+  { n: 7, id: 'front-buttons', x: 54, y: 88, title: '버튼 5개', body: '십자 배열입니다. 공식 문서는 PCF8574 칩으로 읽는 위, 아래, 왼쪽, 오른쪽, 선택 키를 설명합니다.', tags: ['photo', 'doc'] },
+  { n: 8, id: 'front-usb', x: 34, y: 97, title: '아래쪽 단자 구멍', body: '아래쪽 면에 USB-C 두 개가 있습니다. 역할 표기는 없습니다.', tags: ['photo', 'unverified'] },
+];
+
+const specs = [
+  ['ESP32-S3 마이크로컨트롤러', '기재', '기재', '미확인'],
+  ['2.8인치 ILI9341 터치 화면', '기재', '기재', '화면만 확인'],
+  ['LF33 3.3V 전압 조정', '기재', '위키 본문에 없음', '미확인'],
+  ['IP5306 배터리 충전·보호', '기재', '기재', '미확인'],
+  ['CP2102 USB 시리얼', '기재', '기재', '미확인'],
+  ['PCF8574 버튼 확장', '기재', '기재', '버튼 5개만 확인'],
+  ['SD 카드 슬롯', '기재', '기재', '위치 미확인'],
+  ['NRF24 모듈 3개', '주파수 메뉴만 기재', '기재', '2G4 표기 3개만 확인'],
+  ['CC1101 Sub-GHz', '주파수 메뉴만 기재', '기재', '433M 표기만 확인'],
+  ['PN532 NFC', '없음', '기재', 'NFC 인쇄만 확인'],
+  ['Neo-6M 호환 GPS', '없음', '기재', 'GPS 표기만 확인'],
+  ['IR 송수신 회로', 'IR 메뉴 기재', '기재', '미확인'],
+  ['WS2812 표시등 4개', 'NeoPixel 메뉴 기재', '기재', '미확인'],
+  ['부저', '없음', '기재', '미확인'],
+];
+---
+<Base title="기기 알아보기 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1 실물 사진에 번호를 붙여 사진으로 확인한 부분과 확인하지 못한 부분을 구분해 설명합니다.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>사진에 보이는 것만 먼저 믿기</h1>
+      <p class="lead">번호마다 근거를 표시했습니다. 분해 사진이 없어 내부 부품은 어느 것도 직접 확인하지 못했습니다.</p>
+    </header>
+
+    <section class="section" style="padding-top: 0" aria-labelledby="h-back">
+      <h2 id="h-back">뒷면</h2>
+      <div style="margin-top: var(--space-md)">
+        <Plate
+          src={back}
+          alt="ESP32-DIV V2.1 뒷면 사진에 번호 일곱 개를 표시했다. 번호별 설명은 사진 아래 목록에 있다."
+          sizes="(min-width: 1280px) 1120px, 100vw"
+          pins={backParts.map((p) => ({ n: p.n, x: p.x, y: p.y, label: p.title }))}
+        />
+      </div>
+      <ol class="legend" style="margin-top: var(--space-lg)">
+        {backParts.map((p) => (
+          <li id={p.id}>
+            <span class="legend__n">{p.n}</span>
+            <div>
+              <h3>{p.title}</h3>
+              <p>{p.body}</p>
+              <div class="tags">{p.tags.map((k) => <Evidence kind={k} />)}</div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="section section--rule" aria-labelledby="h-front">
+      <div class="split">
+        <div>
+          <h2 id="h-front">앞면</h2>
+          <div style="margin-top: var(--space-md)">
+            <Plate
+              src={front}
+              alt="기기 앞면 사진에 번호 여덟 개를 표시했다. 번호별 설명은 옆 목록에 있다."
+              sizes="(min-width: 960px) 440px, 100vw"
+              widths={[640, 960, 1100]}
+              pins={frontParts.map((p) => ({ n: p.n, x: p.x, y: p.y, label: p.title }))}
+            />
+          </div>
+        </div>
+        <ol class="legend">
+          {frontParts.map((p) => (
+            <li id={p.id}>
+              <span class="legend__n">{p.n}</span>
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.body}</p>
+                <div class="tags">{p.tags.map((k) => <Evidence kind={k} />)}</div>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section--rule" aria-labelledby="h-sides">
+      <h2 id="h-sides">옆면 두 곳</h2>
+      <div class="split split--even" style="margin-top: var(--space-lg)">
+        <Plate src={ports} alt="USB-C 단자 두 개가 나란히 있는 짧은 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="USB-C 두 개. 안쪽에 부품이 보이지만 역할은 표기되어 있지 않습니다." />
+        <Plate src={sideSwitch} alt="초록 슬라이드 스위치와 네모난 구멍 두 개가 있는 긴 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="스위치 왼쪽 구멍 안에 부품과 작은 빨간 점이, 오른쪽 구멍 안에 금속 부품이 보입니다. 무엇인지는 확인하지 못했습니다." />
+      </div>
+    </section>
+
+    <section class="section section--rule" aria-labelledby="h-spec">
+      <div class="section__head">
+        <h2 id="h-spec">문서에 적힌 부품과 내 기기 사이의 거리</h2>
+        <p class="muted">공식 문서는 원본 프로젝트 v2 기준입니다. 판매 기기가 같은 부품을 쓴다는 근거는 아직 없습니다.</p>
+      </div>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="부품별 근거 표">
+        <table>
+          <thead><tr><th scope="col">부품</th><th scope="col">동봉 설명서</th><th scope="col">공식 문서</th><th scope="col">이 기기 사진</th></tr></thead>
+          <tbody>
+            {specs.map(([part, manual, official, photo]) => (
+              <tr><th scope="row">{part}</th><td>{manual}</td><td>{official}</td><td>{photo}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="small muted" style="margin-top: var(--space-md)">설명서의 안전 지침에 따라, 전문 지식 없이 케이스를 열어 확인하지 않습니다.</p>
+      <Sources ids={['photos', 'manual', 'hardware', 'nfcOverview', 'navigation', 'wiki']} />
+    </section>
+  </div>
+</Base>

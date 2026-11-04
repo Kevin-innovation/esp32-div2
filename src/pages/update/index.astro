@@ -1,0 +1,121 @@
+---
+import Base from '../../layouts/Base.astro';
+import Evidence from '../../components/Evidence.astro';
+import Plate from '../../components/Plate.astro';
+import Sources from '../../components/Sources.astro';
+import manualFlash from '../../assets/device/manual-flash.jpg';
+import { SOURCES } from '../../data/sources';
+import { url } from '../../lib/url';
+
+const toc = [
+  ['versions', '설명서와 공식 안내의 차이'],
+  ['decide', '업데이트가 필요한가'],
+  ['before', '시작 전 확인'],
+  ['methods', '공식 설치 방법'],
+  ['trouble', '문제 해결'],
+];
+
+const trouble = [
+  ['전원이 켜지지 않음', '충전 부족, 스위치 방향, 잘못된 포트', '다른 USB-C 포트와 5V 1A 이상 전원으로 충전해 봅니다.', '일반 점검, 공식 FAQ'],
+  ['USB를 빼면 바로 꺼짐', 'IP5306의 최소 부하 미달', '화면을 켜 두거나 스캔을 실행해 봅니다.', '공식 FAQ'],
+  ['컴퓨터가 기기를 못 찾음', '충전 전용 케이블, 드라이버 없음, 다른 포트', '데이터 케이블로 바꾸고 CP2102 드라이버를 확인합니다. 포트 두 개를 모두 시험합니다.', '공식 FAQ'],
+  ['esptool의 Failed to connect', '다운로드 모드 진입 실패', 'BOOT와 RESET 절차를 공식 안내대로 합니다. 이 기기의 버튼 위치는 확인이 필요합니다.', '공식 FAQ'],
+  ['버튼이 반응하지 않음', 'PCF8574 접촉, 주소 불일치', '케이스를 열지 말고 먼저 터치가 되는지 봅니다. 안 되면 판매처에 문의합니다.', '공식 FAQ'],
+  ['터치 위치가 어긋남', '보정 값 불일치', 'Tools의 Touch Calibrate를 다시 합니다.', '공식 FAQ'],
+  ['Wi-Fi 스캔이 비거나 멈춤', 'v1.53 이후 알려진 저장 공간(NVS) 문제', '이 페이지의 주의를 읽고 재설치를 판단합니다. 전체 지우기는 설정을 함께 지웁니다.', '공식 FAQ'],
+  ['SD 업데이트 실패', '파일 이름이나 위치, 카드 형식', '화면에 적힌 파일 이름을 따르고, 32GB 이하 FAT32 카드의 맨 위 폴더에 둡니다.', '공식 FAQ, 설명서'],
+  ['2.4GHz, Sub-GHz가 반응 없음', '모듈 체결 불량, 주파수 설정', '안테나 체결과 대역 설정을 확인합니다. 내부 모듈은 판매처에 문의합니다.', '공식 FAQ'],
+  ['NFC가 카드를 못 찾음', '거리, 움직임, 다른 스캔의 간섭', '태그를 2~3cm 안에 평평하게 고정하고 다른 스캔을 끕니다.', '공식 FAQ'],
+];
+---
+<Base title="업데이트·문제 해결 | ESP32-DIV V2.1 실험 노트" description="동봉 설명서와 공식 안내의 update.bin, firmware.bin, 플래시 주소 차이를 정리하고 문제 해결 순서를 안내합니다.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>업데이트 전에 차이부터 확인하기</h1>
+      <p class="lead">설명서와 공식 안내가 서로 다릅니다. 이 기기에서 어느 쪽이 맞는지는 아직 확인되지 않았습니다.</p>
+    </header>
+    <div class="doc">
+      <div class="doc__main">
+        <section id="versions" aria-labelledby="h-versions">
+          <h2 id="h-versions">설명서와 공식 안내의 차이</h2>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="설명서와 공식 안내 비교">
+            <table>
+              <thead><tr><th scope="col">항목</th><th scope="col">동봉 설명서</th><th scope="col">공식 웹 안내, 위키, v1.7.2 코드</th></tr></thead>
+              <tbody>
+                <tr><th scope="row">SD 업데이트 파일 이름</th><td><code>update.bin</code></td><td><code>firmware.bin</code> (코드의 <code>FIRMWARE_FILE</code>은 <code>/firmware.bin</code>)</td></tr>
+                <tr><th scope="row">메뉴 경로</th><td>Tools &gt; Firmware Update &gt; SD Update, Yes 확인</td><td>코드 메뉴는 Tools의 Update Firmware. 웹 안내 표현은 Firmware Update → SD Card Update</td></tr>
+                <tr><th scope="row">언급된 펌웨어</th><td><code>ESP32-DIV.1.7.0-p.bin</code></td><td>최신 v1.7.2 (2026-08-06 게시), V2용 파일 <code>ESP32-DIV-v2-v1.7.2.bin</code></td></tr>
+                <tr><th scope="row">부트로더 주소</th><td><code>0x00000</code></td><td>통합 이미지를 <code>0x0</code>에 쓰는 방식 안내</td></tr>
+                <tr><th scope="row">파티션 주소</th><td><code>0x80000</code></td><td><code>0x8000</code></td></tr>
+                <tr><th scope="row">앱 주소</th><td><code>0x100000</code></td><td><code>0x10000</code></td></tr>
+                <tr><th scope="row">하드웨어 표기</th><td>ESP32 DIV V2</td><td>ESP32-DIV v2. 뒷면 표기는 V2.1</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <Plate src={manualFlash} alt="동봉 설명서의 펌웨어 설치 부분 사진. 플래시 주소 표와 update.bin 안내가 보인다." sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1200]} caption="동봉 설명서 4절. 위 표의 왼쪽 열 근거입니다." />
+          <div class="callout callout--warn">
+            <p><strong>이 표로 어느 쪽이 맞다고 단정할 수 없습니다.</strong> 판매 기기에 어떤 펌웨어가 설치되어 있는지, 파티션 구성이 공식과 같은지 모르기 때문입니다. 주소를 잘못 쓰면 기기가 켜지지 않을 수 있습니다. 판매처 안내가 있으면 그쪽을 먼저 확인하세요.</p>
+          </div>
+        </section>
+
+        <section id="decide" aria-labelledby="h-decide">
+          <h2 id="h-decide">업데이트가 정말 필요한가</h2>
+          <p>지금 쓰려는 메뉴가 동작한다면 업데이트하지 않는 것이 가장 안전합니다. 판매 기기의 펌웨어를 되돌릴 파일이 공개되어 있는지 확인하지 못했기 때문입니다.</p>
+          <p>필요한 메뉴가 없거나 알려진 문제에 해당할 때만 판단합니다.</p>
+        </section>
+
+        <section id="before" aria-labelledby="h-before">
+          <h2 id="h-before">시작 전 확인</h2>
+          <ol>
+            <li>About이나 시리얼 로그에서 현재 버전을 사진으로 남깁니다.</li>
+            <li>Tools의 업데이트 화면에 적힌 파일 이름을 그대로 적어 둡니다. 코드 v1.7.2의 화면은 <code>firmware.bin in root</code>라고 표시합니다.</li>
+            <li>SD 카드의 설정과 저장 파일을 컴퓨터로 복사합니다.</li>
+            <li>충전을 끝내고, 진행 중에는 전원과 케이블을 건드리지 않습니다.</li>
+            <li>파일이 내 보드용인지 확인합니다. 공식 릴리스에는 v2, v1, CYD용이 따로 있습니다.</li>
+          </ol>
+        </section>
+
+        <section id="methods" aria-labelledby="h-methods">
+          <h2 id="h-methods">공식 설치 방법</h2>
+          <p>아래 내용은 공식 프로젝트 v2 기준이며, 이 기기에서는 시험하지 않았습니다. <Evidence kind="doc" /> <Evidence kind="unverified" /></p>
+          <h3>SD 카드 업데이트</h3>
+          <p>기기가 켜지고 메뉴가 동작할 때 공식 위키가 권장하는 방법입니다.</p>
+          <ol>
+            <li>microSD를 FAT32로 포맷합니다.</li>
+            <li>릴리스의 내 보드용 <code>.bin</code>을 받아, 화면에 표시된 이름으로 바꿔 맨 위 폴더에 넣습니다.</li>
+            <li>전원을 끄고 카드를 넣은 뒤 켭니다.</li>
+            <li>업데이트 메뉴에서 시작하고 끝날 때까지 기다립니다.</li>
+            <li>재부팅 후 화면이나 시리얼(115200)에서 버전을 확인합니다.</li>
+          </ol>
+          <h3>웹 플래셔와 Flash Download Tool</h3>
+          <p>공식 웹 안내는 데스크톱 Chrome이나 Edge에서 USB로 설치하는 웹 플래셔, 통합 이미지를 <code>0x0</code>에 쓰는 esptool, 앱을 <code>0x10000</code>과 파티션을 <code>0x8000</code>에 쓰는 Flash Download Tool을 안내합니다. 칩은 v2의 경우 ESP32-S3로 적혀 있지만, 위키 본문의 같은 절에는 ESP32로 적혀 있어 웹 안내와 다릅니다.</p>
+          <p>처음 설치에서 장치 지우기를 선택하면 저장 내용이 사라집니다.</p>
+          <div class="btn-row">
+            <a class="btn btn--quiet" href={SOURCES.site.url} rel="noopener">공식 설치 안내 열기</a>
+            <a class="btn btn--quiet" href={SOURCES.releases.url} rel="noopener">공식 릴리스 보기</a>
+          </div>
+        </section>
+
+        <section id="trouble" aria-labelledby="h-trouble">
+          <h2 id="h-trouble">문제 해결</h2>
+          <p>쉬운 것부터 하나씩 바꾸고, 바꾼 내용을 적어 두면 문의할 때 도움이 됩니다. 케이스는 열지 마세요.</p>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="문제 해결 표">
+            <table>
+              <thead><tr><th scope="col">증상</th><th scope="col">원인 후보</th><th scope="col">먼저 할 일</th><th scope="col">근거</th></tr></thead>
+              <tbody>
+                {trouble.map(([s, c, d, e]) => <tr><th scope="row">{s}</th><td>{c}</td><td>{d}</td><td>{e}</td></tr>)}
+              </tbody>
+            </table>
+          </div>
+          <p>기능별 문제는 <a href={url('/guide/')}>기능 가이드</a>의 각 항목에 있습니다.</p>
+        </section>
+
+        <Sources ids={['manual', 'site', 'upload', 'releases', 'codeFirmware', 'faq']} />
+      </div>
+      <nav class="doc__aside toc" aria-label="이 페이지 목차">
+        <h2>이 페이지</h2>
+        <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+      </nav>
+    </div>
+  </div>
+</Base>

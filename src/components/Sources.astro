@@ -1,0 +1,20 @@
+---
+import { CHECKED, SOURCES, type Source, type SourceId } from '../data/sources';
+
+interface Props {
+  ids: SourceId[];
+}
+const items = Astro.props.ids.map((id) => SOURCES[id] as Source);
+---
+<aside class="sources" aria-labelledby="sources-title">
+  <h2 id="sources-title">이 페이지의 출처</h2>
+  <p class="muted small">확인일 {CHECKED}</p>
+  <ul>
+    {items.map((s) => (
+      <li>
+        {s.url ? <a href={s.url} rel="noopener">{s.title}</a> : s.title}
+        {s.note && <span class="muted"> {s.note}</span>}
+      </li>
+    ))}
+  </ul>
+</aside>

@@ -1,0 +1,156 @@
+---
+import Base from '../../layouts/Base.astro';
+import Evidence from '../../components/Evidence.astro';
+import Plate from '../../components/Plate.astro';
+import Sources from '../../components/Sources.astro';
+import back from '../../assets/device/back.jpg';
+import ports from '../../assets/device/ports.jpg';
+import sideSwitch from '../../assets/device/switch.jpg';
+import front from '../../assets/device/front.jpg';
+import { url } from '../../lib/url';
+
+const toc = [
+  ['parts', '구성품'],
+  ['antenna', '안테나'],
+  ['power', '전원'],
+  ['controls', '조작'],
+  ['sd', 'SD 카드'],
+  ['first-scan', '첫 스캔'],
+];
+---
+<Base title="처음 시작 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1의 구성품, 안테나, 전원, 조작, SD 카드, 첫 스캔을 순서대로 안내합니다.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>처음 시작: 안테나부터 첫 스캔까지</h1>
+      <p class="lead">여섯 단계입니다. 마지막에 내 기기에서 확인한 값을 적어 두면, 이 사이트의 미검증 항목이 내 기기 기준으로 정리됩니다.</p>
+      <p class="small muted">동봉 설명서는 어린이 단독 사용을 금하고 성인 감독을 요구합니다.</p>
+    </header>
+    <div class="doc">
+      <div class="doc__main">
+        <section id="parts" aria-labelledby="h-parts">
+          <h2 id="h-parts">1. 구성품 확인</h2>
+          <div class="tags"><Evidence kind="photo" /></div>
+          <p>사진에는 본체 1대, 곧은 안테나 4개, 꺾이는 안테나 1개, 인쇄 설명서가 있습니다.</p>
+          <p>사진에 없는 것은 따로 확인하세요.</p>
+          <ul>
+            <li>데이터 통신이 되는 USB-C 케이블. 충전 전용 케이블로는 컴퓨터와 통신할 수 없습니다.</li>
+            <li>microSD 카드. 설명서와 공식 FAQ 기준 32GB 이하, FAT32 형식입니다.</li>
+            <li>실험용 NFC 태그. NFC 실험을 할 때 필요합니다.</li>
+          </ul>
+          <p>본체에 배터리가 들어 있는지는 사진으로 알 수 없습니다. <Evidence kind="unverified" /></p>
+        </section>
+
+        <section id="antenna" aria-labelledby="h-antenna">
+          <h2 id="h-antenna">2. 안테나 연결</h2>
+          <Plate src={back} alt="뒷면의 안테나 단자 사진. 433M 표기 아래로 2G4 표기가 세 번 있고 아래쪽에 GPS 표기가 있다." sizes="(min-width: 960px) 720px, 100vw" caption="뒷면 표기: 433M 1개, 2G4 3개, GPS 1개." />
+          <div class="tags"><Evidence kind="photo" /></div>
+          <ol>
+            <li>전원을 끈 상태에서 시작합니다.</li>
+            <li>받은 상태 그대로 체결되어 있다면 위치를 바꾸지 말고 손으로 살짝 조여 풀림만 확인합니다.</li>
+            <li>풀려 왔다면 뒷면 표기를 사진으로 먼저 남기고, 판매처에 어떤 안테나가 어느 단자에 맞는지 물어봅니다.</li>
+            <li>공구로 세게 조이지 않습니다.</li>
+          </ol>
+          <div class="callout callout--warn">
+            <p><strong>안테나 자체에는 주파수 표기가 보이지 않습니다.</strong> 433M 단자의 체결부는 금색으로 다른 단자와 달라 보이지만, 안테나별 주파수 대역은 확인하지 못했습니다. 단자의 내부 연결도 미확인이니 표기로만 구분합니다.</p>
+            <p>일반적인 무선 장비 수칙으로, 안테나 없이 송신 기능을 실행하지 않습니다.</p>
+          </div>
+        </section>
+
+        <section id="power" aria-labelledby="h-power">
+          <h2 id="h-power">3. 전원과 USB-C</h2>
+          <Plate src={sideSwitch} alt="기기 긴 옆면 사진. 초록색 슬라이드 스위치 왼쪽과 오른쪽 멀리에 네모난 구멍이 있다." sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="긴 옆면의 초록 슬라이드 스위치와 네모난 구멍 두 개. 뒷면에는 스위치 옆으로 ON, OFF 음각이 있습니다." />
+          <div class="tags"><Evidence kind="photo" /><Evidence kind="unverified" /></div>
+          <p>스위치를 움직여 화면이 켜지는 쪽을 확인합니다. 슬라이드 방향과 켜짐의 관계는 직접 확인해 적어 두세요.</p>
+          <Plate src={ports} alt="USB-C 단자 두 개가 나란히 있는 짧은 옆면 사진" sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="USB-C 두 개. 케이스에 역할 표기가 보이지 않습니다." />
+          <h3>어느 포트가 무엇인지 확인하기</h3>
+          <p>공식 문서는 CP2102가 펌웨어 설치와 시리얼 통신을, IP5306이 배터리 충전을 맡는다고 적습니다. 그 칩이 각 포트와 어떻게 이어지는지는 이 기기에서 확인되지 않았습니다.</p>
+          <ol>
+            <li>포트 하나씩 컴퓨터에 연결합니다.</li>
+            <li>컴퓨터에 새 시리얼 포트가 생기는지 봅니다. 윈도우는 장치 관리자, macOS는 시스템 정보의 USB 항목에서 봅니다.</li>
+            <li>화면이나 표시등의 변화를 적습니다.</li>
+            <li>포트별 결과를 사진과 함께 기록합니다.</li>
+          </ol>
+          <p class="small muted">공식 FAQ는 충전이 불안정하면 5V 1A 이상 전원을 쓰라고 하고, USB를 뺐을 때 바로 꺼지는 현상은 IP5306의 최소 부하 때문일 수 있다고 적습니다.</p>
+        </section>
+
+        <section id="controls" aria-labelledby="h-controls">
+          <h2 id="h-controls">4. 조작</h2>
+          <div class="split split--even">
+            <Plate src={front} alt="기기 앞면 사진. 위로 안테나 네 개, 가운데 화면, 그 위에 MK SIGNAL 글자, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 340px, 100vw" widths={[640, 960, 1100]} />
+            <div class="prose">
+              <div class="tags"><Evidence kind="photo" /></div>
+              <p>화면 아래 버튼은 십자로 놓인 5개입니다.</p>
+              <div class="tags"><Evidence kind="doc" /></div>
+              <p>공식 문서는 위, 아래, 왼쪽, 오른쪽, 선택(Select) 키와 터치를 설명합니다.</p>
+              <div class="tags"><Evidence kind="unverified" /></div>
+              <p>이 기기는 안테나가 위쪽일 때 버튼이 아래에 옵니다. 화면 방향과 버튼 방향이 맞는지 직접 눌러 확인하세요.</p>
+            </div>
+          </div>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="메인 메뉴 8칸">
+            <table>
+              <caption>공식 v1.7.2의 메인 메뉴 8칸. 내 기기 화면과 다르면 그 차이를 기록하세요.</caption>
+              <thead><tr><th scope="col">왼쪽 줄</th><th scope="col">오른쪽 줄</th></tr></thead>
+              <tbody>
+                <tr><td>WiFi (와이파이)</td><td>Bluetooth (블루투스)</td></tr>
+                <tr><td>2.4GHz</td><td>SubGHz (서브기가헤르츠)</td></tr>
+                <tr><td>More (더보기: IR, RFID/NFC, GPS)</td><td>Tools (도구)</td></tr>
+                <tr><td>Settings (설정)</td><td>About (정보)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>기능에서 나올 때는 화면 위 상태 표시줄의 종료 아이콘을 먼저 찾습니다. 공식 문서에 따르면 기능마다 동작이 조금 다릅니다.</p>
+        </section>
+
+        <section id="sd" aria-labelledby="h-sd">
+          <h2 id="h-sd">5. SD 카드</h2>
+          <div class="tags"><Evidence kind="manual" /><Evidence kind="doc" /><Evidence kind="unverified" /></div>
+          <ol>
+            <li>컴퓨터에서 microSD 카드를 FAT32로 포맷합니다. 안에 있는 자료는 모두 지워지니 먼저 옮겨 둡니다.</li>
+            <li>기기 전원을 끕니다.</li>
+            <li>카드 슬롯을 찾아 넣습니다. 들어가지 않으면 힘을 주지 말고 멈춥니다.</li>
+            <li>전원을 켜고, Tools의 SD File Manager에서 카드가 보이는지 확인합니다.</li>
+          </ol>
+          <p>뒷면 위쪽 음각이 SD처럼 보이지만 읽기가 불확실하고, 그 면의 사진이 없어 슬롯 위치를 확정하지 못했습니다.</p>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="SD 카드 폴더 구조">
+            <table>
+              <caption>공식 문서에 적힌 SD 카드 구조</caption>
+              <thead><tr><th scope="col">경로</th><th scope="col">용도</th></tr></thead>
+              <tbody>
+                <tr><td><code>/config/settings.json</code></td><td>밝기, 테마, NeoPixel, 자동 스캔, 터치 범위</td></tr>
+                <tr><td><code>/captures</code></td><td>Sub-GHz와 IR 캡처</td></tr>
+                <tr><td><code>/logs</code></td><td>로그</td></tr>
+                <tr><td><code>/ducky</code></td><td>BLE 키보드 스크립트</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="first-scan" aria-labelledby="h-first">
+          <h2 id="h-first">6. 첫 스캔과 내 기기 기록</h2>
+          <p>첫 스캔은 듣기만 하는 <a href={url('/guide/wifi/#wifi-scanner')}>Wi-Fi 스캐너</a>로 합니다.</p>
+          <ol>
+            <li>메인 메뉴에서 WiFi를 고릅니다.</li>
+            <li>WiFi Scanner를 고릅니다.</li>
+            <li>스캔이 끝나면 내 공유기 이름을 찾습니다.</li>
+            <li>채널과 RSSI를 적습니다. RSSI는 0에 가까울수록 강합니다.</li>
+            <li>종료 아이콘으로 나옵니다.</li>
+          </ol>
+          <h3>이번에 함께 확인할 네 가지</h3>
+          <ul>
+            <li>About이나 시리얼 로그에 보이는 펌웨어 버전</li>
+            <li>메인 메뉴 8칸이 공식 목록과 같은지</li>
+            <li>More 안에 RFID/NFC와 GPS가 있는지</li>
+            <li>Tools의 Update Firmware 화면에 적힌 파일 이름</li>
+          </ul>
+          <p>RFID/NFC 메뉴가 보이면 <a href={url('/guide/nfc/#card-reader')}>카드 리더</a>로 실험용 태그를 읽어 보고, <a href={url('/lab/nfc/')}>NFC 실험</a>으로 넘어갑니다.</p>
+        </section>
+
+        <Sources ids={['photos', 'manual', 'navigation', 'hardware', 'faq', 'codeMenu']} />
+      </div>
+      <nav class="doc__aside toc" aria-label="이 페이지 목차">
+        <h2>이 페이지</h2>
+        <ol>{toc.map(([id, label], i) => <li><a href={`#${id}`}>{i + 1}. {label}</a></li>)}</ol>
+      </nav>
+    </div>
+  </div>
+</Base>

@@ -1,0 +1,7 @@
+# 원본 사진(EXIF/GPS 포함)은 추적·푸시하지 않는다. 웹용 파생본은 src/assets/device/ 에 있다.
+IMG_*.JPG
+node_modules/
+dist/
+.astro/
+.DS_Store
+.hallmark/

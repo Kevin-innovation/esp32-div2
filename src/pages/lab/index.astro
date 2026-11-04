@@ -1,0 +1,57 @@
+---
+import Base from '../../layouts/Base.astro';
+import Evidence from '../../components/Evidence.astro';
+import Sources from '../../components/Sources.astro';
+import { url } from '../../lib/url';
+
+const labs = [
+  { q: '우리 집 Wi-Fi 채널은 시간대마다 얼마나 붐빌까?', change: '측정 시간대. 기기 위치는 고정.', record: '채널별 공유기 수, 내 공유기 RSSI, 패킷 모니터 관찰', href: '/guide/wifi/#wifi-scanner', tool: 'Wi-Fi 스캐너, 패킷 모니터' },
+  { q: '내 이어폰의 BLE 신호는 벽 하나 너머에서 얼마나 줄어들까?', change: '거리와 벽의 유무, 한 번에 하나만.', record: '내 기기 RSSI 다섯 번 반복. 주변 기기 정보는 적지 않음.', href: '/guide/ble/#ble-scanner', tool: 'BLE 스캐너' },
+  { q: '리모컨 버튼마다 적외선 파형은 어떻게 다를까?', change: '버튼 종류. 거리와 방향은 고정.', record: '버튼별 파형 사진, 반복했을 때 비슷한 정도', href: '/guide/ir/#ir-record', tool: 'IR 기록' },
+  { q: '실내, 창가, 야외에서 잡히는 위성 수는 얼마나 다를까?', change: '위치. 기다리는 시간은 고정.', record: '위치별 위성 수, 위치 고정까지 직접 잰 시간', href: '/guide/gps/#satellite-scanner', tool: '위성 스캐너' },
+];
+---
+<Base title="실전 탐구 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1과 함께 할 수 있는 안전한 관찰 실험과 NFC 탐구 프로젝트를 안내합니다.">
+  <div class="wrap">
+    <header class="page-head">
+      <h1>실전 탐구: 내 기기를 대상으로</h1>
+      <p class="lead">모든 실험은 내 장비를 관찰하는 것부터 시작합니다. 다른 사람의 통신을 건드리는 실험은 싣지 않습니다.</p>
+    </header>
+
+    <section class="section section--well" style="margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter)" aria-labelledby="h-nfc">
+      <div class="split">
+        <div>
+          <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
+          <div class="btn-row" style="margin-top: var(--space-lg)">
+            <a class="btn" href={url('/lab/nfc/')}>실험 노트 열기</a>
+          </div>
+        </div>
+        <div class="prose">
+          <p>실제 신용카드 대신 실험용 NFC 태그와 호환 리더로 단독, 지갑, 가방 조건을 비교합니다. 입력한 값으로 그래프, CSV, 파이썬 분석, 보고서, 면접 질문까지 이어집니다.</p>
+          <div class="tags"><Evidence kind="unverified" /></div>
+          <p class="small muted">이 기기의 NFC 동작은 미검증입니다. 메뉴가 없으면 NFC를 지원하는 휴대폰 같은 다른 리더로 같은 실험을 할 수 있습니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="h-more">
+      <div class="section__head">
+        <h2 id="h-more">기기로 해 볼 수 있는 관찰 실험</h2>
+        <p class="muted">이 기기에서 해당 메뉴가 동작하는지 먼저 확인하세요. 설계 방식은 NFC 실험과 같습니다.</p>
+      </div>
+      <ul class="lab-list">
+        {labs.map((l) => (
+          <li>
+            <h3>{l.q}</h3>
+            <dl class="facts">
+              <div><dt>바꾸는 것</dt><dd>{l.change}</dd></div>
+              <div><dt>기록할 것</dt><dd>{l.record}</dd></div>
+              <div><dt>쓰는 기능</dt><dd><a href={url(l.href)}>{l.tool}</a></dd></div>
+            </dl>
+          </li>
+        ))}
+      </ul>
+      <Sources ids={['wiki', 'nfcOverview']} />
+    </section>
+  </div>
+</Base>

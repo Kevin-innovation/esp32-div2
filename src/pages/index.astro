@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import Evidence from '../components/Evidence.astro';
+import Plate from '../components/Plate.astro';
+import back from '../assets/device/back.jpg';
+import front from '../assets/device/front.jpg';
+import { GROUPS } from '../data/guide';
+import { url } from '../lib/url';
+
+const startSteps = [
+  ['parts', '구성품 확인', '본체, 안테나, 준비물을 맞춰 봅니다.'],
+  ['antenna', '안테나 연결', '뒷면 표기대로 체결을 확인합니다.'],
+  ['power', '전원 켜기', '스위치와 USB-C를 확인합니다.'],
+  ['controls', '조작 익히기', '버튼 5개와 터치로 메뉴를 움직입니다.'],
+  ['sd', 'SD 카드 준비', 'FAT32로 포맷해 넣습니다.'],
+  ['first-scan', '첫 스캔', '내 공유기를 찾아 신호 세기를 적습니다.'],
+];
+
+const nfcSteps = [
+  '질문과 가설, 실험 설계',
+  '조건, 거리, 방향, 성공 여부 입력',
+  '조건별 인식률 그래프',
+  'CSV 백업과 이동',
+  'pandas와 matplotlib 분석',
+  '일반 태그와 EMV 결제 보안 조사',
+  '예상과 다른 결과의 원인 찾기',
+  '내 기록으로 만드는 보고서',
+  '자소서와 면접 질문',
+];
+---
+<Base title="ESP32-DIV 실험 노트" description="ESP32-DIV를 처음 쓰는 학생과 입문자를 위한 한국어 안내입니다. 기기를 익히고, NFC 실험을 기록하고, 파이썬으로 분석합니다.">
+  <section class="hero wrap">
+    <div class="hero__text">
+      <h1>ESP32-DIV,<br />처음 사용부터 실험까지</h1>
+      <div class="hero__side">
+        <p class="lead">기기를 익히고, NFC 실험을 기록하고, 파이썬으로 분석하세요.</p>
+        <div class="btn-row">
+          <a class="btn" href={url('/start/')}>처음 시작하기</a>
+          <a class="btn btn--quiet" href={url('/lab/nfc/')}>NFC 실험하기</a>
+        </div>
+      </div>
+    </div>
+    <Plate
+      src={back}
+      alt="ESP32-DIV V2.1 뒷면 사진. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있고 초록 글자로 ESP32-DIV V2.1, NFC, GPS가 인쇄되어 있다."
+      sizes="(min-width: 1280px) 1120px, 100vw"
+      eager
+      pins={[
+        { n: 1, x: 85, y: 32, href: url('/device/#back-name'), label: '모델 표기 설명' },
+        { n: 2, x: 91.5, y: 44, href: url('/device/#back-nfc'), label: 'NFC 표기 설명' },
+        { n: 3, x: 70, y: 55, href: url('/device/#back-gps'), label: 'GPS 표기 설명' },
+        { n: 4, x: 58.5, y: 36, href: url('/device/#back-antenna'), label: '안테나 단자 표기 설명' },
+      ]}
+      caption="실물 뒷면입니다. 번호를 누르면 각 부분의 설명으로 이동합니다."
+    />
+  </section>
+
+  <section class="section section--rule" aria-labelledby="h-start">
+    <div class="wrap split">
+      <Plate src={front} alt="기기 앞면 사진. 위로 안테나 네 개, 가운데 화면, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 440px, 100vw" widths={[640, 960, 1100]} />
+      <div>
+        <h2 id="h-start">처음 켜는 날, 여섯 단계</h2>
+        <ol class="num-steps" style="margin-top: var(--space-lg)">
+          {startSteps.map(([id, title, text]) => (
+            <li><span><a href={url(`/start/#${id}`)}><strong>{title}</strong></a><br />{text}</span></li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--well" aria-labelledby="h-nfc">
+    <div class="wrap split">
+      <div>
+        <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
+        <p style="margin-top: var(--space-md)">실제 신용카드 대신 실험용 태그로, 지갑과 가방 속 인식을 직접 비교합니다.</p>
+        <div class="btn-row" style="margin-top: var(--space-lg)">
+          <a class="btn btn--quiet" href={url('/lab/nfc/')}>실험 노트 열기</a>
+        </div>
+      </div>
+      <ol class="num-steps">
+        {nfcSteps.map((s) => <li><span>{s}</span></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="h-groups">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="h-groups">메뉴 여덟 묶음을 한글로</h2>
+        <p class="muted">기기 화면의 영문 메뉴 이름을 함께 적어 그대로 찾아갈 수 있습니다.</p>
+      </div>
+      <ul class="group-list">
+        {GROUPS.map((g) => (
+          <li>
+            <a class="group-link" href={url(`/guide/${g.slug}/`)}>
+              <strong>{g.title}</strong>
+              <span>{g.summary}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section--rule" style="padding-block: var(--space-lg)" aria-label="근거 표시 안내">
+    <div class="wrap small muted">
+      <p>설명 옆 표시는 근거입니다. <Evidence kind="photo" /> <Evidence kind="manual" /> <Evidence kind="doc" /> <Evidence kind="unverified" /> 판매 기기에서 아직 확인하지 못한 항목은 <a href={url('/device/')}>기기 알아보기</a>와 <a href={url('/update/')}>업데이트</a>에 정리했습니다.</p>
+    </div>
+  </section>
+</Base>
