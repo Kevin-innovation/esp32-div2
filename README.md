@@ -1,6 +1,6 @@
 # ESP32-DIV 실험 노트
 
-ESP32-DIV V2.1을 처음 쓰는 학생과 입문자를 위한 한국어 정적 사이트입니다. 실물 사진을 바탕으로 처음 사용법, 기능 가이드, NFC 탐구 실험을 안내합니다. CiferTech의 공식 사이트가 아니며, 판매 기기의 하드웨어와 펌웨어는 아직 검증하지 않았습니다.
+ESP32-DIV V2.1을 처음 쓰는 학생과 입문자를 위한 한국어 정적 사이트입니다. 실물 사진을 바탕으로 처음 사용법, 기능 가이드, NFC 탐구 실험을 안내합니다. CiferTech의 공식 사이트가 아닙니다. 이 기기에서는 부팅, 메뉴 표시, NFC 태그 읽기까지 확인했고 다른 기능은 미검증입니다.
 
 ## 실행
 
@@ -28,10 +28,16 @@ npm run check:nfc  # CSV 왕복, 입력 검증, 집계, 보고서 이스케이�
 
 홈의 `front-cutout.webp`, `back-cutout.webp`는 실물 사진을 AI로 편집한 소개용 이미지입니다. 배경을 지우고, 앞면 화면의 반사와 흠집을 정리하고, 뒷면의 작은 각인을 생략했습니다. 근거 자료로 쓰지 않으며, 포트와 각인 설명은 `/device/`의 원본 사진 기준입니다.
 
+홈의 이미지와 달리 `src/assets/learning/`의 화면 8장은 이 기기의 실제 화면을 바탕으로 재구성한 AI 생성 학습 이미지입니다. 직접 찍은 화면 사진은 저장소와 사이트에 넣지 않습니다. 정확한 메뉴와 값은 이미지 옆의 HTML 표(`src/data/learn.ts`)가 기준입니다.
+
+## 학습 과정
+
+`/learn/`에서 시작해 화면 따라 하기, NFC 원리, Wi-Fi와 네트워크, 용어 사전을 거쳐 `/lab/nfc/` 실험 워크북으로 이어집니다. 개발 계약과 완료 기준은 `docs/student-learning-plan.md`에 있습니다.
+
 ## 데이터
 
 서버와 로그인은 없습니다. NFC 실험 기록과 탐구 서술은 방문자의 브라우저 localStorage에만 저장되고, CSV로 백업하거나 옮길 수 있습니다.
 
 ## 내용 수정
 
-기능 설명은 `src/data/guide.ts`, 출처와 확인 날짜는 `src/data/sources.ts`, NFC 계산과 CSV 처리는 `src/lib/nfc.ts`에 있습니다.
+기능 설명은 `src/data/guide.ts`, 학습 내용은 `src/data/learn.ts`, 용어는 `src/data/glossary.ts`, 출처와 확인 날짜는 `src/data/sources.ts`, NFC 계산과 CSV 처리는 `src/lib/nfc.ts`에 있습니다.

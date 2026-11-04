@@ -1,0 +1,153 @@
+---
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import Evidence from '../../components/Evidence.astro';
+import ScreenShot from '../../components/learn/ScreenShot.astro';
+import Think from '../../components/learn/Think.astro';
+import { Stepper } from '../../components/learn/Stepper';
+import { MODEL_NOTE, NFC_STEPS } from '../../data/learn';
+import { SOURCES } from '../../data/sources';
+import { url } from '../../lib/url';
+
+const uid = ['53', '01', '05', 'D0', '43', '00', '01'];
+const binary = (h: string) => parseInt(h, 16).toString(2).padStart(8, '0');
+const decimal = (h: string) => parseInt(h, 16);
+const pages = [
+  ['P4', ['01', '03', 'A0', '0C']],
+  ['P5', ['34', '03', '00', 'FE']],
+  ['P6', ['00', '00', '00', '00']],
+  ['P7', ['00', '00', '00', '00']],
+] as const;
+---
+<LearnLayout
+  title="NFC 원리"
+  heading="태그를 댈 때 무슨 일이 일어나는가"
+  lead="리더가 자기장을 켜고 태그가 그 에너지로 답합니다. 화면의 값 하나하나가 어느 단계에서 왔는지 따라갑니다."
+  description="13.56MHz 자기장, 유도 결합, 부하 변조, UID와 메모리 읽기를 실제 화면 값으로 배웁니다."
+  toc={[['flow', '통신 단계'], ['coupling', '결합과 거리'], ['screen', '화면 해석'], ['bytes', '바이트 실습'], ['memory', '메모리 읽기'], ['capacity', '메모리 크기 질문'], ['not', 'NFC가 아닌 것'], ['think', '생각해 보기']]}
+  sources={['deviceScreens', 'ntag', 'pn532', 'metal', 'nfcOverview', 'nfcReader']}
+>
+  <section id="flow" aria-labelledby="h-flow">
+    <h2 id="h-flow">통신 단계 따라가기</h2>
+    <p>처음부터 끝까지 한 단계씩 넘겨 보세요. 왼쪽이 리더, 오른쪽이 태그입니다.</p>
+    <Stepper client:load label="NFC 통신 단계" actors={['리더 (PN532)', '태그']} steps={NFC_STEPS} note={MODEL_NOTE} />
+    <p class="small muted">이 기기에서 무선 신호를 직접 캡처하지는 않았습니다. 일반 ISO14443A 흐름을 원리 수준으로 보여 주며, 실제 바이트 순서를 그대로 옮긴 기록이 아닙니다.</p>
+  </section>
+
+  <section id="coupling" aria-labelledby="h-coupling">
+    <h2 id="h-coupling">결합이 약해지는 이유</h2>
+    <p>리더 코일과 태그 코일은 자기장으로 이어져 있습니다. 이어지는 정도가 약해지면 태그가 쓸 에너지도, 리더가 알아챌 답도 작아집니다.</p>
+    <ul>
+      <li><strong>거리:</strong> 자기장은 멀어질수록 빠르게 약해집니다.</li>
+      <li><strong>방향:</strong> 코일 면이 나란할 때와 수직일 때 결합이 달라집니다.</li>
+      <li><strong>위치:</strong> 코일 중심에서 벗어나면 달라집니다. 이 기기의 코일 위치는 확인하지 못했으니 직접 찾아 표시합니다.</li>
+      <li><strong>금속:</strong> 가까운 금속은 안테나 특성을 바꿔 인식 거리를 줄일 수 있습니다(<a href={SOURCES.metal.url} rel="noopener">NXP AN11564</a>).</li>
+    </ul>
+    <p>NXP 데이터시트는 NTAG21x의 동작 거리를 최대 100mm로 적되, 자기장 세기와 안테나 모양에 따라 달라진다고 밝힙니다(<a href={SOURCES.ntag.url} rel="noopener">NXP</a>). 이 기기의 값은 그보다 짧을 수 있으니 직접 잽니다.</p>
+  </section>
+
+  <section id="screen" aria-labelledby="h-screen">
+    <h2 id="h-screen">화면 값은 어디서 왔나</h2>
+    <ScreenShot name="tag-info" />
+    <div class="table-wrap" tabindex="0" role="region" aria-label="화면 값과 통신 단계">
+      <table>
+        <thead><tr><th scope="col">화면 값</th><th scope="col">어느 단계</th><th scope="col">알 수 있는 것과 없는 것</th></tr></thead>
+        <tbody>
+          <tr><td><code>ATQA 0044</code></td><td>태그의 첫 답</td><td>종류를 가늠하는 단서입니다. 모델을 확정하지 못합니다.</td></tr>
+          <tr><td><code>UID</code></td><td>충돌 방지</td><td>태그를 구별합니다. 비밀 값이 아닙니다.</td></tr>
+          <tr><td><code>SAK 00</code></td><td>선택</td><td>ATQA와 마찬가지로 단서입니다.</td></tr>
+          <tr><td><code>Detected type</code>, <code>Variant</code></td><td>펌웨어의 판단</td><td>기기가 내린 분류입니다. 어떤 기준인지는 확인하지 못했습니다.</td></tr>
+          <tr><td><code>P4~P7</code></td><td>메모리 읽기</td><td>읽은 일부 값입니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="bytes" aria-labelledby="h-bytes">
+    <h2 id="h-bytes">바이트 실습: UID 풀어 보기</h2>
+    <p>화면의 <code>530105D0430001</code>은 16진수 14자리입니다. 16진수 두 자리가 1바이트이므로 7바이트입니다. 1바이트는 8비트이므로 모두 56비트입니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="UID 바이트 변환표">
+      <table>
+        <caption>UID 일곱 바이트를 세 가지 방법으로 적기</caption>
+        <thead><tr><th scope="col">순서</th><th scope="col">16진수</th><th scope="col">2진수 (8비트)</th><th scope="col">10진수</th></tr></thead>
+        <tbody>
+          {uid.map((h, i) => <tr><td>{i + 1}</td><td><code>{h}</code></td><td><code>{binary(h)}</code></td><td>{decimal(h)}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p><strong>직접 해 보기:</strong> 내 태그의 UID를 공책에 두 자리씩 끊어 적고, 첫 바이트를 2진수와 10진수로 바꾸어 보세요.</p>
+    <Think q="0x01을 8비트로 적으면 어떻게 되나요? 왜 그렇게 되나요?">
+      <p><code>00000001</code>입니다. 1은 맨 오른쪽 자리 하나로 표현되고, 나머지 일곱 자리는 0으로 채워 8비트를 맞춥니다.</p>
+    </Think>
+    <Think q="0xD0을 10진수로 바꾸면 얼마인가요?">
+      <p>D는 13이므로 13×16 + 0 = 208입니다. 2진수로는 <code>{binary('D0')}</code>입니다.</p>
+    </Think>
+  </section>
+
+  <section id="memory" aria-labelledby="h-memory">
+    <h2 id="h-memory">메모리 샘플 읽기</h2>
+    <ScreenShot name="memory-sample" />
+    <p>한 페이지가 4바이트이고 4페이지를 보여 주므로 4 × 4 = 16바이트입니다. <code>00</code>도 정상적인 데이터 값이며, 비어 있다는 표시가 아닙니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="메모리 샘플 표">
+      <table>
+        <thead><tr><th scope="col">페이지</th><th scope="col">바이트 0</th><th scope="col">바이트 1</th><th scope="col">바이트 2</th><th scope="col">바이트 3</th></tr></thead>
+        <tbody>
+          {pages.map(([p, bytes]) => <tr><th scope="row">{p}</th>{bytes.map((b) => <td><code>{b}</code></td>)}</tr>)}
+        </tbody>
+      </table>
+    </div>
+    <h3>값의 구조 읽기</h3>
+    <p>NXP 데이터시트는 NTAG213의 4, 5페이지 출하 시 값을 <code>01 03 A0 0C</code>, <code>34 03 00 FE</code>로 적습니다(<a href={SOURCES.ntag.url} rel="noopener">NXP</a>). 화면의 값과 같습니다. NFC 태그 메모리는 흔히 종류, 길이, 값 순서의 TLV로 읽으므로 이렇게 나눠 볼 수 있습니다.</p>
+    <ul>
+      <li><code>01 03 A0 0C 34</code>: 종류 01, 길이 3, 값 3바이트. 메모리 잠금 정보 자리입니다.</li>
+      <li><code>03 00</code>: 종류 03, 길이 0. 담긴 내용이 없는 NDEF 자리입니다.</li>
+      <li><code>FE</code>: 끝 표시입니다.</li>
+    </ul>
+    <p>즉 이 태그의 샘플은 “아직 아무것도 적지 않은 태그”의 모습과 일치합니다. 암호키, 결제 정보, 메모리 전체가 아닙니다. 값이 같다는 것만으로 정품임을 증명하지도 않습니다.</p>
+  </section>
+
+  <section id="capacity" aria-labelledby="h-capacity">
+    <h2 id="h-capacity">탐구 질문: 메모리 크기가 왜 다를까</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="메모리 크기 비교">
+      <table>
+        <thead><tr><th scope="col">근거</th><th scope="col">내용</th><th scope="col">바이트</th></tr></thead>
+        <tbody>
+          <tr><td>구매 화면 표기</td><td>NTAG213</td><td>칩 이름만 표시</td></tr>
+          <tr><td>NXP 데이터시트의 NTAG213</td><td>사용자 메모리 36페이지 (04h~27h)</td><td>36 × 4 = 144</td></tr>
+          <tr><td>기기 화면</td><td><code>User memory: pages 4–15</code></td><td>12 × 4 = 48</td></tr>
+          <tr><td>실제로 읽어 본 값</td><td>P4~P7 샘플</td><td>4 × 4 = 16</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>왜 144와 48이 다를까요? 펌웨어가 Ultralight 계열의 범용 범위를 표시하는 것일 수 있지만, <strong>원인은 확인하지 못했습니다.</strong> <Evidence kind="unverified" /> 가짜 태그, 고장, 정품 가운데 무엇이라고도 단정하지 않습니다. 16바이트 샘플로 전체 용량을 판정할 수도 없습니다.</p>
+    <Think q="UID 첫 바이트도 단서가 될까요?">
+      <p>NXP 데이터시트는 NXP 칩의 UID 첫 바이트를 제조사 번호 <code>04h</code>로 적습니다. 이 태그의 첫 바이트는 <code>53</code>으로 그 값과 다릅니다. 판매 표기를 다시 확인해 볼 이유는 되지만, 어느 회사 칩인지나 사양이 어떤지, 정품인지는 이 값만으로 결론 내리지 않습니다.</p>
+    </Think>
+    <Think q="이 차이를 확인하려면 어떤 근거가 더 필요할까요?">
+      <p>판매자의 칩 사양, 제조사 정보, 여러 태그의 결과, 다른 리더로 읽은 결과가 필요합니다. 한 번의 화면만으로는 결론을 내지 않습니다.</p>
+    </Think>
+  </section>
+
+  <section id="not" aria-labelledby="h-not">
+    <h2 id="h-not">NFC 읽기에서 일어나지 않는 일</h2>
+    <ul>
+      <li>태그가 Wi-Fi에 접속하지 않습니다.</li>
+      <li>UID가 인터넷으로 나가는 과정이 없습니다. 리더와 태그 사이의 ISO14443A 프레임이지 IP 패킷이 아닙니다.</li>
+      <li>UID를 읽었다고 메모리를 모두 읽은 것이 아닙니다.</li>
+      <li>UID는 식별값입니다. 암호키, 계좌, 비밀번호가 아닙니다.</li>
+    </ul>
+    <p>실제로 재 보려면 <a href={url('/lab/nfc/')}>실험 워크북</a>으로 가세요. Wi-Fi와의 차이는 <a href={url('/learn/network/')}>다음 장</a>에서 봅니다.</p>
+  </section>
+
+  <section id="think" aria-labelledby="h-think">
+    <h2 id="h-think">생각해 보기</h2>
+    <Think q="태그에 배터리가 없는데 어떻게 답할 수 있나요?">
+      <p>리더 자기장에서 유도 결합으로 에너지를 얻고, 자기 부하를 바꿔 자기장에 작은 변화를 만듭니다. 리더는 그 변화를 읽습니다.</p>
+    </Think>
+    <Think q="지갑 안에서 인식률이 떨어졌다면 원인을 지갑의 재질이라고 말할 수 있나요?">
+      <p>아직 아닙니다. 태그까지의 거리, 방향, 위치, 함께 넣은 물건도 달라졌을 수 있습니다. 재질만 보려면 나머지를 고정해야 합니다.</p>
+    </Think>
+    <Think q="P6가 00 00 00 00이면 메모리가 고장 난 건가요?">
+      <p>아닙니다. 0도 정상적인 값입니다. 아직 아무것도 적지 않은 영역일 수 있습니다.</p>
+    </Think>
+  </section>
+</LearnLayout>

@@ -65,6 +65,7 @@ const nfcSteps = [
             <li><span><a href={url(`/start/#${id}`)}><strong>{title}</strong></a><br />{text}</span></li>
           ))}
         </ol>
+        <p style="margin-top: var(--space-md)"><a href={url('/learn/')}>원리와 실험까지 이어지는 학습 과정 보기</a></p>
       </div>
     </div>
   </section>
@@ -105,7 +106,7 @@ const nfcSteps = [
 
   <section class="section section--rule" style="padding-block: var(--space-lg)" aria-label="근거 표시 안내">
     <div class="wrap small muted">
-      <p>설명 옆 표시는 근거입니다. <Evidence kind="photo" /> <Evidence kind="manual" /> <Evidence kind="doc" /> <Evidence kind="unverified" /> 판매 기기에서 아직 확인하지 못한 항목은 <a href={url('/device/')}>기기 알아보기</a>와 <a href={url('/update/')}>업데이트</a>에 정리했습니다.</p>
+      <p>설명 옆 표시는 근거입니다. <Evidence kind="device" /> <Evidence kind="photo" /> <Evidence kind="manual" /> <Evidence kind="doc" /> <Evidence kind="unverified" /> 이 기기에서 확인한 범위와 아직 확인하지 못한 항목은 <a href={url('/device/')}>기기 알아보기</a>와 <a href={url('/update/')}>업데이트</a>에 정리했습니다.</p>
     </div>
   </section>
 </Base>

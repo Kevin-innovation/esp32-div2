@@ -25,7 +25,7 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
       <div class="doc__main">
         <section class="prose" aria-label="하드웨어 근거">
           <p>{group.hardware}</p>
-          <div class="tags"><Evidence kind="doc" /><Evidence kind="unverified" /></div>
+          <div class="tags"><Evidence kind="doc" />{group.slug === 'nfc' && <Evidence kind="device" />}<Evidence kind="unverified" /></div>
           {group.note && <div class="callout callout--warn"><p>{group.note}</p></div>}
         </section>
 
@@ -43,8 +43,8 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
               <div>
                 <dt>지원 버전</dt>
                 <dd>
-                  공식 펌웨어 v1.7.2 메뉴에 있음. {f.manual ? `동봉 설명서에 ${f.manual}로 기재.` : '동봉 설명서에는 없음.'} 이 기기에서는 미검증.
-                  <div class="tags" style="margin-top: var(--space-xs)"><Evidence kind="doc" />{f.manual && <Evidence kind="manual" />}<Evidence kind="unverified" /></div>
+                  {f.id === 'games' ? '공식 위키의 More 목록에는 없음.' : '공식 펌웨어 v1.7.2 메뉴에 있음.'} {f.manual ? `동봉 설명서에 ${f.manual}로 기재.` : '동봉 설명서에는 없음.'} {f.device ?? '이 기기에서는 미검증.'}
+                  <div class="tags" style="margin-top: var(--space-xs)">{f.id !== 'games' && <Evidence kind="doc" />}{f.manual && <Evidence kind="manual" />}{f.device ? <Evidence kind="device" /> : <Evidence kind="unverified" />}</div>
                 </dd>
               </div>
               <div>
@@ -67,6 +67,7 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
                 <li id={f.id}>
                   <h3>{f.ko} <span class="feature__en">{f.en}</span></h3>
                   <div class="tags"><Evidence kind="lab" />{f.manual && <Evidence kind="manual" />}<Evidence kind="doc" /><Evidence kind="unverified" /></div>
+                  {f.device && <p class="small muted">{f.device}</p>}
                   <dl class="facts">
                     <div><dt>원리</dt><dd>{f.principle}</dd></div>
                     <div><dt>영향</dt><dd>{f.impact}</dd></div>
@@ -82,11 +83,11 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
         {group.slug === 'nfc' && (
           <section class="prose">
             <h2>다음 단계</h2>
-            <p><a href={url('/lab/nfc/')}>NFC는 지갑·가방 안에서도 인식될까?</a> 실험으로 이어 가세요.</p>
+            <p><a href={url('/learn/device/#reader')}>Card Reader 화면 따라 하기</a>와 <a href={url('/learn/nfc/')}>NFC 원리</a>를 본 뒤 <a href={url('/lab/nfc/')}>NFC는 지갑·가방 안에서도 인식될까?</a> 실험으로 이어 가세요.</p>
           </section>
         )}
 
-        <Sources ids={['codeMenu', 'readme', 'wiki', 'manual', ...(group.slug === 'nfc' ? (['nfcOverview', 'nfcReader'] as const) : [])]} />
+        <Sources ids={['deviceScreens', 'codeMenu', 'readme', 'wiki', 'manual', ...(group.slug === 'nfc' ? (['nfcOverview', 'nfcReader'] as const) : [])]} />
       </div>
       <nav class="doc__aside toc" aria-label={`${group.title} 기능 목차`}>
         <h2>이 묶음의 기능</h2>

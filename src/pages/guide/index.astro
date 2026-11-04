@@ -12,10 +12,11 @@ const count = (g: (typeof GROUPS)[number], kind: 'observe' | 'lab') => g.feature
   <div class="wrap">
     <header class="page-head">
       <h1>기능 가이드: 듣는 기능부터</h1>
-      <p class="lead">메뉴 이름은 공식 펌웨어 v1.7.2 코드를 따릅니다. 내 기기의 메뉴가 다르면 화면이 우선입니다.</p>
+      <p class="lead">메뉴 이름은 공식 펌웨어 v1.7.2 코드를 따릅니다. 이 기기에서 실행을 확인한 것은 NFC 읽기입니다. 처음이라면 학습부터 보세요.</p>
     </header>
     <div class="doc">
       <div class="doc__main">
+        <p style="margin-bottom: var(--space-lg)"><a href={url('/learn/')}>학습 과정 보기</a></p>
         <GuideSearch client:load index={buildSearchIndex()} base={BASE} />
         <ul class="group-list" style="grid-template-columns: minmax(0, 1fr)">
           {GROUPS.map((g) => (
@@ -28,7 +29,7 @@ const count = (g: (typeof GROUPS)[number], kind: 'observe' | 'lab') => g.feature
             </li>
           ))}
         </ul>
-        <Sources ids={['codeMenu', 'wiki', 'readme', 'manual']} />
+        <Sources ids={['deviceScreens', 'codeMenu', 'wiki', 'readme', 'manual']} />
       </div>
       <aside class="doc__aside small">
         <div class="callout callout--warn">

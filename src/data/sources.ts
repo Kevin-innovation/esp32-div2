@@ -14,6 +14,7 @@ export interface Source {
 
 export const SOURCES = {
   photos: { title: '이 기기 실물 사진 4장', note: '2026-11-04 촬영. 앞면, 뒷면, USB-C 면, 스위치 면.' },
+  deviceScreens: { title: '이 기기 화면 관찰 기록', note: '2026-11-04 사용자 촬영 화면으로 확인. 사이트에는 재구성 이미지만 씁니다.' },
   manual: { title: '동봉 인쇄 설명서 ESP32 DIV V2 User Guide', note: '사진 2장으로 확인. 인쇄 날짜와 펌웨어 판 표기는 없음.' },
   readme: { title: 'ESP32-DIV README', url: `${REPO}#readme`, note: `커밋 ${COMMIT} 기준.` },
   wiki: { title: 'ESP32-DIV 공식 위키', url: WIKI },
@@ -31,6 +32,19 @@ export const SOURCES = {
   emvco: { title: 'EMVCo: EMV Contactless Chip', url: 'https://www.emvco.com/emv-technologies/contactless/' },
   ntag: { title: 'NXP 데이터시트: NTAG213/215/216', url: 'https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf' },
   metal: { title: 'NXP 앱노트 AN11564: 금속 주변 NFC 안테나', url: 'https://www.nxp.com/docs/en/application-note/AN11564.pdf' },
+  pn532: { title: 'NXP PN532 User Manual (UM0701-02)', url: 'https://www.nxp.com/docs/en/user-guide/141520.pdf' },
+  espScan: { title: 'Espressif: ESP32-S3 Wi-Fi Station Scenarios', url: 'https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-guides/wifi-driver/station-scenarios.html' },
+  espBle: { title: 'Espressif: ESP32-S3 Bluetooth LE 개요', url: 'https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-guides/ble/overview.html' },
+  espDatasheet: { title: 'Espressif: ESP32-S3 Datasheet', url: 'https://documentation.espressif.com/esp32-s3_datasheet_en.pdf' },
+  rfcDhcp: { title: 'RFC 2131: DHCP', url: 'https://www.rfc-editor.org/rfc/rfc2131' },
+  rfcDns: { title: 'RFC 1034: DNS', url: 'https://www.rfc-editor.org/rfc/rfc1034' },
+  rfcTcp: { title: 'RFC 9293: TCP', url: 'https://www.rfc-editor.org/rfc/rfc9293' },
+  rfcUdp: { title: 'RFC 768: UDP', url: 'https://www.rfc-editor.org/rfc/rfc768' },
+  rfcTls: { title: 'RFC 8446: TLS 1.3', url: 'https://www.rfc-editor.org/rfc/rfc8446' },
+  rfcHttp: { title: 'RFC 9110: HTTP', url: 'https://www.rfc-editor.org/rfc/rfc9110' },
+  rfcIp: { title: 'RFC 791: IP', url: 'https://www.rfc-editor.org/rfc/rfc791' },
+  rfcArp: { title: 'RFC 826: ARP', url: 'https://www.rfc-editor.org/rfc/rfc826' },
+  rfcNat: { title: 'RFC 3022: NAT', url: 'https://www.rfc-editor.org/rfc/rfc3022' },
 } satisfies Record<string, Source>;
 
 export type SourceId = keyof typeof SOURCES;

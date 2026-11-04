@@ -33,8 +33,9 @@ export const ORIENTATIONS = ['평행', '비스듬히', '수직'];
 
 // 탐구 서술 입력칸 전체. 서술 CSV는 이 목록에 있는 항목만 받는다.
 export const NOTE_KEYS = [
-  'question', 'hypothesis', 'independent', 'controlled', 'plan', 'tag', 'reader',
+  'question', 'motivation', 'hypothesis', 'independent', 'controlled', 'plan', 'tag', 'reader',
   'interpretation', 'conclusion', 'unexpected', 'causes', 'followup', 'security', 'limits',
+  'nextQuestions',
   'q_curiosity', 'q_design', 'q_unexpected', 'q_verify', 'q_limit',
 ] as const;
 
@@ -363,6 +364,7 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
   if (dataType === 'demo') blocks.push({ type: 'warn', text: '이 보고서의 수치는 데모 자료(가상 값)입니다. 실제 실험 결과로 제출하거나 인용하면 안 됩니다.' });
 
   blocks.push({ type: 'h2', text: '1. 궁금했던 점과 가설' });
+  blocks.push({ type: 'p', text: `탐구 동기: ${noteOr(notes, 'motivation')}` });
   blocks.push({ type: 'p', text: `가설: ${noteOr(notes, 'hypothesis')}` });
   blocks.push({ type: 'h2', text: '2. 실험 설계' });
   blocks.push({
@@ -388,6 +390,7 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
     blocks.push(groupTable('condition', '조건'), groupTable('distanceCm', '거리'), groupTable('orientation', '방향'));
     const warnings = designWarnings(trials);
     if (warnings.length) blocks.push({ type: 'list', items: warnings.map((w) => `주의: ${w}`) });
+    blocks.push({ type: 'p', text: '그래프: 파이썬 분석으로 만든 nfc-rate-by-condition.png, nfc-rate-by-distance.png를 여기에 붙입니다.' });
   }
 
   blocks.push({ type: 'h2', text: '4. 해석과 결론' });
@@ -401,6 +404,8 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
   blocks.push({ type: 'p', text: noteOr(notes, 'security') });
   blocks.push({ type: 'h2', text: '7. 한계와 배운 점' });
   blocks.push({ type: 'p', text: noteOr(notes, 'limits') });
+  blocks.push({ type: 'h2', text: '8. 후속 질문' });
+  blocks.push({ type: 'p', text: noteOr(notes, 'nextQuestions') });
 
   if (trials.length) {
     blocks.push({ type: 'h2', text: '부록. 원자료' });

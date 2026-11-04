@@ -28,8 +28,8 @@ const labs = [
         </div>
         <div class="prose">
           <p>실제 신용카드 대신 실험용 NFC 태그와 호환 리더로 단독, 지갑, 가방 조건을 비교합니다. 입력한 값으로 그래프, CSV, 파이썬 분석, 보고서, 면접 질문까지 이어집니다.</p>
-          <div class="tags"><Evidence kind="unverified" /></div>
-          <p class="small muted">이 기기의 NFC 동작은 미검증입니다. 메뉴가 없으면 NFC를 지원하는 휴대폰 같은 다른 리더로 같은 실험을 할 수 있습니다.</p>
+          <div class="tags"><Evidence kind="device" /></div>
+          <p class="small muted">이 기기의 Card Reader로 구매 태그를 읽는 것까지 확인했습니다. 원리는 <a href={url('/learn/nfc/')}>NFC 원리</a>에서 먼저 볼 수 있습니다.</p>
         </div>
       </div>
     </section>
@@ -37,7 +37,7 @@ const labs = [
     <section class="section" aria-labelledby="h-more">
       <div class="section__head">
         <h2 id="h-more">기기로 해 볼 수 있는 관찰 실험</h2>
-        <p class="muted">이 기기에서 해당 메뉴가 동작하는지 먼저 확인하세요. 설계 방식은 NFC 실험과 같습니다.</p>
+        <p class="muted">아래 기능은 이 기기에서 아직 실행해 보지 않았으니 동작부터 확인하세요. 설계 방식은 NFC 실험과 같습니다.</p>
       </div>
       <ul class="lab-list">
         {labs.map((l) => (
@@ -51,7 +51,7 @@ const labs = [
           </li>
         ))}
       </ul>
-      <Sources ids={['wiki', 'nfcOverview']} />
+      <Sources ids={['deviceScreens', 'wiki', 'nfcOverview']} />
     </section>
   </div>
 </Base>

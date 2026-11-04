@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { SearchItem } from '../data/guide';
+import { normalize } from '../lib/text';
 
-const normalize = (s: string) => s.normalize('NFC').toLowerCase().replace(/[\s\-_/·.,()]+/g, '');
 
 export function GuideSearch({ index, base }: { index: SearchItem[]; base: string }) {
   const [q, setQ] = useState('');

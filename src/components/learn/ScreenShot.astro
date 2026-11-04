@@ -1,0 +1,30 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { SCREENS, SCREEN_CAPTION, type ScreenName } from '../../data/learn';
+
+interface Props {
+  name: ScreenName;
+}
+const { name } = Astro.props;
+const screen = SCREENS[name];
+const images = import.meta.glob<{ default: ImageMetadata }>('../../assets/learning/*.webp', { eager: true });
+const image = images[`../../assets/learning/${name}.webp`]?.default;
+---
+<figure class:list={['screen', { 'screen--text': !image }]}>
+  {image && (
+    <div class="screen__image">
+      <Image src={image} alt={screen.alt} widths={[320, 640].filter((w) => w <= image.width)} sizes="(min-width: 640px) 280px, 100vw" format="webp" quality={82} loading="lazy" />
+      <p class="field__help">{SCREEN_CAPTION} <a href={image.src} aria-label={`${screen.title} 이미지 크게 보기`}>이미지 크게 보기</a></p>
+    </div>
+  )}
+  <figcaption>
+    <table>
+      <caption>{screen.title}: 화면 문구와 뜻</caption>
+      <thead><tr><th scope="col">화면 표시</th><th scope="col">뜻</th></tr></thead>
+      <tbody>
+        {screen.rows.map((r) => <tr><td><code>{r.text}</code></td><td>{r.meaning}</td></tr>)}
+      </tbody>
+    </table>
+  </figcaption>
+</figure>

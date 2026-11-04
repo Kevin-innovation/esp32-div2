@@ -1,0 +1,151 @@
+---
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import Evidence from '../../components/Evidence.astro';
+import ScreenShot from '../../components/learn/ScreenShot.astro';
+import Think from '../../components/learn/Think.astro';
+import { DeviceExplorer } from '../../components/learn/DeviceExplorer';
+import { MAIN_MENU } from '../../data/learn';
+import { BASE, url } from '../../lib/url';
+
+const functions = [
+  ['Card Reader', '읽기', '태그의 UID와 정보를 읽습니다. 이 실험에서 쓰는 유일한 메뉴입니다.', '내 실험용 태그'],
+  ['Dump', '읽기', '키를 아는 태그의 메모리를 더 넓게 읽습니다.', '내 실험용 태그. 남의 카드에는 개인정보가 있을 수 있습니다.'],
+  ['Decode Access', '읽기 해석', '메모리의 접근 권한 값을 풀이합니다.', '내 실험용 태그'],
+  ['Card Clone', '쓰기', '지원되는 쓰기 가능 태그끼리 값을 옮깁니다. 모든 태그가 대상은 아닙니다.', '내 태그끼리만. 출입증이나 회원증의 권한을 옮기는 일이 될 수 있습니다.'],
+  ['Erase', '삭제', '쓰기 가능한 태그 내용을 지웁니다. 되돌릴 수 없습니다.', '내용을 확인한 내 태그만'],
+  ['Jam Reader', '방해', '다른 리더의 동작을 방해합니다.', '차폐 공간과 대상 소유자의 허가가 있을 때만'],
+  ['Tag Disrupt', '방해', '태그와 리더의 통신을 방해합니다.', '차폐 공간과 대상 소유자의 허가가 있을 때만'],
+  ['Disrupt Emulate', '방해와 흉내', '방해와 태그 흉내 동작을 묶은 기능입니다.', '차폐 공간과 대상 소유자의 허가가 있을 때만'],
+];
+---
+<LearnLayout
+  title="화면 따라 하기"
+  heading="메뉴부터 태그 읽기까지 따라 하기"
+  lead="기기를 손에 들고 한 화면씩 넘어갑니다. 각 단계에 누를 것, 화면 변화, 확인할 것을 적었습니다."
+  description="ESP32-DIV V2.1의 메인 메뉴, About, More, RFID/NFC, Card Reader, Info 화면을 한글로 풀어 따라 합니다."
+  toc={[['menu', '메인 메뉴 8개'], ['status-bar', '위쪽 상태 표시'], ['about', 'About 읽기'], ['more', 'More'], ['nfc-menu', 'RFID/NFC 목록'], ['reader', '태그 읽기'], ['info', 'Info 화면'], ['again', '다시 읽기'], ['functions', 'NFC 메뉴 차이'], ['think', '생각해 보기']]}
+  sources={['deviceScreens', 'navigation', 'codeMenu', 'nfcOverview', 'nfcReader', 'pn532']}
+>
+  <section id="menu" aria-labelledby="h-menu">
+    <h2 id="h-menu">메인 메뉴 8개</h2>
+    <ScreenShot name="main-menu" />
+    <p>아래 버튼은 화면과 같은 배치입니다. 고르면 역할과 다음 화면, 어디까지 확인했는지 보여 줍니다.</p>
+    <DeviceExplorer client:load items={MAIN_MENU} base={BASE} />
+  </section>
+
+  <section id="status-bar" aria-labelledby="h-status">
+    <h2 id="h-status">위쪽 상태 표시</h2>
+    <p>화면 위의 배터리 %, <code>CHG</code>, <code>BAT</code>는 충전 또는 배터리 사용 상태의 표시로 보입니다. 정확한 전원 상태를 재는 계측값으로 쓰지는 마세요.</p>
+    <p>빨간 SD 아이콘은 카드 상태와 관련 있어 보이지만, 그 색만 보고 고장이나 미삽입으로 단정하지 않습니다. SD 카드는 <a href={url('/start/#sd')}>처음 시작</a>의 절차로 확인합니다. <Evidence kind="unverified" /></p>
+  </section>
+
+  <section id="about" aria-labelledby="h-about">
+    <h2 id="h-about">About: 버전이 여러 개인 이유</h2>
+    <dl class="facts">
+      <div><dt>누를 것</dt><dd>메인 메뉴에서 About</dd></div>
+      <div><dt>화면 변화</dt><dd>기기 이름과 버전 정보가 나옵니다.</dd></div>
+      <div><dt>확인할 것</dt><dd>아래 세 값을 구별해 적습니다.</dd></div>
+      <div><dt>다음·뒤로</dt><dd>화면의 <code>SELECT / tap to go back</code> 안내대로 돌아와 메인 메뉴에서 More를 고릅니다.</dd></div>
+    </dl>
+    <ScreenShot name="about" />
+    <div class="table-wrap" tabindex="0" role="region" aria-label="About의 세 가지 버전">
+      <table>
+        <thead><tr><th scope="col">표시</th><th scope="col">무엇의 번호인가</th></tr></thead>
+        <tbody>
+          <tr><td><code>DIV V2.1</code>, <code>Board: ESP32 DIV V2.1 by MK</code></td><td>하드웨어(보드) 판</td></tr>
+          <tr><td><code>Build: V1.2 Stable by MK SIGNAL</code></td><td>판매자가 붙인 빌드 이름</td></tr>
+          <tr><td><code>1.7.2 stable by MK_SIGNAL_V1</code></td><td>펌웨어 표시. 원본 프로젝트 최신 번호도 v1.7.2입니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>번호가 같다고 공식 v1.7.2와 내용이 같다고 단정하지 않습니다. 이 기기에만 있는 Games 메뉴가 그 예입니다.</p>
+  </section>
+
+  <section id="more" aria-labelledby="h-more">
+    <h2 id="h-more">More: 더보기</h2>
+    <dl class="facts">
+      <div><dt>누를 것</dt><dd>메인 메뉴에서 More</dd></div>
+      <div><dt>화면 변화</dt><dd>IR Remote, RFID/NFC, GPS, Games, Main Menu가 나옵니다.</dd></div>
+      <div><dt>확인할 것</dt><dd>RFID/NFC가 있는지 봅니다. Games는 공식 위키의 More 목록에는 없는 메뉴이며, 게임 종류는 확인하지 못했습니다.</dd></div>
+      <div><dt>다음·뒤로</dt><dd>RFID/NFC를 고릅니다. 돌아가려면 Main Menu입니다.</dd></div>
+    </dl>
+    <ScreenShot name="more" />
+  </section>
+
+  <section id="nfc-menu" aria-labelledby="h-nfc-menu">
+    <h2 id="h-nfc-menu">RFID/NFC 목록</h2>
+    <dl class="facts">
+      <div><dt>누를 것</dt><dd>More에서 RFID/NFC</dd></div>
+      <div><dt>화면 변화</dt><dd>기능 8개와 Back to Main Menu가 세로로 나옵니다.</dd></div>
+      <div><dt>확인할 것</dt><dd>맨 위의 Card Reader만 씁니다. 나머지의 차이는 <a href="#functions">아래 표</a>에 있습니다.</dd></div>
+      <div><dt>다음·뒤로</dt><dd>Card Reader를 고릅니다.</dd></div>
+    </dl>
+    <ScreenShot name="nfc-menu" />
+  </section>
+
+  <section id="reader" aria-labelledby="h-reader">
+    <h2 id="h-reader">Card Reader: 태그 읽기</h2>
+    <h3>1. 대기 화면</h3>
+    <dl class="facts">
+      <div><dt>누를 것</dt><dd>RFID/NFC 목록에서 Card Reader</dd></div>
+      <div><dt>화면 변화</dt><dd><code>Mode: SCAN</code>, <code>Waiting for tag...</code>이 나옵니다.</dd></div>
+      <div><dt>확인할 것</dt><dd>태그를 대기 전에 이 화면인지 봅니다. <code>0x32010607</code>은 리더 칩 PN532의 버전 정보입니다. PN532 설명서 기준 맨 앞 <code>32</code>가 칩 종류, 그다음이 칩 안 펌웨어 판입니다.</dd></div>
+      <div><dt>다음·뒤로</dt><dd>태그를 기기 뒷면에 댑니다. 그만두려면 Cancel입니다.</dd></div>
+    </dl>
+    <ScreenShot name="reader-waiting" />
+    <p class="small muted">아래쪽의 비어 있는 칸은 이 화면에서 기능이 확인되지 않았습니다. Cancel과 Info만 설명합니다.</p>
+
+    <h3>2. 태그 감지</h3>
+    <dl class="facts">
+      <div><dt>누를 것</dt><dd>버튼이 아니라 태그를 뒷면에 평평하게 대고 잠시 멈춥니다.</dd></div>
+      <div><dt>화면 변화</dt><dd><code>Mode: OK</code>, <code>Tag detected</code>와 UID가 나옵니다.</dd></div>
+      <div><dt>확인할 것</dt><dd>UID를 적습니다. 잘 안 되면 위치를 조금씩 옮겨 잘 읽히는 곳을 찾습니다.</dd></div>
+      <div><dt>다음·뒤로</dt><dd>자세히 보려면 Info, 끝내려면 Exit입니다.</dd></div>
+    </dl>
+    <ScreenShot name="reader-detected" />
+  </section>
+
+  <section id="info" aria-labelledby="h-info">
+    <h2 id="h-info">Info: 태그 정보 두 쪽</h2>
+    <dl class="facts">
+      <div><dt>누를 것</dt><dd>감지 화면에서 Info</dd></div>
+      <div><dt>화면 변화</dt><dd>1/2쪽에 태그 정보, 2/2쪽에 메모리 샘플이 나옵니다.</dd></div>
+      <div><dt>확인할 것</dt><dd>UID 길이, ATQA, SAK, 메모리 값을 공책에 옮겨 적습니다. 뜻은 <a href={url('/learn/nfc/#screen')}>NFC 원리</a>에서 배웁니다.</dd></div>
+      <div><dt>다음·뒤로</dt><dd>Next, Prev로 쪽을 옮기고 Back으로 돌아옵니다.</dd></div>
+    </dl>
+    <ScreenShot name="tag-info" />
+    <ScreenShot name="memory-sample" />
+  </section>
+
+  <section id="again" aria-labelledby="h-again">
+    <h2 id="h-again">다시 읽기</h2>
+    <p>대기 중이면 Cancel, 감지 후면 Exit로 목록에 돌아갑니다. Info를 보고 있으면 Back으로 리더 화면에 먼저 돌아옵니다. 목록에서 Card Reader를 다시 고르면 <code>Waiting for tag...</code>로 돌아갑니다. 실험에서는 태그를 떼고 이 순서로 다시 시작합니다. 앞서 남은 OK 화면을 새 성공으로 세지 않기 위해서입니다. 자세한 규칙은 <a href={url('/lab/nfc/#procedure')}>실험 절차</a>에 있습니다.</p>
+  </section>
+
+  <section id="functions" aria-labelledby="h-functions">
+    <h2 id="h-functions">NFC 메뉴는 무엇이 다른가</h2>
+    <p>메뉴가 보이는 것은 확인했지만, Card Reader를 뺀 나머지는 실행하지 않았습니다. <Evidence kind="unverified" /> 이 실험은 Card Reader만 씁니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="NFC 메뉴 비교">
+      <table>
+        <thead><tr><th scope="col">메뉴</th><th scope="col">동작</th><th scope="col">무엇을 하나</th><th scope="col">쓸 수 있는 조건</th></tr></thead>
+        <tbody>
+          {functions.map(([name, kind, what, when]) => <tr><th scope="row"><code>{name}</code></th><td>{kind}</td><td>{what}</td><td>{when}</td></tr>)}
+        </tbody>
+      </table>
+    </div>
+    <p>복제는 지원되는 태그에 한정됩니다. UID를 읽거나 저장하는 것은 결제 가능한 카드를 만드는 것과 다릅니다. <a href={url('/lab/nfc/#security')}>일반 태그와 EMV 결제 비교</a>에서 이유를 봅니다.</p>
+  </section>
+
+  <section id="think" aria-labelledby="h-think">
+    <h2 id="h-think">생각해 보기</h2>
+    <Think q="About의 1.7.2와 Card Reader의 0x32010607은 같은 것의 버전인가요?">
+      <p>아닙니다. 1.7.2는 기기 전체 펌웨어 표시이고, 0x32010607은 리더 칩 PN532의 버전 정보입니다.</p>
+    </Think>
+    <Think q="Mode: OK 화면이 남아 있는 채로 태그를 다시 대면 새 성공인가요?">
+      <p>아닙니다. 이미 남아 있던 화면일 수 있습니다. 태그를 떼고 Card Reader를 다시 열어 Waiting for tag에서 시작해야 합니다.</p>
+    </Think>
+    <Think q="빨간 SD 아이콘이 보이면 카드가 고장 난 건가요?">
+      <p>그렇게 단정할 수 없습니다. 색의 뜻을 확인하지 못했습니다. SD File Manager에서 카드가 보이는지로 확인합니다.</p>
+    </Think>
+  </section>
+</LearnLayout>

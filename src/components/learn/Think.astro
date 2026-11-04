@@ -1,0 +1,9 @@
+---
+interface Props {
+  q: string;
+}
+---
+<details class="think">
+  <summary>{Astro.props.q}</summary>
+  <div class="think__answer"><slot /></div>
+</details>

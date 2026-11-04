@@ -1,0 +1,43 @@
+---
+import Base from './Base.astro';
+import Sources from '../components/Sources.astro';
+import { LEARN_LINKS } from '../data/learn';
+import type { SourceId } from '../data/sources';
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  heading: string;
+  lead: string;
+  description: string;
+  toc?: [string, string][];
+  sources: SourceId[];
+}
+const { title, heading, lead, description, toc = [], sources } = Astro.props;
+const here = Astro.url.pathname.replace(import.meta.env.BASE_URL.replace(/\/$/, ''), '').replace(/\/?$/, '/');
+---
+<Base title={`${title} | ESP32-DIV 실험 노트`} description={description}>
+  <div class="wrap">
+    <nav class="learn-nav" aria-label="학습 목차">
+      {LEARN_LINKS.map(([href, label]) => (
+        <a href={url(href)} aria-current={here === href ? 'page' : undefined}>{label}</a>
+      ))}
+    </nav>
+    <header class="page-head">
+      <h1>{heading}</h1>
+      <p class="lead">{lead}</p>
+    </header>
+    <div class="doc">
+      <div class="doc__main">
+        <slot />
+        <Sources ids={sources} />
+      </div>
+      {toc.length > 0 && (
+        <nav class="doc__aside toc" aria-label="이 장의 목차">
+          <h2>이 장</h2>
+          <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+        </nav>
+      )}
+    </div>
+  </div>
+</Base>

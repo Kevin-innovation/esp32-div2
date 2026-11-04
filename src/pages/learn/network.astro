@@ -1,0 +1,137 @@
+---
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import Evidence from '../../components/Evidence.astro';
+import Think from '../../components/learn/Think.astro';
+import { Stepper } from '../../components/learn/Stepper';
+import { LAYER_STEPS, MODEL_NOTE, SCAN_STEPS, WEB_STEPS } from '../../data/learn';
+import { url } from '../../lib/url';
+---
+<LearnLayout
+  title="Wi-Fi와 네트워크"
+  heading="전파가 데이터가 되기까지"
+  lead="스캐너가 주변 네트워크를 찾는 방법과, 웹 페이지 요청이 전파로 바뀌어 전달되는 길을 따라갑니다."
+  description="수동·능동 Wi-Fi 탐색, AP와 단말기, 프레임과 패킷, 캡슐화, BLE 광고와 연결의 차이를 배웁니다."
+  toc={[['compare', 'NFC와 Wi-Fi 비교'], ['scan', 'Wi-Fi 탐색'], ['list', '목록 읽기'], ['rssi', 'RSSI 읽기'], ['web', '웹 요청 흐름'], ['layers', '데이터 계층'], ['monitor', '보이는 것과 안 보이는 것'], ['arp-nat', 'ARP와 NAT'], ['energy', '에너지 스캔'], ['ble', 'BLE'], ['think', '생각해 보기']]}
+  sources={['espScan', 'espBle', 'espDatasheet', 'hardware', 'rfcDhcp', 'rfcDns', 'rfcTcp', 'rfcUdp', 'rfcTls', 'rfcHttp', 'rfcIp', 'rfcArp', 'rfcNat']}
+>
+  <div class="callout callout--warn">
+    <p>이 기기의 Wi-Fi와 BLE 기능은 아직 실행해 확인하지 못했습니다. <Evidence kind="unverified" /> 이 장은 일반 원리를 설명하고, 메뉴 동작은 <a href={url('/guide/wifi/')}>기능 가이드</a>의 공식 문서 기준을 봅니다.</p>
+  </div>
+
+  <section id="compare" aria-labelledby="h-compare" style="margin-top: var(--space-xl)">
+    <h2 id="h-compare">NFC와 Wi-Fi는 무엇이 다른가</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="NFC와 Wi-Fi 비교">
+      <table>
+        <thead><tr><th scope="col">비교</th><th scope="col">이번 NFC 실험</th><th scope="col">Wi-Fi</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">주파수</th><td>13.56MHz</td><td>이 기기 내장 Wi-Fi는 2.4GHz</td></tr>
+          <tr><th scope="row">상대</th><td>리더와 수동 태그</td><td>AP와 단말기</td></tr>
+          <tr><th scope="row">전원</th><td>태그는 리더 자기장에서 얻음</td><td>양쪽 모두 자체 전원</td></tr>
+          <tr><th scope="row">데이터 단위</th><td>ISO14443A 프레임</td><td>Wi-Fi 프레임 안의 IP 패킷</td></tr>
+          <tr><th scope="row">인터넷</th><td>필요 없음</td><td>AP 너머로 이어질 수 있음</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="scan" aria-labelledby="h-scan">
+    <h2 id="h-scan">Wi-Fi 탐색 따라가기</h2>
+    <p><strong>AP</strong>는 공유기처럼 연결을 받는 쪽, <strong>단말기</strong>는 연결하는 쪽, <strong>스캔 장비</strong>는 주변을 조사하는 쪽입니다. 스캔은 듣기만 하는 수동과, 먼저 묻는 능동이 있습니다.</p>
+    <Stepper client:load label="Wi-Fi 탐색 단계" actors={['스캔 장비', 'AP']} steps={SCAN_STEPS} note={MODEL_NOTE} />
+    <p class="small muted">Espressif 문서에서 ESP32-S3 Wi-Fi 드라이버의 기본은 능동 스캔이고 수동 스캔도 지원합니다. 이 기기의 MK 펌웨어가 어떻게 설정했는지는 확인하지 못했습니다.</p>
+  </section>
+
+  <section id="list" aria-labelledby="h-list">
+    <h2 id="h-list">스캔 목록 읽기</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="스캔 목록 예시">
+      <table>
+        <caption>읽는 법을 보여 주는 가상의 예시입니다. 측정값이 아닙니다.</caption>
+        <thead><tr><th scope="col">SSID</th><th scope="col">BSSID</th><th scope="col">채널</th><th scope="col">RSSI</th></tr></thead>
+        <tbody>
+          <tr><td>MyHome_2G</td><td><code>AA:BB:CC:11:22:33</code></td><td>6</td><td>-42dBm</td></tr>
+          <tr><td>MyHome_2G</td><td><code>AA:BB:CC:44:55:66</code></td><td>11</td><td>-71dBm</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><strong>SSID:</strong> 사람이 보는 이름입니다. 위의 두 줄처럼 같을 수 있습니다.</li>
+      <li><strong>BSSID:</strong> AP 무선 인터페이스의 주소입니다. 이름이 같아도 다릅니다.</li>
+      <li><strong>MAC:</strong> 같은 구간에서 기기를 가리키는 주소입니다. BSSID도 이 형식입니다.</li>
+      <li><strong>채널:</strong> 대역을 나눈 구간입니다. 같은 채널이 많으면 붐빕니다.</li>
+    </ul>
+  </section>
+
+  <section id="rssi" aria-labelledby="h-rssi">
+    <h2 id="h-rssi">RSSI와 dBm</h2>
+    <p>값은 보통 음수이고 0에 가까울수록 강합니다. <strong>-40dBm은 -70dBm보다 강합니다.</strong></p>
+    <p>거리, 벽, 몸, 방향, 주변 혼잡이 모두 값을 바꿉니다. 그래서 RSSI 하나로 정확한 거리를 계산하거나 도청 가능성을 판정할 수 없습니다. 비교할 때는 기기 위치와 방향을 고정하고 여러 번 잽니다.</p>
+  </section>
+
+  <section id="web" aria-labelledby="h-web">
+    <h2 id="h-web">연결 뒤 웹 요청의 흐름</h2>
+    <Stepper client:load label="웹 요청 단계" actors={['단말기', 'AP와 서버 쪽']} steps={WEB_STEPS} note={MODEL_NOTE} />
+    <p class="small muted">일반적인 순서입니다. 고정 IP를 쓰면 DHCP가 없고, 저장된 DNS 값이 있으면 묻지 않으며, HTTP/3은 TCP 대신 UDP 위에서 동작합니다. 모든 통신이 이 순서를 그대로 따르지는 않습니다.</p>
+  </section>
+
+  <section id="layers" aria-labelledby="h-layers">
+    <h2 id="h-layers">데이터가 포장되는 순서</h2>
+    <p>보내는 쪽은 데이터에 안내 정보(헤더)를 겹겹이 붙입니다. 이를 캡슐화라고 합니다. 헤더 뒤의 내용은 페이로드입니다.</p>
+    <Stepper client:load label="데이터 계층 단계" steps={LAYER_STEPS} note={MODEL_NOTE} />
+    <p>프레임은 같은 무선 구간에서 전달되는 단위이고, IP 패킷은 주소로 목적지를 찾아가는 단위입니다. IP 패킷은 인터넷뿐 아니라 같은 내부망 안에서도 쓰입니다.</p>
+  </section>
+
+  <section id="monitor" aria-labelledby="h-monitor">
+    <h2 id="h-monitor">패킷 모니터로 보이는 것과 안 보이는 것</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="보이는 정보와 보호되는 정보">
+      <table>
+        <thead><tr><th scope="col">구간</th><th scope="col">내용</th><th scope="col">무선으로 받았을 때</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Wi-Fi 헤더</th><td>MAC 주소, 프레임 종류</td><td>보이는 부분이 있습니다.</td></tr>
+          <tr><th scope="row">Wi-Fi 페이로드</th><td>웹 요청의 데이터 프레임이라면 그 안의 IP 패킷</td><td>WPA2, WPA3 같은 보안 설정을 쓰면 키 없이 읽을 수 없습니다. Beacon 같은 관리 프레임이나 ARP는 IP 패킷을 담지 않습니다.</td></tr>
+          <tr><th scope="row">HTTPS 내용</th><td>페이지, 입력한 값</td><td>TLS로 한 번 더 암호화됩니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>패킷 모니터가 다른 사람의 HTTPS 내용을 모두 읽는 도구는 아닙니다. 이 기기의 Packet Monitor는 공식 문서상 채널 활동량을 그래프로 보여 주는 기능입니다. 그래도 수집한 파일에는 주변 사람의 정보가 담길 수 있으니 내 네트워크 실험에만 저장합니다.</p>
+    <p>암호화는 내용을 숨기는 일, 인증은 누구인지 확인하는 일, 인가는 무엇을 해도 되는지 정하는 일입니다.</p>
+  </section>
+
+  <section id="arp-nat" aria-labelledby="h-arp">
+    <h2 id="h-arp">ARP와 NAT는 다른 이야기</h2>
+    <p><strong>ARP</strong>는 같은 네트워크 구간에서 IPv4 주소에 해당하는 MAC 주소를 찾습니다. <strong>NAT</strong>는 주소를 바꿔 주는 기능으로, 가정용 공유기가 내부 IP를 공인 IP로 바꿔 인터넷에 내보내는 것이 대표적인 예입니다. 함께 자주 나오지만 하는 일이 다릅니다.</p>
+  </section>
+
+  <section id="energy" aria-labelledby="h-energy">
+    <h2 id="h-energy">2.4GHz 에너지 스캔</h2>
+    <p>공식 문서상 2.4GHz Scanner는 NRF24 모듈로 대역을 훑어 주파수별 에너지 분포를 보여 줍니다. 어느 구간에 신호가 많은지는 알려 주지만, 그것이 어떤 프로토콜인지나 메시지 내용을 자동으로 해독한다고 볼 수 없습니다.</p>
+    <p>ESP32-S3 내장 Wi-Fi는 2.4GHz입니다. 이 기기가 모든 5GHz Wi-Fi를 지원한다고 생각하면 안 됩니다.</p>
+  </section>
+
+  <section id="ble" aria-labelledby="h-ble">
+    <h2 id="h-ble">BLE: 광고, 스캔, 연결</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="BLE 세 상태 비교">
+      <table>
+        <thead><tr><th scope="col">상태</th><th scope="col">하는 일</th><th scope="col">예</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">광고</th><td>기기가 연결 없이 짧게 존재를 알립니다.</td><td>밴드가 “여기 있어요”를 반복합니다.</td></tr>
+          <tr><th scope="row">스캔</th><td>광고를 받아 목록을 만듭니다.</td><td>BLE Scanner 메뉴입니다.</td></tr>
+          <tr><th scope="row">연결</th><td>두 기기가 약속해 데이터를 주고받습니다.</td><td>휴대폰과 밴드의 동기화입니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Espressif 문서 기준 ESP32-S3는 Bluetooth LE만 지원하고 클래식 Bluetooth는 지원하지 않습니다. 광고를 받았다고 연결된 것은 아니며, 연결되면 광고를 멈추는 기기도 있어 목록에서 사라질 수 있습니다.</p>
+  </section>
+
+  <section id="think" aria-labelledby="h-think">
+    <h2 id="h-think">생각해 보기</h2>
+    <Think q="스캐너가 목록을 보여 줬다면, 항상 듣기만 한 것일까요?">
+      <p>아닙니다. 능동 탐색이면 Probe Request를 내보냅니다. 어떤 방식인지는 펌웨어 설정에 달려 있습니다.</p>
+    </Think>
+    <Think q="-50dBm이 -60dBm보다 항상 더 가까운 AP인가요?">
+      <p>항상 그렇지는 않습니다. 벽, 방향, 안테나, 출력이 다르면 멀어도 더 강할 수 있습니다.</p>
+    </Think>
+    <Think q="NFC 태그의 UID가 Wi-Fi로 나가나요?">
+      <p>태그를 읽는 과정에는 Wi-Fi가 쓰이지 않습니다. 기기 안의 리더 칩과 태그가 직접 주고받습니다.</p>
+    </Think>
+  </section>
+</LearnLayout>

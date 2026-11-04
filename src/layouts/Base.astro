@@ -11,6 +11,7 @@ const { title, description } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const links = [
   ['/start/', '처음 시작'],
+  ['/learn/', '학습'],
   ['/device/', '기기 알아보기'],
   ['/guide/', '기능 가이드'],
   ['/lab/', '실전 탐구'],
@@ -58,7 +59,7 @@ const path = Astro.url.pathname.replace(base, '') || '/';
     </main>
     <footer class="site-foot">
       <div class="wrap small">
-        <p>CiferTech의 공식 사이트가 아닙니다. 판매 기기의 하드웨어와 펌웨어는 미검증이며, 자료 확인일은 {CHECKED}입니다.</p>
+        <p>CiferTech의 공식 사이트가 아닙니다. 이 기기에서는 부팅, 메뉴 표시, NFC 태그 읽기까지 확인했고 다른 기능은 미검증입니다. 자료 확인일은 {CHECKED}입니다.</p>
         <p><a href="https://github.com/cifertech/ESP32-DIV#readme" rel="noopener">원본 프로젝트의 사용 조건과 경고 보기</a></p>
       </div>
     </footer>
@@ -68,8 +69,9 @@ const path = Astro.url.pathname.replace(base, '') || '/';
         var sync = function () { b.setAttribute('aria-checked', String(d.dataset.theme === 'dark')); };
         var chosen = function () { try { return localStorage.getItem('esp32div.theme'); } catch (e) { return null; } };
         sync();
-        var now = document.querySelector('.nav [aria-current]');
-        if (now) now.parentElement.scrollLeft = now.offsetLeft - now.parentElement.offsetLeft;
+        document.querySelectorAll('.nav [aria-current], .learn-nav [aria-current]').forEach(function (now) {
+          now.parentElement.scrollLeft = now.offsetLeft - now.parentElement.offsetLeft;
+        });
         b.addEventListener('click', function () {
           d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark';
           sync();

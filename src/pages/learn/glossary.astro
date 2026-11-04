@@ -1,0 +1,15 @@
+---
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import { Glossary } from '../../components/learn/Glossary';
+import { GLOSSARY } from '../../data/glossary';
+import { BASE } from '../../lib/url';
+---
+<LearnLayout
+  title="용어 사전"
+  heading={`한글 용어 사전 ${GLOSSARY.length}개`}
+  lead="화면과 문서의 영어 원문을 그대로 두고, 쉬운 뜻과 예, 헷갈리는 점을 함께 적었습니다."
+  description="NFC, Wi-Fi, 네트워크, BLE, 탐구 방법 용어를 한글과 영문으로 찾는 사전입니다."
+  sources={['ntag', 'pn532', 'espScan', 'espBle', 'rfcDns', 'rfcTcp', 'rfcTls', 'rfcArp', 'rfcNat']}
+>
+  <Glossary client:load terms={GLOSSARY} base={BASE} />
+</LearnLayout>

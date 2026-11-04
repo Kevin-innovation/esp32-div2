@@ -1,8 +1,10 @@
 // 기능 가이드 내용. 메뉴 이름은 펌웨어 v1.7.2 코드의 표기를 그대로 쓴다.
+import { GLOSSARY } from './glossary';
 import { WIKI } from './sources';
 
 export interface Observe {
   kind: 'observe';
+  device?: string;
   id: string;
   en: string;
   ko: string;
@@ -20,6 +22,7 @@ export interface Observe {
 
 export interface Lab {
   kind: 'lab';
+  device?: string;
   id: string;
   en: string;
   ko: string;
@@ -268,26 +271,26 @@ export const GROUPS: Group[] = [
     title: 'RFID·NFC',
     en: 'RFID/NFC',
     summary: '실험용 태그를 읽는 것까지 다루고, NFC 탐구 프로젝트로 이어집니다.',
-    hardware: '공식 문서 기준 PN532 모듈을 SPI로 연결합니다. 이 기기 뒷면에는 NFC 인쇄가 있지만, 코일 위치와 PN532 탑재는 확인하지 못했습니다.',
-    note: '동봉 설명서에는 NFC 메뉴 설명이 없습니다. 메뉴가 실제로 보이는지부터 확인하세요.',
+    hardware: '공식 문서 기준 PN532 모듈을 SPI로 연결합니다. 이 기기 화면에도 Reader: PN532 0x32010607이 표시되고 태그 읽기를 확인했습니다. 뒷면 NFC 인쇄 아래에 코일이 있는지는 확인하지 못했습니다.',
+    note: '동봉 설명서에는 NFC 메뉴 설명이 없지만, 이 기기의 More 안에 RFID/NFC 메뉴가 있습니다. 확인한 것은 Card Reader뿐입니다.',
     features: [
       {
-        kind: 'observe', id: 'card-reader', en: 'Card Reader', ko: '카드 리더', aliases: ['NFC 읽기', 'UID', '태그 읽기', 'PN532', 'NTAG'],
+        kind: 'observe', device: '이 기기 확인: 태그 감지, UID, Info 화면, P4~P7 값 읽기.', id: 'card-reader', en: 'Card Reader', ko: '카드 리더', aliases: ['NFC 읽기', 'UID', '태그 읽기', 'PN532', 'NTAG'],
         path: 'More → RFID/NFC → Card Reader', manual: null, wiki: 'RFID-Card-Reader',
         purpose: '실험용 태그의 UID와 종류를 읽어 NFC가 동작하는지 확인합니다.',
-        prep: ['실험용 NFC 태그(예: NTAG213)', '결제 카드, 교통 카드, 학생증, 출입 카드는 쓰지 않음'],
+        prep: ['실험용 NFC 태그(이 실험은 구매 표기 NTAG213, 25mm 스티커)', '결제 카드, 교통 카드, 학생증, 출입 카드는 쓰지 않음'],
         steps: ['메인 메뉴에서 More를 고릅니다.', 'RFID/NFC, Card Reader를 차례로 고릅니다.', '태그를 평평하게 대고 기다립니다. 공식 FAQ의 기준은 2~3cm 안, 움직이지 않는 상태입니다.', 'NFC 인쇄 주변부터 시작해 위치를 옮기며 잘 읽히는 곳을 찾아 적습니다.'],
-        read: ['UID와 종류가 보이면 읽기 성공입니다.', '메뉴가 없거나 시작에 실패하면 이 기기나 펌웨어가 NFC를 지원하지 않는 것일 수 있습니다. 다른 호환 리더로 실험을 진행합니다.'],
+        read: ['Mode: OK, Tag detected와 UID가 보이면 읽기 성공입니다.', 'Info에서 ATQA, SAK, 메모리 샘플을 볼 수 있습니다. 화면 문구의 뜻은 학습의 화면 따라 하기에 있습니다.'],
         exit: '화면의 뒤로 표시로 나옵니다. RFID 동작 중에는 SD 카드를 빼지 않습니다.',
         trouble: ['“No card detected”가 뜨면 태그를 평평하게 고정하고, 다른 스캔이 돌고 있으면 끕니다(공식 FAQ).'],
       },
-      { kind: 'lab', id: 'nfc-dump', en: 'Dump', ko: '메모리 읽기', manual: null, wiki: 'RFID-Dump', principle: '키를 아는 경우 태그의 메모리 블록을 읽습니다.', impact: '다른 사람의 카드에 쓰면 개인정보나 출입 정보가 드러날 수 있습니다.', permit: '직접 산 실험용 태그에만 씁니다.' },
-      { kind: 'lab', id: 'nfc-decode', en: 'Decode Access', ko: '접근 권한 해석', manual: null, wiki: 'RFID-Decode-Access', principle: '메모리의 접근 비트를 사람이 읽을 수 있게 풀이합니다.', impact: '출입 시스템 분석에 악용될 수 있습니다.', permit: '직접 산 실험용 태그에만 씁니다.' },
-      { kind: 'lab', id: 'nfc-erase', en: 'Erase', ko: '태그 지우기', manual: null, wiki: 'RFID-Erase', principle: '쓰기 가능한 태그의 내용을 지웁니다.', impact: '되돌릴 수 없습니다.', permit: '내 실험용 태그에만, 내용을 확인한 뒤 씁니다.' },
-      { kind: 'lab', id: 'nfc-clone', en: 'Card Clone', ko: '태그 복제', aliases: ['카드 복제'], manual: null, wiki: 'RFID-Card-Clone', principle: '지원되는 쓰기 가능 태그의 값을 다른 태그로 옮깁니다.', impact: '출입증이나 회원증의 권한을 소유자나 발급자의 동의 없이 옮기게 됩니다. 결제 카드 복제 방법은 이 사이트에서 다루지 않습니다.', permit: '직접 산 실험용 태그끼리만, 원리 확인 목적으로 다룹니다.' },
-      { kind: 'lab', id: 'nfc-jam', en: 'Jam Reader', ko: '리더 방해', manual: null, wiki: 'RFID-Jam-Reader', principle: 'RF 패턴으로 다른 리더의 동작을 방해합니다.', impact: '출입문이나 단말기의 정상 동작을 막을 수 있습니다.', permit: WIRELESS_PERMIT },
-      { kind: 'lab', id: 'nfc-disrupt', en: 'Tag Disrupt', ko: '태그 동작 방해', manual: null, wiki: 'RFID-Tag-Disrupt', principle: '공식 설명상 허가된 물리 시험용 방해 기능입니다.', impact: '주변 태그와 리더 통신을 방해할 수 있습니다.', permit: WIRELESS_PERMIT },
-      { kind: 'lab', id: 'nfc-emulate', en: 'Disrupt Emulate', ko: '방해와 에뮬레이션', manual: null, wiki: 'RFID-Disrupt-Emulate', principle: '방해와 태그 흉내 동작을 묶은 기능입니다.', impact: '리더가 잘못된 태그를 인식할 수 있습니다.', permit: WIRELESS_PERMIT },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-dump', en: 'Dump', ko: '메모리 읽기', manual: null, wiki: 'RFID-Dump', principle: '키를 아는 경우 태그의 메모리 블록을 읽습니다.', impact: '다른 사람의 카드에 쓰면 개인정보나 출입 정보가 드러날 수 있습니다.', permit: '직접 산 실험용 태그에만 씁니다.' },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-decode', en: 'Decode Access', ko: '접근 권한 해석', manual: null, wiki: 'RFID-Decode-Access', principle: '메모리의 접근 비트를 사람이 읽을 수 있게 풀이합니다.', impact: '출입 시스템 분석에 악용될 수 있습니다.', permit: '직접 산 실험용 태그에만 씁니다.' },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-erase', en: 'Erase', ko: '태그 지우기', manual: null, wiki: 'RFID-Erase', principle: '쓰기 가능한 태그의 내용을 지웁니다.', impact: '되돌릴 수 없습니다.', permit: '내 실험용 태그에만, 내용을 확인한 뒤 씁니다.' },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-clone', en: 'Card Clone', ko: '태그 복제', aliases: ['카드 복제'], manual: null, wiki: 'RFID-Card-Clone', principle: '지원되는 쓰기 가능 태그의 값을 다른 태그로 옮깁니다.', impact: '출입증이나 회원증의 권한을 소유자나 발급자의 동의 없이 옮기게 됩니다. 결제 카드 복제 방법은 이 사이트에서 다루지 않습니다.', permit: '직접 산 실험용 태그끼리만, 원리 확인 목적으로 다룹니다.' },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-jam', en: 'Jam Reader', ko: '리더 방해', manual: null, wiki: 'RFID-Jam-Reader', principle: 'RF 패턴으로 다른 리더의 동작을 방해합니다.', impact: '출입문이나 단말기의 정상 동작을 막을 수 있습니다.', permit: WIRELESS_PERMIT },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-disrupt', en: 'Tag Disrupt', ko: '태그 동작 방해', manual: null, wiki: 'RFID-Tag-Disrupt', principle: '공식 설명상 허가된 물리 시험용 방해 기능입니다.', impact: '주변 태그와 리더 통신을 방해할 수 있습니다.', permit: WIRELESS_PERMIT },
+      { kind: 'lab', device: '이 기기: 메뉴 표시만 확인, 실행은 미확인.', id: 'nfc-emulate', en: 'Disrupt Emulate', ko: '방해와 에뮬레이션', manual: null, wiki: 'RFID-Disrupt-Emulate', principle: '방해와 태그 흉내 동작을 묶은 기능입니다.', impact: '리더가 잘못된 태그를 인식할 수 있습니다.', permit: WIRELESS_PERMIT },
     ],
   },
   {
@@ -296,7 +299,7 @@ export const GROUPS: Group[] = [
     en: 'GPS',
     summary: '하늘이 보이는 곳에서 위성 수를 비교합니다.',
     hardware: '공식 문서 기준 Neo-6M 호환 모듈을 UART로 연결합니다. 이 기기 뒷면에 GPS 표기 단자가 있지만 모듈 종류는 확인하지 못했습니다.',
-    note: '동봉 설명서에는 GPS 메뉴 설명이 없습니다.',
+    note: '동봉 설명서에는 GPS 메뉴 설명이 없지만, 이 기기의 More 안에 GPS 메뉴가 있습니다. 실행은 확인하지 못했습니다.',
     features: [
       {
         kind: 'observe', id: 'satellite-scanner', en: 'Satellite Scanner', ko: '위성 스캐너', aliases: ['위성 수', 'GNSS', '위치 고정', 'fix', 'SNR'],
@@ -369,14 +372,24 @@ export const GROUPS: Group[] = [
         trouble: ['잘못된 이미지나 전원 차단은 기기를 못 쓰게 만들 수 있습니다(공식 위키).'],
       },
       {
-        kind: 'observe', id: 'about', en: 'About', ko: '기기 정보', aliases: ['버전 확인', '펌웨어 버전'],
+        kind: 'observe', device: '이 기기 확인: 아래 값까지 화면으로 확인.', id: 'about', en: 'About', ko: '기기 정보', aliases: ['버전 확인', '펌웨어 버전', 'MK SIGNAL'],
         path: 'About', manual: null,
-        purpose: '메인 메뉴의 정보 화면입니다. 펌웨어 버전이 보이면 기록합니다.',
+        purpose: '기기 이름, 펌웨어, 보드, 빌드 이름을 확인합니다.',
         prep: ['없음'],
-        steps: ['메인 메뉴에서 About을 고릅니다.', '보이는 내용을 사진으로 남깁니다.'],
-        read: ['공식 위키에 이 화면의 설명은 없습니다. 무엇이 표시되는지는 기기에서 확인해야 합니다.'],
-        exit: 'Back to Main Menu를 고릅니다.',
-        trouble: ['버전이 보이지 않으면 시리얼 로그를 확인합니다.'],
+        steps: ['메인 메뉴에서 About을 고릅니다.', '보이는 값을 적거나 사진으로 남깁니다.'],
+        read: ['이 기기의 표시: MK SIGNAL DIV V2.1, 1.7.2 stable by MK_SIGNAL_V1, Board: ESP32 DIV V2.1 by MK, Build: V1.2 Stable by MK SIGNAL, Credits: CiferTech ESP32 DIV Project.', '하드웨어 판, 판매자 빌드 이름, 펌웨어 번호는 서로 다른 값입니다.'],
+        exit: '화면의 SELECT / tap to go back 안내대로 돌아옵니다.',
+        trouble: ['값이 이 표시와 다르면 다른 판매 판이나 펌웨어일 수 있으니 내 값을 기준으로 적습니다.'],
+      },
+      {
+        kind: 'observe', device: '이 기기: 메뉴 표시만 확인, 게임 내용은 미확인.', id: 'games', en: 'Games', ko: '게임', aliases: ['More 게임', '판매자 메뉴'],
+        path: 'More → Games', manual: null,
+        purpose: '이 기기의 More에 있는 메뉴입니다. 공식 위키의 More 목록에는 없습니다.',
+        prep: ['없음'],
+        steps: ['메인 메뉴에서 More를 고릅니다.', 'Games가 보이는지 확인합니다.'],
+        read: ['공식 펌웨어와 이 기기의 펌웨어가 완전히 같지 않을 수 있다는 단서입니다.'],
+        exit: 'More의 Main Menu로 돌아갑니다.',
+        trouble: ['게임 종류와 조작은 확인하지 못했습니다.'],
       },
     ],
   },
@@ -392,6 +405,14 @@ export interface SearchItem {
 }
 
 const TOPICS: SearchItem[] = [
+  { title: '학습 홈', sub: '학습', href: '/learn/', terms: '학습 시작 목표 동선 learn 교재 준비물' },
+  { title: '메뉴부터 태그 읽기까지 따라 하기', sub: '학습', href: '/learn/device/', terms: '화면 따라 하기 메인 메뉴 About More Card Reader Waiting for tag Mode OK SCAN Info Cancel Exit Back Prev Next' },
+  { title: 'About의 버전 세 가지', sub: '학습', href: '/learn/device/#about', terms: 'About 버전 1.7.2 MK SIGNAL V1.2 V2.1 Games' },
+  { title: 'NFC 통신 단계', sub: '학습', href: '/learn/nfc/#flow', terms: 'NFC 원리 유도 결합 부하 변조 REQA ATQA SAK READ 자기장 13.56MHz' },
+  { title: 'UID와 메모리 읽기 실습', sub: '학습', href: '/learn/nfc/#bytes', terms: 'UID 바이트 16진수 2진수 메모리 P4 P7 페이지 TLV NDEF 144바이트 48바이트 pages 4-15' },
+  { title: 'Wi-Fi 탐색과 웹 요청', sub: '학습', href: '/learn/network/', terms: 'Wi-Fi 탐색 수동 능동 Beacon Probe RSSI dBm 패킷 프레임 DHCP DNS TCP TLS HTTPS BLE 광고 ARP NAT' },
+  { title: '한글 용어 사전', sub: '학습', href: '/learn/glossary/', terms: '용어 사전 glossary 뜻 설명' },
+  { title: '실험 절차와 성공 기준', sub: 'NFC 실험', href: '/lab/nfc/#procedure', terms: '실험 절차 성공 기준 예비 실험 거리 측정 재인식 Exit Card Reader 5초' },
   { title: '구성품 확인', sub: '처음 시작', href: '/start/#parts', terms: '구성품 박스 parts' },
   { title: '안테나 연결', sub: '처음 시작', href: '/start/#antenna', terms: '안테나 antenna 433M 2G4 SMA 단자' },
   { title: '전원과 충전', sub: '처음 시작', href: '/start/#power', terms: '전원 충전 배터리 power battery USB-C IP5306 스위치 ON OFF' },
@@ -420,5 +441,6 @@ export function buildSearchIndex(): SearchItem[] {
       terms: [f.ko, f.en, g.title, g.en, f.manual ?? '', ...(f.aliases ?? [])].join(' '),
     })),
   );
-  return [...features, ...TOPICS];
+  const terms = GLOSSARY.map((t) => ({ title: `${t.ko} (${t.en})`, sub: '용어 사전', href: `/learn/glossary/#${t.id}`, terms: [t.ko, t.en, ...t.aliases].join(' ') }));
+  return [...features, ...TOPICS, ...terms];
 }

@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Evidence from '../../components/Evidence.astro';
+import Think from '../../components/learn/Think.astro';
 import Sources from '../../components/Sources.astro';
 import { Chart, CsvPanel, Interview, NoteFields, PythonPanel, Records, Report, SaveState } from '../../components/lab/NfcLab';
 import { SOURCES } from '../../data/sources';
@@ -24,7 +25,7 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal].map((s) => ({
 <Base title="NFC는 지갑·가방 안에서도 인식될까? | 실험 노트" description="실험용 NFC 태그로 단독, 지갑, 가방 조건의 인식률을 비교하고 CSV, 파이썬 분석, 보고서까지 만드는 탐구 프로젝트입니다.">
   <div class="wrap">
     <header class="page-head">
-      <p class="small"><a href={url('/lab/')}>실전 탐구</a></p>
+      <p class="small"><a href={url('/learn/')}>학습 과정</a>의 다섯째 단계입니다. <a href={url('/learn/glossary/')}>용어 사전</a> <a href={url('/lab/')}>실전 탐구 목록</a></p>
       <h1>NFC는 지갑·가방 안에서도 인식될까?</h1>
       <p class="lead">실험용 태그로 직접 재고, 내가 입력한 값으로만 결론을 냅니다.</p>
     </header>
@@ -38,47 +39,81 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal].map((s) => ({
 
         <section class="lab-section" id="design" aria-labelledby="h-design" style="margin-top: var(--space-xl)">
           <h2 id="h-design"><span class="lab-section__n">1</span> 탐구 질문, 가설, 실험 설계</h2>
+          <p>원리가 낯설면 <a href={url('/learn/nfc/')}>NFC 원리</a>를, 화면 문구가 낯설면 <a href={url('/learn/device/#reader')}>화면 따라 하기</a>를 먼저 보세요.</p>
           <h3>준비물</h3>
           <ul>
-            <li>실험용 NFC 태그. 예: NXP NTAG213 스티커나 카드 (ISO/IEC 14443 Type A)</li>
-            <li>호환 리더 하나. 처음부터 끝까지 같은 리더를 씁니다.</li>
-            <li>자, 빈 지갑, 천 가방, 태그를 고정할 테이프</li>
+            <li>이 기기. 리더는 More → RFID/NFC → Card Reader입니다. <Evidence kind="device" /></li>
+            <li>실험용 NFC 태그 한 개. 구매 표기는 25mm 접착식 NTAG213, 기기 표시는 Ultralight-compatible입니다. 실제 칩 모델은 확인하지 못했습니다.</li>
+            <li>자, 고정대나 테이프, 빈 지갑, 천 가방, 기록 도구</li>
           </ul>
-          <p>리더 후보는 세 가지입니다.</p>
+          <p>처음에는 태그 한 개만 씁니다. 여러 태그나 금속을 처음부터 섞으면 원인을 나눌 수 없습니다.</p>
+
+          <h3 id="pre">예비 실험: 잘 읽히는 자리 찾기</h3>
+          <ol>
+            <li>Card Reader를 열어 <code>Waiting for tag...</code>을 확인합니다.</li>
+            <li>태그를 기기 뒷면에 대고 위치를 조금씩 옮겨 잘 읽히는 자리를 찾습니다.</li>
+            <li>그 자리를 테이프로 표시합니다. 내부 코일 위치는 모르므로 이 표시를 기준으로 삼습니다.</li>
+            <li>거리를 늘려 언제부터 읽히지 않는지 대강 봅니다. 이 결과에 맞춰 본 실험의 거리를 정합니다.</li>
+            <li>예상한 UID가 표시되는지 적어 둡니다.</li>
+          </ol>
+
+          <h3 id="distance">거리 재는 기준</h3>
+          <p>알 수 없는 내부 코일이 아니라 <strong>기기 뒷면 바깥 표면과 태그 표면 사이</strong>를 잽니다. 0cm는 바깥 표면에 닿은 상태입니다.</p>
+          <p>지갑과 가방에서는 두 거리가 다릅니다. 기기에서 외피까지의 거리와, 안쪽 태그까지의 거리를 구분해 적으세요.</p>
           <ul>
-            <li>이 기기의 <a href={url('/guide/nfc/#card-reader')}>Card Reader</a> 메뉴 <Evidence kind="unverified" /></li>
-            <li>NFC를 지원하는 휴대폰과 태그 읽기 앱</li>
-            <li>별도의 USB 또는 PN532 리더</li>
+            <li><strong>실제로 넣어 보기:</strong> 지갑에 넣으면 인식이 어떻게 되는지 전체 효과를 봅니다. 거리와 위치도 함께 바뀝니다.</li>
+            <li><strong>재질만 비교하기:</strong> 태그 위치, 기기에서 태그까지의 총거리, 방향을 그대로 두고 사이에 놓는 재질만 바꿉니다.</li>
           </ul>
+
+          <h3 id="procedure">한 번의 시도</h3>
+          <ol>
+            <li>태그를 뗍니다.</li>
+            <li>목록으로 돌아갑니다. 대기 중이면 Cancel, 감지 후면 Exit입니다. Info를 보고 있으면 Back으로 리더 화면에 돌아온 뒤 나옵니다.</li>
+            <li>Card Reader를 다시 열고 <code>Waiting for tag...</code>을 확인합니다.</li>
+            <li>정한 조건대로 태그를 놓고 시간을 재기 시작합니다.</li>
+            <li>성공 기준을 봅니다. 예: <strong>5초 안에 새로 <code>Tag detected</code>와 예상한 UID가 나오면 성공.</strong> 5초가 지나면 실패로 정하고 Cancel로 나옵니다.</li>
+            <li>성공과 실패 모두 아래 표에 적습니다.</li>
+          </ol>
+          <p>전에 남아 있던 OK 화면을 새 성공으로 세면 안 됩니다. 시간은 사람이 직접 재며, 이 사이트가 측정하지 않습니다. 자동 반복 기능은 확인하지 못했으니 매번 위 순서를 따릅니다.</p>
+
           <h3>한 번에 한 변수만 바꾸기</h3>
           <div class="table-wrap" tabindex="0" role="region" aria-label="회차별 실험 설계 예시">
             <table>
-              <caption>설계 예시. 조건 3개, 거리 3개, 반복 5회면 45회입니다.</caption>
-              <thead><tr><th scope="col">회차</th><th scope="col">바꾸는 변수</th><th scope="col">고정하는 것</th></tr></thead>
+              <caption>설계 예시입니다. 측정값이 아니며, 예비 실험에 맞춰 거리를 바꿀 수 있습니다.</caption>
+              <thead><tr><th scope="col">회차</th><th scope="col">바꾸는 변수</th><th scope="col">고정하는 것</th><th scope="col">시도 수</th></tr></thead>
               <tbody>
-                <tr><td>1</td><td>조건: 단독, 지갑, 가방</td><td>거리, 방향, 내용물, 태그 위치</td></tr>
-                <tr><td>2</td><td>거리: 1, 2, 3cm</td><td>조건별로 방향과 내용물</td></tr>
-                <tr><td>3</td><td>방향: 평행, 비스듬히, 수직</td><td>거리와 내용물</td></tr>
-                <tr><td>4</td><td>내용물: 빈 지갑, 플라스틱 카드, 동전</td><td>거리와 방향</td></tr>
+                <tr><td>기본</td><td>조건 단독, 지갑, 가방 × 거리 0, 1, 2cm</td><td>태그, 방향, 내용물, 표시한 위치</td><td>3 × 3 × 5회 = 45회</td></tr>
+                <tr><td>다음</td><td>방향: 평행, 비스듬히, 수직</td><td>조건, 거리, 위치</td><td>한 번에 하나씩</td></tr>
+                <tr><td>다음</td><td>내용물: 빈 지갑, 플라스틱 카드, 동전</td><td>거리, 방향, 위치</td><td>한 번에 하나씩</td></tr>
               </tbody>
             </table>
           </div>
-          <p>지갑과 가방을 비교할 때는 거리를 자로 재기 어렵습니다. <strong>리더에서 태그까지의 거리</strong>로 정의하고, 천의 두께를 함께 적어 두세요.</p>
-          <p>성공 기준을 미리 정하세요. 예: “리더를 대고 5초 안에 UID가 표시되면 성공.” 시간은 직접 재야 하며, 이 사이트가 측정하지 않습니다.</p>
+          <p>45회는 여러 변수를 한꺼번에 바꾸는 것이 아닙니다. 거리 하나를 고정한 채 세 조건을 비교하고, 끝나면 다음 거리로 옮겨 같은 비교를 하는 묶음입니다.</p>
+          <p>조건을 단독 5회, 지갑 5회처럼 몰아서 하지 말고 번갈아 배치하세요. 손이 익거나 배터리, 주변 상태가 바뀌는 영향이 한 조건에만 쏠리지 않습니다.</p>
+          <Think q="가방 조건에서 태그를 매번 다른 곳에 넣으면 무엇이 문제인가요?">
+            <p>위치와 거리까지 함께 바뀌어 가방 때문인지 위치 때문인지 나눌 수 없습니다. 태그를 안쪽에 고정하면 비교가 쉬워집니다.</p>
+          </Think>
+          <Think q="다섯 번 모두 성공하면 항상 인식된다고 할 수 있나요?">
+            <p>아닙니다. 5회의 100%는 이 조건에서 5번 성공했다는 뜻입니다. 절대적인 보장으로 해석하지 않습니다.</p>
+          </Think>
+          <Think q="실패가 나왔을 때 무엇부터 나눠 생각해야 하나요?">
+            <p>실제 인식 실패인지, 화면을 다시 시작하지 않은 실수인지, 기록 저장 문제인지 구별합니다. 같은 UID가 다시 나오는지도 확인합니다.</p>
+          </Think>
           <NoteFields client:load fields={[
             { key: 'question', label: '탐구 질문', rows: 2 },
+            { key: 'motivation', label: '탐구 동기', help: '왜 궁금해졌는지 직접 겪은 장면으로 씁니다.', rows: 2 },
             { key: 'hypothesis', label: '가설', help: '왜 그렇게 예상하는지까지 씁니다.', placeholder: '예: 지갑보다 가방에서 인식률이 낮을 것이다. 태그와 리더 사이가 더 멀어지기 때문이다.' },
             { key: 'independent', label: '이번에 바꾸는 변수 하나', rows: 2 },
             { key: 'controlled', label: '고정하는 조건', rows: 2 },
             { key: 'plan', label: '반복 계획과 성공 기준', rows: 2 },
-            { key: 'tag', label: '실험용 태그 (제품명, 형태)', rows: 1 },
-            { key: 'reader', label: '리더 (기기, 앱, 펌웨어 버전)', rows: 1 },
+            { key: 'tag', label: '실험용 태그 (구매 표기, 기기 표시, UID)', rows: 1 },
+            { key: 'reader', label: '리더 (기기와 About의 펌웨어 표시)', rows: 1 },
           ]} />
         </section>
 
         <section class="lab-section" id="record" aria-labelledby="h-record">
           <h2 id="h-record"><span class="lab-section__n">2</span> 결과 입력</h2>
-          <p>시도할 때마다 한 줄씩 적습니다. 잘 안 된 시도를 지우지 마세요. 실패도 결과입니다.</p>
+          <p>시도할 때마다 한 줄씩 적습니다. 잘 안 된 시도를 지우지 마세요. 실패도 결과입니다. 거리는 <a href="#distance">기기 뒷면 바깥 표면에서 태그 표면까지</a>로, 반복은 <a href="#procedure">시도 절차</a>대로 합니다.</p>
           <Records client:load />
         </section>
 
@@ -96,9 +131,35 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal].map((s) => ({
 
         <section class="lab-section" id="python" aria-labelledby="h-python">
           <h2 id="h-python"><span class="lab-section__n">5</span> 파이썬 분석</h2>
-          <p>위에서 내려받은 <code>nfc-experiment.csv</code>의 열 이름에 맞춘 코드입니다. 같은 폴더에 두고 내 컴퓨터나 Jupyter에서 실행합니다. 실제 기록(<code>data_type</code>이 <code>real</code>)만 분석합니다.</p>
+          <p>위에서 내려받은 <code>nfc-experiment.csv</code>의 열 이름에 맞춘 코드입니다. 내 컴퓨터나 Jupyter에서 실행하며, 브라우저에서는 실행되지 않습니다. 실제 기록(<code>data_type</code>이 <code>real</code>)만 분석합니다.</p>
+          <h3>실행 순서</h3>
+          <ol>
+            <li>준비: <code>pip install pandas matplotlib</code></li>
+            <li>내려받은 <code>nfc-analysis.py</code>와 <code>nfc-experiment.csv</code>를 같은 폴더에 둡니다.</li>
+            <li>그 폴더에서 실행합니다: <code>python nfc-analysis.py</code></li>
+            <li>같은 폴더에 <code>nfc-rate-by-condition.png</code>, <code>nfc-rate-by-distance.png</code>가 생깁니다.</li>
+          </ol>
           <PythonPanel client:load />
-          <p class="field__help">준비: <code>pip install pandas matplotlib</code>. 코드는 브라우저에서 실행되지 않습니다.</p>
+          <h3>코드 읽기</h3>
+          <ul>
+            <li><code>read_csv(..., encoding="utf-8-sig")</code>: 표를 읽습니다. 표 프로그램에서 한글이 깨지지 않도록 파일 맨 앞에 붙인 UTF-8 BOM까지 처리합니다.</li>
+            <li><code>success</code>는 성공 1, 실패 0입니다. 그래서 더하면 성공 횟수가 됩니다.</li>
+            <li><code>groupby(column)["success"].agg(시도="count", 성공="sum")</code>: 같은 값끼리 묶어 시도 수(count)와 성공 수(sum)를 셉니다.</li>
+            <li><code>인식률 = 성공 / 시도</code>: 0에서 1 사이의 비율이고, 그래프에서는 100을 곱해 %로 그립니다.</li>
+            <li>그래프 읽기: 가로축은 조건이나 거리, 세로축은 인식률, 막대 위 숫자는 성공/시도, 범례의 선 하나가 조건 하나입니다.</li>
+          </ul>
+          <h3>바꿔 보기</h3>
+          <ul>
+            <li>묶는 기준 바꾸기: <code>summarize(data, "orientation")</code></li>
+            <li>반복 수 줄여 보기: <code>summarize(data[data["trial"] &lt;= 3], "condition")</code></li>
+            <li>한 조건의 거리별 비교: <code>summarize(data[data["condition"] == "지갑"], "distance_cm")</code></li>
+          </ul>
+          <Think q="실행 전에 예측해 보세요. 반복을 3회로 줄이면 인식률이 어떻게 보일까요?">
+            <p>한 번의 결과가 차지하는 비중이 커져 값이 더 크게 흔들려 보일 수 있습니다. 내 데이터로 실제로 확인해 비교하세요.</p>
+          </Think>
+          <Think q="UnicodeDecodeError나 FileNotFoundError가 나면 무엇을 확인하나요?">
+            <p>CSV를 표 프로그램에서 다른 형식으로 저장하지 않았는지, 코드와 CSV가 같은 폴더에 있고 그 폴더에서 실행했는지 확인합니다.</p>
+          </Think>
         </section>
 
         <section class="lab-section" id="interpret" aria-labelledby="h-interpret">
@@ -176,6 +237,16 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal].map((s) => ({
                   <td>받침대로 태그와 리더를 고정하고 반복 횟수를 늘립니다.</td>
                 </tr>
                 <tr>
+                  <td>기록상 갑자기 많이 실패함</td>
+                  <td>실제 인식 실패와 다른 일을 구분합니다. 화면을 다시 시작하지 않음, 다른 UID가 읽힘, 기록을 잘못 입력함, 저장 오류.</td>
+                  <td>같은 UID가 다시 나오는지 확인하고, 시도 절차를 지켜 그 조건만 다시 잽니다.</td>
+                </tr>
+                <tr>
+                  <td>0%나 100%만 나옴</td>
+                  <td>반복이 적거나 거리 간격이 너무 넓을 수 있습니다. 절대적인 보장이 아닙니다.</td>
+                  <td>경계 근처의 거리를 더 넣고 반복을 늘립니다.</td>
+                </tr>
+                <tr>
                   <td>여러 태그를 함께 넣으면 달라짐</td>
                   <td>여러 태그가 동시에 응답하는 상황. 리더마다 처리 방식이 다를 수 있습니다.</td>
                   <td>태그 수만 하나씩 늘려 비교합니다.</td>
@@ -188,12 +259,13 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal].map((s) => ({
             { key: 'causes', label: '내가 세운 원인 후보', rows: 2 },
             { key: 'followup', label: '추가 실험과 그 결과', help: '아직 하지 않았다면 계획이라고 적습니다.', rows: 2 },
             { key: 'limits', label: '이 실험의 한계와 배운 점', rows: 3 },
+            { key: 'nextQuestions', label: '다음에 해 보고 싶은 질문', rows: 2 },
           ]} />
         </section>
 
         <section class="lab-section" id="report" aria-labelledby="h-report">
           <h2 id="h-report"><span class="lab-section__n">9</span> 보고서</h2>
-          <p>입력한 내용으로 바로 만들어집니다. 비어 있는 칸은 비어 있다고 표시하고, 없는 내용을 지어내지 않습니다.</p>
+          <p>탐구 동기, 가설, 방법, 실측 데이터, 그래프, 해석, 예상 밖 결과와 추가 실험, 보안 비교, 한계, 후속 질문, 출처 순서입니다. 위에서 직접 쓴 내용으로 바로 만들어지며, 비어 있는 칸은 비어 있다고 표시하고 없는 내용을 지어내지 않습니다.</p>
           <Report client:load sources={reportSources as { title: string; url: string }[]} />
         </section>
 
@@ -203,7 +275,7 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal].map((s) => ({
           <Interview client:load />
         </section>
 
-        <Sources ids={['emvco', 'ntag', 'metal', 'nfcOverview', 'nfcReader', 'faq']} />
+        <Sources ids={['deviceScreens', 'emvco', 'ntag', 'metal', 'nfcOverview', 'nfcReader', 'faq']} />
       </div>
       <nav class="doc__aside toc" aria-label="실험 단계 목차">
         <h2>실험 단계</h2>
