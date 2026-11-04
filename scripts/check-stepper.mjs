@@ -103,7 +103,7 @@ try {
       await page.goto(origin + '/lab/', { waitUntil: 'networkidle' }); await page.evaluate(() => document.fonts.ready);
       const cards = page.locator('.workbook-planned'); assert.ok(await cards.count() >= 10);
       for (const card of await cards.all()) {
-        assert.equal(await card.locator('.kicker').textContent(), '추후 개발 예정');
+        assert.equal(await card.locator('.workbook-card__state').textContent(), '추후 개발 예정');
         assert.equal(await card.locator('dt').count(), 3);
         for (const a of await card.locator('a').all()) assert.match(await a.getAttribute('href'), /^\/learn\/(projects|security)\/#/);
       }
