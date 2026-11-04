@@ -405,6 +405,8 @@ export interface SearchItem {
 }
 
 const TOPICS: SearchItem[] = [
+  { title: '0단계: 왜 이렇게 많은 무선 기술이 있을까', sub: '학습', href: '/learn/why/', terms: '0단계 왜 생겼나 역사 파장 주파수 변조 OOK FSK 433MHz 2.4GHz 안테나 c=fλ 프로토콜 GPS' },
+  { title: '실험과 개발 기술노트', sub: '학습', href: '/learn/projects/', terms: '프로젝트 실험 주제 개발 기술노트 방별 RSSI 채널 혼잡 롤링 코드 첫 위치 CSV 분석' },
   { title: '학습 홈', sub: '학습', href: '/learn/', terms: '학습 시작 목표 동선 learn 교재 준비물' },
   { title: '메뉴부터 태그 읽기까지 따라 하기', sub: '학습', href: '/learn/device/', terms: '화면 따라 하기 메인 메뉴 About More Card Reader Waiting for tag Mode OK SCAN Info Cancel Exit Back Prev Next' },
   { title: 'About의 버전 세 가지', sub: '학습', href: '/learn/device/#about', terms: 'About 버전 1.7.2 MK SIGNAL V1.2 V2.1 Games' },

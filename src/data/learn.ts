@@ -127,13 +127,13 @@ export interface MenuItem {
 
 // 화면과 같은 배치: 왼쪽 줄, 오른쪽 줄 순서로 번갈아 놓는다.
 export const MAIN_MENU: MenuItem[] = [
-  { id: 'wifi', name: 'WiFi', ko: '와이파이', role: '주변 공유기와 채널을 살펴보는 도구 모음입니다.', next: 'WiFi를 고르면 기능 목록이 나옵니다.', checked: '메뉴 표시만 확인. 실행은 미확인.', href: '/guide/wifi/', linkLabel: 'Wi-Fi 기능 가이드' },
-  { id: 'bluetooth', name: 'Bluetooth', ko: '블루투스', role: '주변 BLE 기기가 보내는 신호를 관찰하는 도구 모음입니다.', next: 'Bluetooth를 고르면 기능 목록이 나옵니다.', checked: '메뉴 표시만 확인. 실행은 미확인.', href: '/guide/ble/', linkLabel: 'BLE 기능 가이드' },
-  { id: '24ghz', name: '2.4GHz', ko: '2.4GHz 대역', role: '2.4GHz 대역의 신호 에너지를 살펴보는 도구 모음입니다.', next: '2.4GHz를 고르면 기능 목록이 나옵니다.', checked: '메뉴 표시만 확인. 실행은 미확인.', href: '/guide/24ghz/', linkLabel: '2.4GHz 기능 가이드' },
-  { id: 'subghz', name: 'SubGHz', ko: '1GHz 아래 대역', role: '리모컨 등이 쓰는 낮은 주파수를 다루는 도구 모음입니다.', next: 'SubGHz를 고르면 기능 목록이 나옵니다.', checked: '메뉴 표시만 확인. 실행은 미확인.', href: '/guide/subghz/', linkLabel: 'Sub-GHz 기능 가이드' },
+  { id: 'wifi', name: 'WiFi', ko: '와이파이', role: '주변 공유기와 채널을 살펴보는 도구 모음입니다.', next: 'WiFi를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/wifi/', linkLabel: 'Wi-Fi 기능 가이드' },
+  { id: 'bluetooth', name: 'Bluetooth', ko: '블루투스', role: '주변 BLE 기기가 보내는 신호를 관찰하는 도구 모음입니다.', next: 'Bluetooth를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/ble/', linkLabel: 'BLE 기능 가이드' },
+  { id: '24ghz', name: '2.4GHz', ko: '2.4GHz 대역', role: '2.4GHz 대역의 신호 에너지를 살펴보는 도구 모음입니다.', next: '2.4GHz를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/24ghz/', linkLabel: '2.4GHz 기능 가이드' },
+  { id: 'subghz', name: 'SubGHz', ko: '1GHz 아래 대역', role: '리모컨 등이 쓰는 낮은 주파수를 다루는 도구 모음입니다.', next: 'SubGHz를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/subghz/', linkLabel: 'Sub-GHz 기능 가이드' },
   { id: 'more', name: 'More', ko: '더보기', role: 'IR Remote, RFID/NFC, GPS, Games를 모아 둔 메뉴입니다.', next: 'NFC 실험은 More → RFID/NFC → Card Reader 순서로 갑니다.', checked: '하위 메뉴까지 확인. NFC 읽기만 실행 확인.', href: '#more', linkLabel: 'More 화면 보기' },
-  { id: 'tools', name: 'Tools', ko: '도구', role: '시리얼 모니터, 펌웨어 업데이트, 터치 보정, SD 파일 관리 같은 관리 도구입니다.', next: 'Tools를 고르면 기능 목록이 나옵니다.', checked: '메뉴 표시만 확인. 실행은 미확인.', href: '/guide/system/', linkLabel: '시스템 기능 가이드' },
-  { id: 'settings', name: 'Settings', ko: '설정', role: '밝기, 화면 테마, 표시등, 자동 스캔을 바꿉니다.', next: 'Settings를 고르면 설정 화면이 바로 열립니다.', checked: '메뉴 표시만 확인. 실행은 미확인.', href: '/guide/system/#settings', linkLabel: '설정 가이드' },
+  { id: 'tools', name: 'Tools', ko: '도구', role: '시리얼 모니터, 펌웨어 업데이트, 터치 보정, SD 파일 관리 같은 관리 도구입니다.', next: 'Tools를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/system/', linkLabel: '시스템 기능 가이드' },
+  { id: 'settings', name: 'Settings', ko: '설정', role: '밝기, 화면 테마, 표시등, 자동 스캔을 바꿉니다.', next: 'Settings를 고르면 설정 화면이 바로 열립니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/system/#settings', linkLabel: '설정 가이드' },
   { id: 'about', name: 'About', ko: '기기 정보', role: '기기 이름, 펌웨어, 보드, 빌드 이름을 보여 줍니다.', next: 'About을 고르면 정보 화면이 열립니다.', checked: '화면 내용까지 확인.', href: '#about', linkLabel: 'About 화면 보기' },
 ];
 
@@ -190,9 +190,11 @@ export const SCREEN_CAPTION = '실제 화면을 바탕으로 재구성한 학습
 
 export const LEARN_LINKS: [string, string][] = [
   ['/learn/', '학습 홈'],
+  ['/learn/why/', '0단계: 왜 생겼나'],
   ['/learn/device/', '화면 따라 하기'],
   ['/learn/nfc/', 'NFC 원리'],
   ['/learn/network/', 'Wi-Fi와 네트워크'],
   ['/learn/glossary/', '용어 사전'],
   ['/lab/nfc/', '실험 워크북'],
+  ['/learn/projects/', '기술노트'],
 ];

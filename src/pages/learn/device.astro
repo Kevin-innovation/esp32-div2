@@ -26,7 +26,8 @@ const functions = [
   toc={[['menu', '메인 메뉴 8개'], ['status-bar', '위쪽 상태 표시'], ['about', 'About 읽기'], ['more', 'More'], ['nfc-menu', 'RFID/NFC 목록'], ['reader', '태그 읽기'], ['info', 'Info 화면'], ['again', '다시 읽기'], ['functions', 'NFC 메뉴 차이'], ['think', '생각해 보기']]}
   sources={['deviceScreens', 'navigation', 'codeMenu', 'nfcOverview', 'nfcReader', 'pn532']}
 >
-  <section id="menu" aria-labelledby="h-menu">
+  <p class="small muted">메뉴가 왜 이렇게 나뉘었는지 궁금하면 <a href={url('/learn/why/')}>0단계</a>를 먼저 보세요.</p>
+  <section id="menu" aria-labelledby="h-menu" style="margin-top: var(--space-lg)">
     <h2 id="h-menu">메인 메뉴 8개</h2>
     <ScreenShot name="main-menu" />
     <p>아래 버튼은 화면과 같은 배치입니다. 고르면 역할과 다음 화면, 어디까지 확인했는지 보여 줍니다.</p>

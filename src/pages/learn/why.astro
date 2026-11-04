@@ -1,0 +1,189 @@
+---
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import Think from '../../components/learn/Think.astro';
+import { SOURCES } from '../../data/sources';
+import { url } from '../../lib/url';
+
+const C = 300_000_000;
+const lambdaCm = (hz: number) => (C / hz) * 100;
+const bands = [
+  { name: '433MHz', hz: 433_000_000 },
+  { name: '2.4GHz (2400MHz)', hz: 2_400_000_000 },
+].map((b) => ({ ...b, full: lambdaCm(b.hz), quarter: lambdaCm(b.hz) / 4 }));
+const longest = bands[0].full;
+// 두 열이 같은 축척이 되도록 % 대신 rem으로 그린다.
+const pct = (cm: number) => `${((cm / longest) * 7).toFixed(2)}rem`;
+
+/** SVG polyline 좌표. fn(x)는 위아래 -1~1 값을 돌려준다. */
+const line = (fn: (x: number) => number, width = 600, mid = 30, amp = 24) =>
+  Array.from({ length: width + 1 }, (_, x) => `${x},${(mid - fn(x) * amp).toFixed(1)}`).join(' ');
+// 433MHz 한 파장을 300단위로 그리면 2.4GHz 한 파장은 같은 비율로 줄어든다.
+const unit = 300;
+const lowWave = line((x) => Math.sin((2 * Math.PI * x) / unit));
+const highWave = line((x) => Math.sin((2 * Math.PI * x) / (unit * (433 / 2400))));
+const bits = [1, 0, 1, 1, 0];
+const bitAt = (x: number) => bits[Math.min(Math.floor(x / 120), bits.length - 1)];
+const ook = line((x) => bitAt(x) * Math.sin((2 * Math.PI * x) / 20));
+let phase = 0;
+const fsk = line((x) => {
+  phase += (2 * Math.PI) / (bitAt(x) ? 14 : 34);
+  return Math.sin(phase);
+});
+
+const stories = [
+  { id: 'wifi', title: '집 안 어디서나 인터넷: Wi-Fi', scene: '컴퓨터는 랜선이 닿는 책상에 묶여 있었습니다. 노트북을 소파로 옮기면 인터넷이 끊겼습니다.', born: '선 대신 전파로 같은 네트워크에 들어가면 됩니다. Wi-Fi의 바탕이 된 IEEE 802.11 표준은 1997년에 처음 나왔습니다.', how: '공유기(AP)와 단말기가 전파로 프레임을 주고받습니다.', cost: '속도가 빠른 대신 전력을 많이 쓰고, 근처 기기가 같은 채널을 나눠 씁니다.', ask: '방마다 내 공유기 신호는 얼마나 다를까?', next: ['/learn/projects/#wifi-rssi', '방별 Wi-Fi 신호 기록'] },
+  { id: 'ble', title: '건전지 하나로 오래: BLE', scene: '운동 밴드나 온도 센서는 Wi-Fi처럼 전력을 쓰면 금방 꺼집니다. 보낼 데이터도 몇 글자뿐입니다.', born: 'Bluetooth SIG는 LE 라디오를 아주 적은 전력으로 동작하도록 설계했다고 설명합니다.', how: '기기가 짧은 광고 신호로 존재를 알리고, 필요할 때만 연결합니다.', cost: '전력을 아끼는 대신 많은 데이터를 빨리 보내는 일에는 맞지 않습니다.', ask: '내 기기가 연결되면 목록에서 어떻게 달라질까?', next: ['/learn/projects/#ble-rssi', 'BLE 광고와 연결 비교'] },
+  { id: 'ir', title: '버튼 한 번: 적외선 리모컨', scene: 'TV 채널을 소파에서 바꾸고 싶습니다. 복잡한 연결 과정은 필요 없습니다.', born: '값싼 LED 하나로 명령 몇 개만 보내면 충분했습니다.', how: '전파가 아니라 눈에 안 보이는 빛을 빠르게 깜빡여 보냅니다.', cost: '빛이 직접 닿거나 반사되는 경로가 있어야 해서 벽을 넘지 못합니다. 빛이 닿는 범위에서 같은 코드를 쓰는 기기는 함께 반응할 수 있습니다.', ask: '버튼마다 깜빡임은 어떻게 다를까?', next: ['/learn/projects/#ir-remote', '내 리모컨 신호 비교'] },
+  { id: 'nfc', title: '대기만 하면 끝: NFC', scene: '지하철 개찰구에서 카드를 꺼내 넣고 싶지 않습니다. 그렇다고 멀리 있는 다른 사람 카드가 읽혀서도 안 됩니다.', born: '일부러 아주 가까이 대야 동작하게 만들면 “대는 동작”이 곧 의사 표시가 됩니다.', how: '13.56MHz 근접 자기장으로 전원이 없는 태그에 에너지를 주고 답을 받습니다.', cost: '거리가 짧고 방향과 위치에 민감합니다.', ask: '지갑이나 가방 안에서도 인식될까?', next: ['/lab/nfc/', 'NFC 실험 워크북'] },
+  { id: 'subghz', title: '적은 데이터를 멀리: Sub-GHz', scene: '차고 리모컨이나 창문 센서는 “열림” 한 마디면 되지만, 벽 너머까지 닿아야 하고 건전지는 오래가야 합니다.', born: '1GHz 아래 대역에서 데이터를 줄이면 이런 쓰임에 맞출 수 있습니다. 433MHz는 그중 한 예입니다.', how: '단순한 변조로 짧은 값을 보냅니다.', cost: '많은 데이터에는 맞지 않고, 쓸 수 있는 주파수와 출력이 나라마다 다릅니다.', ask: '내 실험 송신기를 어디까지 받을 수 있을까?', next: ['/learn/projects/#subghz-receive', '내 송신기 수신 조건'] },
+  { id: 'gps', title: '나는 지금 어디에: GPS', scene: '처음 가는 길에서 지도 위의 내 위치를 알고 싶습니다. 주변에 기지국이나 공유기가 없어도요.', born: '하늘의 위성이 시각이 담긴 신호를 보내면 받는 쪽이 스스로 계산할 수 있습니다.', how: '수신기가 위성 신호의 도달 시간으로 거리를 구합니다. NIST 설명에 따르면 위치를 잡으려면 위성이 최소 4개 필요합니다. 수신기 시계의 어긋남까지 함께 풀어야 하기 때문입니다.', cost: '신호가 약해 건물 안에서 잘 안 잡히고, 첫 위치까지 시간이 걸립니다.', ask: '실내, 창가, 야외에서 얼마나 다를까?', next: ['/learn/projects/#gps-first-fix', 'GPS 첫 위치 시간'] },
+];
+---
+<LearnLayout
+  title="0단계: 왜 생겼나"
+  heading="왜 이렇게 많은 무선 기술이 있을까"
+  lead="기술마다 잘 푸는 생활 문제가 다릅니다. 집의 유선 컴퓨터에서 출발해 여섯 가지 무선이 왜 따로 있는지 따라갑니다."
+  description="Wi-Fi, BLE, IR, NFC, Sub-GHz, GPS가 왜 생겼는지 생활 장면으로 이해하고, 주파수와 프로토콜, 파장과 변조를 배웁니다."
+  toc={[['scene', '하루의 장면'], ...stories.map((s): [string, string] => [s.id, s.title.split(': ')[1]]), ['layers', '주파수, 언어, 내용'], ['wave', '파장과 변조'], ['myths', '자주 하는 오해'], ['antenna', '안테나가 여러 개인 이유'], ['same-band', '같은 2.4GHz, 다른 언어'], ['think', '생각해 보기'], ['next', '다음 단계']]}
+  sources={['ieeeWifi', 'btTech', 'btRange', 'espBle', 'tiCc1101', 'nordicNrf24', 'nistGps', 'gpsTrilateration', 'ntag', 'metal', 'deviceScreens']}
+>
+  <section id="scene" aria-labelledby="h-scene">
+    <h2 id="h-scene">하루의 장면에서 시작하기</h2>
+    <p>아래 이야기는 실제 발명 순서나 역사가 아닙니다. 각 기술이 어떤 문제에 잘 맞는지 생활 장면으로 재구성한 도입입니다.</p>
+    <p>책상의 컴퓨터는 랜선으로 인터넷에 붙어 있습니다. 선 없이 네트워크에 들어가려면 Wi-Fi가 맞습니다. 손목 밴드처럼 건전지가 작은 기기에는 그 전력이 부담이어서 BLE가 더 어울립니다.</p>
+    <p>TV는 버튼 하나면 충분하니 값싼 적외선이 어울립니다. 개찰구에는 카드를 대기만 하면 되는 NFC가, 벽 너머의 작은 센서에는 낮은 대역이, 처음 가는 길에는 위성이 맞습니다. <strong>하나가 더 좋아서가 아니라 풀려는 문제가 달라서 따로 씁니다.</strong></p>
+    <p class="small muted">이 기기에서 실행을 확인한 것은 NFC 읽기입니다. 다른 기능의 실험 주제는 공식 문서 기준입니다.</p>
+  </section>
+
+  {stories.map((s) => (
+    <section id={s.id} aria-labelledby={`h-${s.id}`}>
+      <h2 id={`h-${s.id}`} style="font-size: var(--text-xl)">{s.title}</h2>
+      <dl class="facts">
+        <div><dt>생활 장면</dt><dd>{s.scene}</dd></div>
+        <div><dt>왜 이 방식인가</dt><dd>{s.born}</dd></div>
+        <div><dt>작동</dt><dd>{s.how}</dd></div>
+        <div><dt>절충</dt><dd>{s.cost}</dd></div>
+        <div><dt>실험 질문</dt><dd>{s.ask}</dd></div>
+        <div><dt>만들 것</dt><dd><a href={url(s.next[0])}>{s.next[1]}</a></dd></div>
+      </dl>
+      {s.id === 'nfc' && <p class="small">식별과 결제가 어떻게 다른지는 <a href={url('/lab/nfc/#security')}>태그와 EMV 결제 비교</a>에 있습니다.</p>}
+      {s.id === 'gps' && <p class="small">GPS 수신기는 위성에 신호를 보내지 않습니다. 위성이 나를 추적하는 것이 아니라 수신기가 스스로 위치를 계산합니다. 휴대폰이 위치를 서버로 보낸다면 그것은 앱의 별도 통신입니다. GNSS는 위성 항법 체계의 총칭이고 GPS는 그중 미국 체계입니다. 이 기기의 GPS 모듈 종류와 수신은 확인하지 못했습니다.</p>}
+    </section>
+  ))}
+
+  <section id="layers" aria-labelledby="h-layers">
+    <h2 id="h-layers">주파수, 언어, 내용은 서로 다릅니다</h2>
+    <p>라디오에 비유하면 <strong>주파수</strong>는 어느 방송국에 맞출지, <strong>프로토콜</strong>은 어떤 언어로 어떤 순서로 말할지, <strong>정보 내용</strong>은 실제 말의 뜻입니다. 같은 주파수에 맞춰도 언어를 모르면 뜻을 알 수 없습니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="주파수, 프로토콜, 내용 예">
+      <table>
+        <thead><tr><th scope="col">기술</th><th scope="col">주파수</th><th scope="col">프로토콜</th><th scope="col">내용의 예</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Wi-Fi</th><td>2.4GHz 등</td><td>IEEE 802.11</td><td>웹 페이지 요청</td></tr>
+          <tr><th scope="row">BLE</th><td>2.4GHz</td><td>Bluetooth LE</td><td>센서 값</td></tr>
+          <tr><th scope="row">NFC 태그</th><td>13.56MHz</td><td>ISO14443A</td><td>UID, 메모리 값</td></tr>
+          <tr><th scope="row">IR 리모컨</th><td>전파 아닌 빛</td><td>리모컨 방식마다 다름</td><td>전원 버튼 명령</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="wave" aria-labelledby="h-wave">
+    <h2 id="h-wave">파장과 변조</h2>
+    <ul>
+      <li><strong>진폭:</strong> 파동의 높이입니다. 신호의 세기와 관련됩니다.</li>
+      <li><strong>주기:</strong> 한 번 반복하는 데 걸리는 시간입니다. 주파수는 1초 동안의 반복 횟수입니다.</li>
+      <li><strong>파장:</strong> 한 번 반복하는 동안 파동이 나아가는 길이입니다.</li>
+    </ul>
+    <p>전파의 속도 c는 약 30만 km/s이므로 <strong>c = f × λ</strong>입니다. 주파수 f가 커지면 파장 λ는 짧아집니다.</p>
+    <figure class="wave-fig">
+      <svg viewBox="0 0 600 60" role="img" aria-label="433MHz 파동. 그림에서 한 파장이 넓게 보인다."><polyline points={lowWave} /></svg>
+      <figcaption>433MHz: 한 번 반복이 길게 보입니다.</figcaption>
+      <svg viewBox="0 0 600 60" role="img" aria-label="2.4GHz 파동. 같은 폭에 파동이 약 5.5배 더 많이 들어간다."><polyline points={highWave} /></svg>
+      <figcaption>2.4GHz: 같은 축척에서 약 5.5배 촘촘합니다.</figcaption>
+    </figure>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="433MHz와 2.4GHz 파장 계산">
+      <table>
+        <caption>c = 3억 m/s로 어림한 계산입니다.</caption>
+        <thead><tr><th scope="col">주파수</th><th scope="col">파장</th><th scope="col">이론 1/4 파장</th></tr></thead>
+        <tbody>
+          {bands.map((b) => (
+            <tr>
+              <th scope="row">{b.name}</th>
+              <td>약 {b.full.toFixed(1)}cm <span class="len-bar" style={`width:${pct(b.full)}`}></span></td>
+              <td>약 {b.quarter.toFixed(1)}cm <span class="len-bar" style={`width:${pct(b.quarter)}`}></span></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>1/4 파장은 안테나 길이를 어림하는 교과서 값입니다. <strong>실제 안테나 규격이 아닙니다.</strong> 실제 길이는 안테나 구조와 재료, 주변 물체에 따라 달라집니다.</p>
+
+    <h3>변조: 파동에 정보를 싣는 방법</h3>
+    <p>일정한 파동만으로는 아무 뜻도 전하지 못합니다. 파동의 성질을 규칙대로 바꾸는 것이 변조입니다. 아래는 같은 값 <code>1 0 1 1 0</code>을 보내는 모형입니다.</p>
+    <figure class="wave-fig">
+      <svg viewBox="0 0 600 60" role="img" aria-label="OOK 모형. 1일 때 파동이 있고 0일 때 사라진다."><polyline points={ook} /></svg>
+      <figcaption><strong>OOK:</strong> 1이면 켜고 0이면 끕니다. 단순해서 작은 리모컨에 흔합니다.</figcaption>
+      <svg viewBox="0 0 600 60" role="img" aria-label="FSK 모형. 1일 때 촘촘하고 0일 때 성긴 파동이 계속된다."><polyline points={fsk} /></svg>
+      <figcaption><strong>FSK:</strong> 1과 0을 서로 다른 주파수로 보냅니다. 파동이 끊기지 않습니다.</figcaption>
+    </figure>
+    <p class="small muted">비율을 보이기 위한 원리 그림입니다. 실제 신호를 측정한 그래프가 아닙니다.</p>
+  </section>
+
+  <section id="myths" aria-labelledby="h-myths">
+    <h2 id="h-myths">자주 하는 오해 두 가지</h2>
+    <ul>
+      <li><strong>“낮은 주파수는 항상 더 멀리 간다.”</strong> 조건이 같다면 유리한 면이 있지만, 실제 거리는 다른 것에도 달려 있습니다.</li>
+      <li><strong>“높은 주파수는 항상 더 빠르다.”</strong> 속도는 주파수의 숫자보다 쓸 수 있는 대역폭과 변조, 신호 품질에 크게 좌우됩니다.</li>
+    </ul>
+    <p>실제 거리와 속도를 정하는 것은 <strong>출력, 안테나, 수신 감도, 대역폭, 장애물, 규제</strong>의 조합입니다. Bluetooth SIG도 거리를 <a href={SOURCES.btRange.url} rel="noopener">출력, 감도, 안테나, 환경의 절충</a>으로 설명합니다.</p>
+  </section>
+
+  <section id="antenna" aria-labelledby="h-antenna">
+    <h2 id="h-antenna">이 기기에 안테나가 여러 개인 이유</h2>
+    <p>안테나 하나로 모든 대역을 잘 받기는 어렵습니다. 대역과 칩을 나누면 다음과 같은 장점이 있습니다.</p>
+    <ul>
+      <li><strong>공진:</strong> 안테나는 구조에 맞는 주파수에서 효율이 좋습니다.</li>
+      <li><strong>임피던스 정합:</strong> 회로와 안테나가 맞아야 신호가 되돌아가지 않고 전달됩니다.</li>
+      <li><strong>필터:</strong> 원하는 대역만 통과시키는 부품이 대역마다 다릅니다.</li>
+      <li><strong>다른 무선 칩과 회로:</strong> 공식 문서상 Wi-Fi·BLE, NRF24, CC1101은 서로 다른 칩입니다. 동시에 일하려면 경로를 나누는 편이 낫습니다.</li>
+    </ul>
+    <div class="callout">
+      <p><strong>확인된 것과 아닌 것을 나눠 읽으세요.</strong> 뒷면의 <code>2G4</code> 표기 셋은 표기가 같을 뿐, 어느 칩에 연결되는지와 주파수 설정이 서로 어떤지는 확인하지 못했습니다. 세 단자가 서로 다른 주파수라고 단정하지 않습니다.</p>
+      <p><code>433M</code>도 마찬가지입니다. <a href={SOURCES.tiCc1101.url} rel="noopener">TI CC1101</a>은 칩 자체로 300~348, 387~464, 779~928MHz를 지원합니다. 하지만 <strong>칩이 지원하는 범위, 실물 안테나와 회로가 맞춰진 대역, 펌웨어 설정</strong>은 서로 다른 이야기입니다. 칩이 지원한다고 이 기기가 그 대역을 모두 잘 쓴다는 뜻은 아닙니다.</p>
+    </div>
+  </section>
+
+  <section id="same-band" aria-labelledby="h-same-band">
+    <h2 id="h-same-band">같은 2.4GHz, 다른 언어</h2>
+    <p>Wi-Fi, BLE, NRF24는 모두 2.4GHz 근처를 쓰지만 채널 나누는 법, 패킷 모양, 절차가 달라 서로 직접 통하지 않습니다. 같은 동네에서 다른 언어로 말하는 셈입니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="2.4GHz 세 기술 비교">
+      <table>
+        <thead><tr><th scope="col">기술</th><th scope="col">근거 자료의 설명</th><th scope="col">기억할 점</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Wi-Fi</th><td>IEEE 802.11</td><td>이 기기 내장 칩은 <a href={SOURCES.espDatasheet.url} rel="noopener">2.4GHz</a>입니다.</td></tr>
+          <tr><th scope="row">BLE</th><td><a href={SOURCES.btTech.url} rel="noopener">2.402~2.480GHz, 2MHz 간격 40채널</a></td><td>ESP32-S3는 <a href={SOURCES.espBle.url} rel="noopener">LE만 지원</a>합니다.</td></tr>
+          <tr><th scope="row">NRF24</th><td><a href={SOURCES.nordicNrf24.url} rel="noopener">Nordic의 Enhanced ShockBurst</a></td><td>인터넷용 Wi-Fi 칩이 아닙니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>그래서 같은 대역의 에너지는 함께 보일 수 있어도, 메시지는 서로 해석하지 못합니다. 대역을 함께 쓰면 서로 방해가 될 수는 있습니다.</p>
+  </section>
+
+  <section id="think" aria-labelledby="h-think">
+    <h2 id="h-think">생각해 보기</h2>
+    <Think q="433MHz와 2.4GHz 가운데 더 좋은 쪽은 무엇인가요?">
+      <p>정답이 없습니다. 보낼 데이터 양, 거리, 전력, 안테나 크기, 그 나라의 규정에 따라 달라집니다.</p>
+    </Think>
+    <Think q="2.4GHz 파장이 12.5cm면 안테나는 항상 3.1cm여야 하나요?">
+      <p>아닙니다. 1/4 파장은 어림값입니다. 실제 안테나는 구조와 재료, 정합 회로에 따라 길이가 다릅니다. 이 기기의 안테나도 재 보지 않았습니다.</p>
+    </Think>
+    <Think q="GPS로 내 위치를 알면 위성도 내 위치를 알까요?">
+      <p>아닙니다. 수신기가 받기만 해서 스스로 계산합니다. 다른 사람이 내 위치를 안다면 휴대폰 앱 등이 인터넷으로 따로 보냈기 때문입니다.</p>
+    </Think>
+  </section>
+
+  <section id="next" aria-labelledby="h-next">
+    <h2 id="h-next">다음 단계</h2>
+    <p>이제 <a href={url('/start/')}>처음 시작</a>에서 기기를 켜고, <a href={url('/learn/device/')}>화면 따라 하기</a>로 태그를 읽어 봅니다. 해 보고 싶은 질문은 <a href={url('/learn/projects/')}>실험과 개발 기술노트</a>에 모아 두었습니다.</p>
+  </section>
+</LearnLayout>

@@ -1,6 +1,6 @@
 // 한글 용어 사전. 각 항목은 뜻, 실제 예, 헷갈리는 점, 관련 학습 위치를 함께 적는다.
 
-export const GLOSSARY_CATEGORIES = ['NFC', '데이터 표현', 'Wi-Fi', '인터넷', 'BLE', '탐구 방법'] as const;
+export const GLOSSARY_CATEGORIES = ['전파 기초', 'NFC', '데이터 표현', 'Wi-Fi', '인터넷', 'BLE', '탐구 방법'] as const;
 export type GlossaryCategory = (typeof GLOSSARY_CATEGORIES)[number];
 
 export interface Term {
@@ -37,6 +37,26 @@ const group = (category: GlossaryCategory, rows: Row[]): Term[] =>
   rows.map(([id, ko, en, aliases, mean, example, confuse, href, hrefLabel]) => ({ id, ko, en, aliases, category, mean, example, confuse, href, hrefLabel }));
 
 export const GLOSSARY: Term[] = [
+  ...group('전파 기초', [
+    ['amplitude', '진폭', 'Amplitude', ['파동 높이'], '파동이 위아래로 흔들리는 높이입니다.', 'OOK는 진폭을 켜고 끄는 방식입니다.', '진폭이 크다고 주파수가 높은 것은 아닙니다.', '/learn/why/#wave', '파장과 변조'],
+    ['period', '주기', 'Period', ['T'], '파동이 한 번 반복하는 데 걸리는 시간입니다.', '주파수가 2배면 주기는 절반입니다.', '주기는 시간이고 파장은 길이입니다.', '/learn/why/#wave', '파장과 변조'],
+    ['wavelength', '파장', 'Wavelength', ['람다', 'λ'], '파동이 한 번 반복하는 동안 나아가는 길이입니다.', '2.4GHz는 약 12.5cm, 433MHz는 약 69cm입니다.', '파장을 곧 실제 안테나 길이로 생각하면 안 됩니다.', '/learn/why/#wave', '파장과 변조'],
+    ['modulation', '변조', 'Modulation', ['모듈레이션'], '파동의 성질을 규칙대로 바꿔 정보를 싣는 일입니다.', 'OOK, FSK가 있습니다.', '변조는 신호에 싣는 방법이고, 암호화와는 다릅니다.', '/learn/why/#wave', '파장과 변조'],
+    ['ook', '온오프 변조', 'OOK', ['On-Off Keying', 'ASK'], '1이면 신호를 켜고 0이면 끄는 단순한 변조입니다.', '값싼 리모컨에 흔합니다.', 'ASK의 가장 단순한 형태입니다. 모든 ASK가 완전히 끄는 것은 아닙니다.', '/learn/why/#wave', '파장과 변조'],
+    ['fsk', '주파수 변조 방식', 'FSK', ['Frequency Shift Keying'], '1과 0을 서로 다른 주파수로 보내는 변조입니다.', 'CC1101 칩이 지원하는 방식 가운데 하나입니다.', '파동이 끊기지 않습니다. OOK보다 잡음에 유리한 경우가 많지만 항상 그렇지는 않습니다.', '/learn/why/#wave', '파장과 변조'],
+    ['carrier', '반송파', 'Carrier', ['캐리어'], '정보를 실어 나르는 기본 파동입니다.', 'IR 리모컨은 흔히 38kHz로 빛을 깜빡입니다.', '반송파 자체에는 정보가 없고, 변조해야 정보가 실립니다.', '/learn/why/#wave', '파장과 변조'],
+    ['antenna-resonance', '공진', 'Resonance', ['공명'], '구조에 맞는 주파수에서 안테나 효율이 좋아지는 현상입니다.', '대역별로 안테나를 나누는 이유 가운데 하나입니다.', '공진한다고 어디서나 잘 되는 것은 아닙니다. 주변 물체로 어긋날 수 있습니다.', '/learn/why/#antenna', '안테나가 여러 개인 이유'],
+    ['impedance-matching', '임피던스 정합', 'Impedance matching', ['정합', '매칭'], '회로와 안테나의 전기적 특성을 맞춰 신호가 잘 전달되게 하는 일입니다.', '맞지 않으면 신호 일부가 되돌아갑니다.', '단자 모양이 맞는다고 정합까지 맞는 것은 아닙니다.', '/learn/why/#antenna', '안테나가 여러 개인 이유'],
+    ['rf-filter', '대역 필터', 'Filter', ['RF 필터'], '원하는 주파수만 통과시키는 회로입니다.', '다른 대역의 강한 신호를 줄입니다.', '칩의 지원 범위가 넓어도 필터가 좁으면 그 대역만 잘 됩니다.', '/learn/why/#antenna', '안테나가 여러 개인 이유'],
+    ['sensitivity', '수신 감도', 'Receiver sensitivity', ['감도'], '수신기가 받아 낼 수 있는 가장 약한 신호의 세기입니다.', '거리를 정하는 요소 가운데 하나입니다.', '안테나와 별개로 칩과 회로에 달려 있습니다.', '/learn/why/#myths', '자주 하는 오해'],
+    ['subghz-term', '서브기가헤르츠', 'Sub-GHz', ['SubGHz', '1GHz 이하'], '1GHz 아래 대역을 넓게 부르는 말입니다.', '433MHz는 그 가운데 한 예입니다.', 'Sub-GHz가 곧 433MHz는 아닙니다. 쓸 수 있는 대역은 나라마다 다릅니다.', '/learn/why/#subghz', 'Sub-GHz 이야기'],
+    ['cc1101', 'CC1101', 'CC1101', ['TI CC1101'], 'TI의 1GHz 이하 무선 칩입니다. 공식 문서가 이 기기 계열에 쓴다고 설명합니다.', '칩의 지원 범위는 300~348, 387~464, 779~928MHz입니다.', '칩 지원 범위와 실물 안테나, 펌웨어 설정은 다른 이야기입니다.', '/learn/why/#antenna', '안테나가 여러 개인 이유'],
+    ['nrf24', 'NRF24', 'nRF24', ['nRF24L01', 'Enhanced ShockBurst', 'ESB'], 'Nordic의 2.4GHz 무선 칩 계열입니다. Enhanced ShockBurst라는 자체 방식을 씁니다.', '공식 문서가 2.4GHz 메뉴에 쓴다고 설명합니다.', 'Wi-Fi 칩이 아닙니다. 같은 대역이어도 공유기와 직접 통하지 않습니다.', '/learn/why/#same-band', '같은 2.4GHz, 다른 언어'],
+    ['rolling-code', '롤링 코드', 'Rolling code', ['코드 변경'], '누를 때마다 값이 바뀌는 리모컨 방식입니다.', '많은 차량 키가 이런 방식을 씁니다.', '같은 값을 다시 보내도 그대로 통하지 않게 만든 방식입니다.', '/learn/projects/#subghz-receive', '내 송신기 수신 조건'],
+    ['ir-term', '적외선', 'Infrared, IR', ['IR 리모컨'], '눈에 보이지 않는 빛입니다. 리모컨은 이 빛을 깜빡여 신호를 보냅니다.', 'More → IR Remote 메뉴입니다.', '전파가 아니라 빛이어서 벽을 넘지 못합니다. 직접 닿거나 반사된 빛이 필요합니다.', '/learn/why/#ir', '적외선 이야기'],
+    ['gps-term', 'GPS 위성 항법', 'GPS', ['GNSS', '위성 위치'], '위성 신호의 도달 시간으로 수신기가 스스로 위치를 계산하는 체계입니다.', 'More → GPS 메뉴입니다.', 'GNSS는 위성 항법 체계의 총칭이고 GPS는 그중 미국 체계입니다. 수신기는 위성에 신호를 보내지 않습니다.', '/learn/why/#gps', 'GPS 이야기'],
+    ['position-fix', '위치 고정', 'Position fix', ['fix', '첫 위치', 'TTFF'], '수신기가 위치 계산에 성공한 상태입니다.', '위치를 잡으려면 위성이 최소 4개 필요합니다.', '신호를 못 받은 것은 정확도 0이 아니라 값을 얻지 못한 것입니다.', '/learn/projects/#gps-first-fix', 'GPS 첫 위치 시간'],
+  ]),
   ...group('NFC', [
     ['nfc', '근거리 무선 통신', 'NFC', ['Near Field Communication'], '아주 가까운 거리에서 13.56MHz 자기장으로 데이터를 주고받는 기술입니다.', '교통카드를 단말기에 대는 동작이 같은 계열입니다.', '가깝다는 뜻이지 안전하다는 뜻은 아닙니다. 보안은 태그와 응용 설계에 달려 있습니다.', ...NFC_FLOW],
     ['rfid', '무선 식별', 'RFID', ['Radio Frequency Identification'], '전파로 물건이나 태그를 알아보는 기술 전체를 부르는 말입니다.', '도서관 책 태그, 물류 태그가 있습니다.', 'NFC는 RFID 가운데 13.56MHz 근거리 쪽 일부입니다. 모든 RFID가 NFC는 아닙니다.', ...NFC_FLOW],

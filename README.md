@@ -32,7 +32,7 @@ npm run check:nfc  # CSV 왕복, 입력 검증, 집계, 보고서 이스케이�
 
 ## 학습 과정
 
-`/learn/`에서 시작해 화면 따라 하기, NFC 원리, Wi-Fi와 네트워크, 용어 사전을 거쳐 `/lab/nfc/` 실험 워크북으로 이어집니다. 개발 계약과 완료 기준은 `docs/student-learning-plan.md`에 있습니다.
+`/learn/`에서 시작해 0단계(`/learn/why/`), 화면 따라 하기, NFC 원리, Wi-Fi와 네트워크, 용어 사전을 거쳐 `/lab/nfc/` 실험 워크북으로 이어집니다. 그 밖의 실험과 개발 주제는 `/learn/projects/`에 있습니다. 개발 계약과 완료 기준은 `docs/student-learning-plan.md`에 있습니다.
 
 ## 데이터
 
@@ -40,4 +40,4 @@ npm run check:nfc  # CSV 왕복, 입력 검증, 집계, 보고서 이스케이�
 
 ## 내용 수정
 
-기능 설명은 `src/data/guide.ts`, 학습 내용은 `src/data/learn.ts`, 용어는 `src/data/glossary.ts`, 출처와 확인 날짜는 `src/data/sources.ts`, NFC 계산과 CSV 처리는 `src/lib/nfc.ts`에 있습니다.
+기능 설명은 `src/data/guide.ts`, 학습 내용은 `src/data/learn.ts`, 기술노트는 `src/data/projects.ts`, 용어는 `src/data/glossary.ts`, 출처와 확인 날짜는 `src/data/sources.ts`, NFC 계산과 CSV 처리는 `src/lib/nfc.ts`에 있습니다.
