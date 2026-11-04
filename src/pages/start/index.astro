@@ -4,9 +4,10 @@ import Evidence from '../../components/Evidence.astro';
 import Plate from '../../components/Plate.astro';
 import Sources from '../../components/Sources.astro';
 import back from '../../assets/device/back.jpg';
+import backCutout from '../../assets/device/back-cutout.webp';
+import frontCutout from '../../assets/device/front-cutout.webp';
 import ports from '../../assets/device/ports.jpg';
 import sideSwitch from '../../assets/device/switch.jpg';
-import front from '../../assets/device/front.jpg';
 import { url } from '../../lib/url';
 
 const toc = [
@@ -42,8 +43,12 @@ const toc = [
 
         <section id="antenna" aria-labelledby="h-antenna">
           <h2 id="h-antenna">2. 안테나 연결</h2>
-          <Plate src={back} alt="뒷면의 안테나 단자 사진. 433M 표기 아래로 2G4 표기가 세 번 있고 아래쪽에 GPS 표기가 있다." sizes="(min-width: 960px) 720px, 100vw" caption="뒷면 표기: 433M 1개, 2G4 3개, GPS 1개." />
-          <div class="tags"><Evidence kind="photo" /></div>
+          <Plate src={backCutout} alt="기기 뒷면의 소개용 이미지. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있다." sizes="(min-width: 960px) 640px, 100vw" widths={[640, 960, 1400, 1774]} cutout class="art-back" caption="실물 사진 기반 AI 편집 소개용 이미지입니다. 작은 각인이 생략되어 있어, 표기는 아래 원본 사진으로 확인합니다." />
+          <details>
+            <summary>안테나 표기 원본 사진 보기</summary>
+            <Plate src={back} alt="뒷면의 안테나 단자 원본 사진. 433M 표기 아래로 2G4 표기가 세 번 있고 아래쪽에 GPS 표기가 있다." sizes="(min-width: 960px) 720px, 100vw" caption="뒷면 표기: 433M 1개, 2G4 3개, GPS 1개." />
+            <div class="tags"><Evidence kind="photo" /></div>
+          </details>
           <ol>
             <li>전원을 끈 상태에서 시작합니다.</li>
             <li>받은 상태 그대로 체결되어 있다면 위치를 바꾸지 말고 손으로 살짝 조여 풀림만 확인합니다.</li>
@@ -58,10 +63,16 @@ const toc = [
 
         <section id="power" aria-labelledby="h-power">
           <h2 id="h-power">3. 전원과 USB-C</h2>
-          <Plate src={sideSwitch} alt="기기 긴 옆면 사진. 초록색 슬라이드 스위치 왼쪽과 오른쪽 멀리에 네모난 구멍이 있다." sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="긴 옆면의 초록 슬라이드 스위치와 네모난 구멍 두 개. 뒷면에는 스위치 옆으로 ON, OFF 음각이 있습니다." />
+          <details>
+            <summary>전원 스위치 원본 사진 보기</summary>
+            <Plate src={sideSwitch} alt="기기 긴 옆면 사진. 초록색 슬라이드 스위치 왼쪽과 오른쪽 멀리에 네모난 구멍이 있다." sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="긴 옆면의 초록 슬라이드 스위치와 네모난 구멍 두 개. 뒷면에는 스위치 옆으로 ON, OFF 음각이 있습니다." />
+          </details>
           <div class="tags"><Evidence kind="photo" /><Evidence kind="unverified" /></div>
           <p>스위치를 움직여 화면이 켜지는 쪽을 확인합니다. 슬라이드 방향과 켜짐의 관계는 직접 확인해 적어 두세요.</p>
-          <Plate src={ports} alt="USB-C 단자 두 개가 나란히 있는 짧은 옆면 사진" sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="USB-C 두 개. 케이스에 역할 표기가 보이지 않습니다." />
+          <details>
+            <summary>USB-C 원본 사진 보기</summary>
+            <Plate src={ports} alt="USB-C 단자 두 개가 나란히 있는 짧은 옆면 사진" sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="USB-C 두 개. 케이스에 역할 표기가 보이지 않습니다." />
+          </details>
           <h3>어느 포트가 무엇인지 확인하기</h3>
           <p>공식 문서는 CP2102가 펌웨어 설치와 시리얼 통신을, IP5306이 배터리 충전을 맡는다고 적습니다. 그 칩이 각 포트와 어떻게 이어지는지는 이 기기에서 확인되지 않았습니다.</p>
           <ol>
@@ -76,7 +87,7 @@ const toc = [
         <section id="controls" aria-labelledby="h-controls">
           <h2 id="h-controls">4. 조작</h2>
           <div class="split split--even">
-            <Plate src={front} alt="기기 앞면 사진. 위로 안테나 네 개, 가운데 화면, 그 위에 MK SIGNAL 글자, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 340px, 100vw" widths={[640, 960, 1100]} />
+            <Plate src={frontCutout} alt="기기 앞면의 소개용 이미지. 위로 안테나 네 개, 가운데 화면, 그 위에 MK SIGNAL 글자, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front" caption="실물 사진 기반 AI 편집 소개용 이미지입니다." />
             <div class="prose">
               <div class="tags"><Evidence kind="photo" /></div>
               <p>화면 아래 버튼은 십자로 놓인 5개입니다.</p>
