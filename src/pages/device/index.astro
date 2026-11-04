@@ -4,6 +4,8 @@ import Evidence from '../../components/Evidence.astro';
 import Plate from '../../components/Plate.astro';
 import Sources from '../../components/Sources.astro';
 import back from '../../assets/device/back.jpg';
+import backCutout from '../../assets/device/back-cutout.webp';
+import frontCutout from '../../assets/device/front-cutout.webp';
 import front from '../../assets/device/front.jpg';
 import ports from '../../assets/device/ports.jpg';
 import sideSwitch from '../../assets/device/switch.jpg';
@@ -54,18 +56,23 @@ const specs = [
     <header class="page-head">
       <h1>사진에 보이는 것만 먼저 믿기</h1>
       <p class="lead">번호마다 근거를 표시했습니다. 분해 사진이 없어 내부 부품은 어느 것도 직접 확인하지 못했습니다.</p>
+      <p class="small muted">기본 이미지는 AI 편집 소개용이며, 정확한 각인은 접힌 원본 사진에서 확인합니다.</p>
     </header>
 
     <section class="section" style="padding-top: 0" aria-labelledby="h-back">
       <h2 id="h-back">뒷면</h2>
       <div style="margin-top: var(--space-md)">
+        <Plate src={backCutout} alt="기기 뒷면의 소개용 이미지. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있다." sizes="(min-width: 960px) 800px, 100vw" widths={[640, 960, 1400, 1774]} cutout class="art-back" />
+      </div>
+      <details style="margin-top: var(--space-md)">
+        <summary>원본 사진과 번호 보기</summary>
         <Plate
           src={back}
           alt="ESP32-DIV V2.1 뒷면 사진에 번호 일곱 개를 표시했다. 번호별 설명은 사진 아래 목록에 있다."
           sizes="(min-width: 1280px) 1120px, 100vw"
           pins={backParts.map((p) => ({ n: p.n, x: p.x, y: p.y, label: p.title }))}
         />
-      </div>
+      </details>
       <ol class="legend" style="margin-top: var(--space-lg)">
         {backParts.map((p) => (
           <li id={p.id}>
@@ -85,6 +92,10 @@ const specs = [
         <div>
           <h2 id="h-front">앞면</h2>
           <div style="margin-top: var(--space-md)">
+            <Plate src={frontCutout} alt="기기 앞면의 소개용 이미지. 위로 안테나 네 개, 가운데 화면, 그 위에 MK SIGNAL 글자, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front" />
+          </div>
+          <details style="margin-top: var(--space-md)">
+            <summary>원본 사진과 번호 보기</summary>
             <Plate
               src={front}
               alt="기기 앞면 사진에 번호 여덟 개를 표시했다. 번호별 설명은 옆 목록에 있다."
@@ -92,7 +103,7 @@ const specs = [
               widths={[640, 960, 1100]}
               pins={frontParts.map((p) => ({ n: p.n, x: p.x, y: p.y, label: p.title }))}
             />
-          </div>
+          </details>
         </div>
         <ol class="legend">
           {frontParts.map((p) => (
@@ -112,8 +123,14 @@ const specs = [
     <section class="section section--rule" aria-labelledby="h-sides">
       <h2 id="h-sides">옆면 두 곳</h2>
       <div class="split split--even" style="margin-top: var(--space-lg)">
-        <Plate src={ports} alt="USB-C 단자 두 개가 나란히 있는 짧은 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="USB-C 두 개. 안쪽에 부품이 보이지만 역할은 표기되어 있지 않습니다." />
-        <Plate src={sideSwitch} alt="초록 슬라이드 스위치와 네모난 구멍 두 개가 있는 긴 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="스위치 왼쪽 구멍 안에 부품과 작은 빨간 점이, 오른쪽 구멍 안에 금속 부품이 보입니다. 무엇인지는 확인하지 못했습니다." />
+        <details>
+          <summary>USB-C 원본 사진 보기</summary>
+          <Plate src={ports} alt="USB-C 단자 두 개가 나란히 있는 짧은 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="USB-C 두 개. 안쪽에 부품이 보이지만 역할은 표기되어 있지 않습니다." />
+        </details>
+        <details>
+          <summary>전원 스위치 원본 사진 보기</summary>
+          <Plate src={sideSwitch} alt="초록 슬라이드 스위치와 네모난 구멍 두 개가 있는 긴 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="스위치 왼쪽 구멍 안에 부품과 작은 빨간 점이, 오른쪽 구멍 안에 금속 부품이 보입니다. 무엇인지는 확인하지 못했습니다." />
+        </details>
       </div>
     </section>
 
