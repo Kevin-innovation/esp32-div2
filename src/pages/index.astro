@@ -2,14 +2,14 @@
 import Base from '../layouts/Base.astro';
 import Evidence from '../components/Evidence.astro';
 import Plate from '../components/Plate.astro';
-import back from '../assets/device/back.jpg';
-import front from '../assets/device/front.jpg';
+import backCutout from '../assets/device/back-cutout.webp';
+import frontCutout from '../assets/device/front-cutout.webp';
 import { GROUPS } from '../data/guide';
 import { url } from '../lib/url';
 
 const startSteps = [
   ['parts', '구성품 확인', '본체, 안테나, 준비물을 맞춰 봅니다.'],
-  ['antenna', '안테나 연결', '뒷면 표기대로 체결을 확인합니다.'],
+  ['antenna', '안테나 연결', '실물 뒷면 표기대로 체결을 확인합니다.'],
   ['power', '전원 켜기', '스위치와 USB-C를 확인합니다.'],
   ['controls', '조작 익히기', '버튼 5개와 터치로 메뉴를 움직입니다.'],
   ['sd', 'SD 카드 준비', 'FAT32로 포맷해 넣습니다.'],
@@ -41,23 +41,23 @@ const nfcSteps = [
       </div>
     </div>
     <Plate
-      src={back}
-      alt="ESP32-DIV V2.1 뒷면 사진. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있고 초록 글자로 ESP32-DIV V2.1, NFC, GPS가 인쇄되어 있다."
-      sizes="(min-width: 1280px) 1120px, 100vw"
+      src={backCutout}
+      alt="ESP32-DIV V2.1 뒷면의 배경을 지운 이미지. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있고 초록 글자로 ESP32-DIV V2.1, NFC, GPS가 보인다."
+      sizes="(min-width: 960px) 800px, 100vw"
+      widths={[640, 960, 1400, 1774]}
+      cutout
+      class="art-back"
       eager
-      pins={[
-        { n: 1, x: 85, y: 32, href: url('/device/#back-name'), label: '모델 표기 설명' },
-        { n: 2, x: 91.5, y: 44, href: url('/device/#back-nfc'), label: 'NFC 표기 설명' },
-        { n: 3, x: 70, y: 55, href: url('/device/#back-gps'), label: 'GPS 표기 설명' },
-        { n: 4, x: 58.5, y: 36, href: url('/device/#back-antenna'), label: '안테나 단자 표기 설명' },
-      ]}
-      caption="실물 뒷면입니다. 번호를 누르면 각 부분의 설명으로 이동합니다."
-    />
+    >
+      실물 사진 기반 AI 편집 이미지. <a href={url('/device/')}>원본 사진과 부품 설명</a>
+    </Plate>
   </section>
 
   <section class="section section--rule" aria-labelledby="h-start">
-    <div class="wrap split">
-      <Plate src={front} alt="기기 앞면 사진. 위로 안테나 네 개, 가운데 화면, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 440px, 100vw" widths={[640, 960, 1100]} />
+    <div class="wrap split split--center">
+      <Plate src={frontCutout} alt="기기 앞면의 배경을 지운 이미지. 위로 안테나 네 개, 가운데 화면, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front">
+        실물 사진 기반 AI 편집 이미지. <a href={url('/device/')}>원본 사진과 부품 설명</a>
+      </Plate>
       <div>
         <h2 id="h-start">처음 켜는 날, 여섯 단계</h2>
         <ol class="num-steps" style="margin-top: var(--space-lg)">

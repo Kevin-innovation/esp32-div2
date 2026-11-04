@@ -17,28 +17,33 @@ interface Props {
   sizes: string;
   eager?: boolean;
   widths?: number[];
+  cutout?: boolean;
+  class?: string;
 }
-const { src, alt, caption, pins = [], sizes, eager = false, widths = [640, 960, 1400, 2000] } = Astro.props;
+const { src, alt, caption, pins = [], sizes, eager = false, widths = [640, 960, 1400, 2000], cutout = false, class: className } = Astro.props;
 ---
-<figure class="plate">
+<figure class:list={['plate', className, { 'plate--cutout': cutout }]} style={cutout ? `--art-ratio:${src.width / src.height}` : undefined}>
   <div class="plate__frame">
-    <Image
-      src={src}
-      alt={alt}
-      widths={widths.filter((w) => w <= src.width)}
-      sizes={sizes}
-      format="webp"
-      quality={80}
-      loading={eager ? 'eager' : 'lazy'}
-      fetchpriority={eager ? 'high' : undefined}
-    />
-    {pins.map((p) =>
-      p.href ? (
-        <a class="pin" href={p.href} style={`left:${p.x}%;top:${p.y}%`} aria-label={`${p.n}번 ${p.label}`}>{p.n}</a>
-      ) : (
-        <span class="pin" style={`left:${p.x}%;top:${p.y}%`} aria-hidden="true">{p.n}</span>
-      ),
-    )}
+    <div class="plate__art">
+      <Image
+        src={src}
+        alt={alt}
+        widths={widths.filter((w) => w <= src.width)}
+        sizes={sizes}
+        format="webp"
+        quality={80}
+        loading={eager ? 'eager' : 'lazy'}
+        fetchpriority={eager ? 'high' : undefined}
+      />
+      {pins.map((p) =>
+        p.href ? (
+          <a class="pin" href={p.href} style={`left:${p.x}%;top:${p.y}%`} aria-label={`${p.n}번 ${p.label}`}>{p.n}</a>
+        ) : (
+          <span class="pin" style={`left:${p.x}%;top:${p.y}%`} aria-hidden="true">{p.n}</span>
+        ),
+      )}
+    </div>
   </div>
   {caption && <figcaption>{caption}</figcaption>}
+  {Astro.slots.has('default') && <figcaption><slot /></figcaption>}
 </figure>

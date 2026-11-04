@@ -26,6 +26,8 @@ npm run check:nfc  # CSV 왕복, 입력 검증, 집계, 보고서 이스케이�
 
 원본 `IMG_*.JPG`에는 GPS가 포함된 EXIF가 있어 저장소에서 제외합니다. 저장소에는 EXIF를 제거한 `src/assets/device/`의 파생본만 들어 있습니다. 원본을 프로젝트 맨 위 폴더에 두고 `node scripts/prepare-images.mjs`를 실행하면 파생본을 다시 만듭니다.
 
+홈의 `front-cutout.webp`, `back-cutout.webp`는 실물 사진을 AI로 편집한 소개용 이미지입니다. 배경을 지우고, 앞면 화면의 반사와 흠집을 정리하고, 뒷면의 작은 각인을 생략했습니다. 근거 자료로 쓰지 않으며, 포트와 각인 설명은 `/device/`의 원본 사진 기준입니다.
+
 ## 데이터
 
 서버와 로그인은 없습니다. NFC 실험 기록과 탐구 서술은 방문자의 브라우저 localStorage에만 저장되고, CSV로 백업하거나 옮길 수 있습니다.

@@ -1,5 +1,5 @@
 /* Hallmark · shape: long document with a numbered lab notebook · genre: editorial · theme: custom · job: try · idea: "실물 기기를 익혀 내 실험을 기록하고 분석까지 잇는, 설명마다 근거가 붙은 실험 노트" · vibe: "차분한 기술 실험 노트, 여백과 근거"
- * paper: oklch(97.5% 0.008 95) · accent: oklch(36% 0.085 155) · display: Pretendard · body: Pretendard · hero: head and sentence above a full-width plate of the real device with numbered pins · nav: wordmark, five page links, theme switch · footer: source date and the unverified-device statement · imagery: photographs · signature: the real back of the V2.1 with numbered pins into the device page, and a notebook that turns the student's own trials into a report
+ * paper: oklch(97.5% 0.008 95) · accent: oklch(36% 0.085 155) · display: Pretendard · body: Pretendard · hero: head and sentence above a solid stage holding the device cutout · nav: wordmark, five page links, theme switch · footer: source date and the unverified-device statement · imagery: AI-edited cutouts of the real photos on the home page, original photographs on detail pages · signature: the V2.1 shown on a quiet stage, numbered pins on the original photos in the device page, and a notebook that turns the student's own trials into a report
  * axes: light/grotesk-heavy/chromatic-green · posture: Restrained · contrast: pass · fold: pass · modes: light+dark · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E5 S5 R4 V4 · weakest: H, a head above a plate is plain; the pins and evidence tags carry the idea instead of ornament */
 /* Hallmark waive 65: 따뜻한 흰색과 짙은 초록은 사용자가 지정한 팔레트 */
@@ -23,6 +23,7 @@
   --color-warn-soft: oklch(94% 0.04 82);
   --color-error: oklch(44% 0.15 28);
   --color-plate: oklch(93% 0.006 95);
+  --color-stage: oklch(91.5% 0.012 110);
   --color-pin: oklch(23% 0.02 155);
   --color-pin-ink: oklch(98% 0.008 95);
 
@@ -78,6 +79,7 @@
   --color-warn-soft: oklch(30% 0.04 75);
   --color-error: oklch(78% 0.13 28);
   --color-plate: oklch(88% 0.006 95);
+  --color-stage: oklch(37% 0.012 150);
   --color-pin: oklch(23% 0.02 155);
   --color-pin-ink: oklch(98% 0.008 95);
 }
@@ -101,6 +103,7 @@
     --color-warn-soft: oklch(30% 0.04 75);
     --color-error: oklch(78% 0.13 28);
     --color-plate: oklch(88% 0.006 95);
+    --color-stage: oklch(37% 0.012 150);
   }
 }
 
@@ -196,6 +199,13 @@ code, pre, .mono { font-family: var(--font-mono); font-size: 0.92em; font-varian
 .plate { margin: 0; }
 .plate__frame { position: relative; overflow: hidden; border-radius: var(--radius-plate); background: var(--color-plate); }
 .plate__frame img { width: 100%; }
+.plate__art { position: relative; }
+/* 투명 이미지 전시: 단색 배경에 내부 여백을 두고, 이미지 크기는 비율로 계산한다. */
+.plate--cutout .plate__frame { display: flex; justify-content: center; padding: var(--stage-pad); background: var(--color-stage); }
+.plate--cutout .plate__art { width: min(100%, calc(var(--art-h) * var(--art-ratio))); }
+.plate--cutout .plate__frame img { height: auto; object-fit: contain; }
+.art-back { --art-h: 400px; --stage-pad: clamp(var(--space-lg), 1rem + 3vw, var(--space-2xl)); }
+.art-front { --art-h: 480px; --stage-pad: var(--space-xl); }
 .plate figcaption { margin-top: var(--space-sm); color: var(--color-muted); font-size: var(--text-sm); line-height: 1.6; }
 .pin { position: absolute; display: grid; place-items: center; width: 28px; height: 28px; transform: translate(-50%, -50%); border: 2px solid var(--color-pin-ink); border-radius: 50%; background: var(--color-pin); color: var(--color-pin-ink); font-size: 0.8125rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; text-decoration: none; }
 a.pin:hover { background: var(--color-pin-ink); color: var(--color-pin); border-color: var(--color-pin); text-decoration: none; }
@@ -218,6 +228,7 @@ a.pin:hover { background: var(--color-pin-ink); color: var(--color-pin); border-
 .split { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-xl); align-items: start; }
 .split > * { min-width: 0; }
 .split--even { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.split--center { align-items: center; }
 .section__head { max-width: var(--measure); margin-bottom: var(--space-xl); }
 .section__head > * + * { margin-top: var(--space-sm); }
 
@@ -378,6 +389,7 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
   .facts > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
   .report { padding: var(--space-md); }
   .section { padding-block: var(--space-xl); }
+  .art-front { --art-h: 360px; --stage-pad: var(--space-lg); }
   .pin { width: 24px; height: 24px; font-size: 0.75rem; border-width: 1px; }
   .chart th { width: 4.5rem; }
 }
