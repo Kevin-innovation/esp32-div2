@@ -1,6 +1,6 @@
 ---
 import LearnLayout from '../../layouts/LearnLayout.astro';
-import { PROJECTS, STATUS_HELP, STATUS_LABEL, type ProjectStatus } from '../../data/projects';
+import { PROJECTS, SECURITY_QUESTIONS, STATUS_HELP, STATUS_LABEL, type ProjectStatus } from '../../data/projects';
 import { url } from '../../lib/url';
 
 const CLASS: Record<ProjectStatus, string> = { web: 'tag--device', docs: 'tag--manual', extra: 'tag--unverified' };
@@ -16,7 +16,7 @@ const GROUPS: [ProjectStatus, string][] = [['web', '지금 바로 할 수 있는
 >
   <section id="status" aria-labelledby="h-status">
     <h2 id="h-status">상태 읽는 법</h2>
-    <dl class="facts">
+    <dl class="facts facts--stack">
       {GROUPS.map(([s]) => (
         <div><dt><span class={`tag ${CLASS[s]}`}>{STATUS_LABEL[s]}</span></dt><dd>{STATUS_HELP[s]}</dd></div>
       ))}
@@ -44,6 +44,7 @@ const GROUPS: [ProjectStatus, string][] = [['web', '지금 바로 할 수 있는
             <div><dt>결과물</dt><dd>{p.output}</dd></div>
             <div><dt>실행 확인</dt><dd>{p.checked}</dd></div>
             <div><dt>추가 장비</dt><dd>{p.extra}</dd></div>
+            <div><dt>보안 질문</dt><dd><a href={url(SECURITY_QUESTIONS[p.id][1])}>{SECURITY_QUESTIONS[p.id][0]}</a></dd></div>
           </dl>
           {p.link && <p class="small"><a href={url(p.link[0])}>{p.link[1]}</a></p>}
         </article>

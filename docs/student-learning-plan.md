@@ -190,3 +190,10 @@ Python에는 준비/CSV 파일 위치/실행 명령/결과 PNG 위치와 read_cs
 - 용어 18개를 `전파 기초` 분류로 추가했다. 홈, 학습 홈, 각 장에서 교차 링크로 연결했다.
 - 수신과 기록까지만 다루고, 방해나 다른 사람 기기의 복제 절차는 넣지 않았다. 사이트는 기기와 실시간으로 연결되지 않으며 패킷을 캡처하지 않는다.
 - 검사: `npm run typecheck` 오류 0, `npm run build` 완료, 새 두 페이지 UI 체크 33개 통과(1280·375 양 테마, 링크와 앵커, 넘침, 콘솔). 스크린샷은 `/private/tmp/claude-501/-Users-mk-Herdr-esp32-div2/721a9067-b1bc-430b-8872-560fc1a9ff7f/scratchpad/qa/shots/`의 `why`, `projects` 파일이다.
+
+## 변경 기록: 정보보호 장과 배치 수정
+
+- `/learn/security/`와 학생용 `docs/security-learning-notes.md`를 추가했다. 기술노트 13개, 학습 홈, 0단계, NFC, 네트워크, 용어 사전에서 연결했다. 용어는 모두 126개다.
+- 배치 버그를 공통 원인에서 고쳤다. 태그의 `nowrap`, `.facts`의 `dt` 폭, `.fields`와 `.field`의 `auto` 그리드 열, 스크롤 상자 밖으로 나가던 절대 위치 자식, 스크롤 상자가 없던 그래프 표. 상단 메뉴와 학습 목차는 가로 스크롤 대신 줄바꿈한다.
+- 검사: `npm run typecheck` 오류 0, `npm run build` 완료. 전체 23페이지를 320, 375, 768, 1280 폭과 양 테마로 검사해 387개 통과했다. 문서 폭뿐 아니라 요소 경계, `dt`와 `dd` 겹침, 태그 이탈, 메뉴 가림을 재고, 접힌 내용과 긴 기록까지 펼쳐 확인했다. 내부 링크 184개와 앵커, 노트 내려받기 200도 확인했다.
+- 스크린샷은 `/private/tmp/claude-501/-Users-mk-Herdr-esp32-div2/721a9067-b1bc-430b-8872-560fc1a9ff7f/scratchpad/qa/shots/`의 `projects-status`, `security`, `why` 파일이다.

@@ -1,6 +1,6 @@
 // 한글 용어 사전. 각 항목은 뜻, 실제 예, 헷갈리는 점, 관련 학습 위치를 함께 적는다.
 
-export const GLOSSARY_CATEGORIES = ['전파 기초', 'NFC', '데이터 표현', 'Wi-Fi', '인터넷', 'BLE', '탐구 방법'] as const;
+export const GLOSSARY_CATEGORIES = ['전파 기초', 'NFC', '데이터 표현', 'Wi-Fi', '인터넷', 'BLE', '정보보호', '탐구 방법'] as const;
 export type GlossaryCategory = (typeof GLOSSARY_CATEGORIES)[number];
 
 export interface Term {
@@ -135,6 +135,35 @@ export const GLOSSARY: Term[] = [
     ['classic-bt', '클래식 블루투스', 'Classic Bluetooth', ['BR/EDR'], '오디오처럼 연속 데이터에 많이 쓰는 기존 방식입니다.', '오래된 무선 스피커 연결이 있습니다.', 'BLE와 서로 다른 방식입니다.', ...BLE],
     ['advertising', '광고 패킷', 'Advertising', ['BLE 광고', 'Advertisement'], '기기가 “여기 있어요”라고 연결 없이 짧게 알리는 신호입니다.', 'BLE Scanner가 이것을 받아 목록을 만듭니다.', '상품 광고가 아닙니다. 연결된 뒤의 데이터와도 다릅니다.', ...BLE],
     ['ble-connection', 'BLE 연결', 'Connection', ['페어링'], '두 기기가 약속한 시간에 데이터를 주고받는 상태입니다.', '휴대폰과 밴드의 동기화입니다.', '광고를 받았다고 연결된 것이 아닙니다. 연결되면 광고를 멈추는 기기도 있습니다.', ...BLE],
+  ]),
+  ...group('정보보호', [
+    ['threat-model', '위협 모델', 'Threat model', ['위협 모델링'], '자산, 공격자, 접근 범위, 신뢰 경계, 피해를 적어 무엇을 지킬지 정하는 일입니다.', 'UID로 여는 동아리방을 표로 분석합니다.', '공격 이름 목록이 아닙니다. 대상과 상황마다 달라집니다.', '/learn/security/#model', '위협 모델'],
+    ['vulnerability', '취약점', 'Vulnerability', ['약점'], '이용될 수 있는 약한 곳입니다.', 'UID만 확인하는 설계입니다.', '취약점이 있다고 곧 사고가 나는 것은 아닙니다.', '/learn/security/#model', '위협 모델'],
+    ['threat', '위협', 'Threat', ['보안 위협'], '약점을 이용할 수 있는 사람이나 사건입니다.', '들어오려는 비회원입니다.', '취약점과 다릅니다. 위협은 바깥에 있고 취약점은 안에 있습니다.', '/learn/security/#model', '위협 모델'],
+    ['risk', '위험', 'Risk', ['리스크'], '일어날 가능성과 피해를 함께 본 크기입니다.', '지킬 장비가 비싸면 위험이 커집니다.', '위협의 수가 많다고 위험이 항상 큰 것은 아닙니다.', '/learn/security/#model', '위협 모델'],
+    ['trust-boundary', '신뢰 경계', 'Trust boundary', ['경계'], '여기부터는 믿지 않고 확인해야 하는 지점입니다.', '태그가 보낸 값을 서버가 확인합니다.', '내 기기 안쪽이라도 무조건 안전하다는 뜻은 아닙니다.', '/learn/security/#model', '위협 모델'],
+    ['cia', '기밀성, 무결성, 가용성', 'CIA triad', ['CIA', '기밀성', '무결성', '가용성'], '정보 보호의 세 목표입니다. 안 보이게, 안 바뀌게, 쓸 수 있게 지킵니다.', 'HTTPS는 기밀성, 서명은 무결성, 방해 대비는 가용성입니다.', '미국 정보기관 CIA와 관계없습니다.', '/learn/security/#model', '위협 모델'],
+    ['least-privilege', '최소 권한', 'Least privilege', ['권한 최소화'], '일에 필요한 권한만 주는 원칙입니다.', '앱에 필요 없는 위치 권한을 주지 않습니다.', '불편을 줄이려 모두 관리자로 두면 사고 범위가 커집니다.', '/learn/security/#model', '위협 모델'],
+    ['defense-in-depth', '다층 방어', 'Defense in depth', ['심층 방어'], '하나가 뚫려도 다음 층이 남도록 겹치는 설계입니다.', 'Wi-Fi 보안과 HTTPS를 함께 씁니다.', '층이 많아도 같은 약점을 공유하면 효과가 줄어듭니다.', '/learn/security/#model', '위협 모델'],
+    ['wpa', 'Wi-Fi 보안 설정', 'WPA2, WPA3', ['WPA', 'WPA3-Personal', 'AES'], 'Wi-Fi 무선 구간을 보호하는 설정입니다.', 'Wi-Fi Alliance는 WPA3-Personal이 비밀번호 추측에 더 강하다고 설명합니다.', 'AP까지의 구간 보호입니다. 인터넷 너머는 TLS의 몫입니다.', '/learn/security/#wifi', 'Wi-Fi 보호'],
+    ['sae', '동등 인증', 'SAE', ['Simultaneous Authentication of Equals'], 'WPA3-Personal의 비밀번호 기반 인증 방식입니다.', '공유기의 WPA3 설정입니다.', '약한 비밀번호까지 강하게 만들어 주지는 않습니다.', '/learn/security/#wifi', 'Wi-Fi 보호'],
+    ['pmf', '관리 프레임 보호', 'PMF', ['802.11w', 'Protected Management Frames'], '일부 Wi-Fi 관리 프레임의 위조를 막는 기능입니다.', '공유기 보안 설정에서 볼 수 있습니다.', '일부만 보호하고, 전파 방해는 해결하지 못합니다.', '/learn/security/#wifi', 'Wi-Fi 보호'],
+    ['mitm', '중간자', 'Man-in-the-middle', ['MITM', '중간자 공격'], '두 통신 당사자 사이에 끼어 내용을 보거나 바꾸는 상황입니다.', '인증 없는 페어링에서 문제가 됩니다.', '끼어들 조건이 맞아야 합니다. 가짜 AP가 곧 중간자는 아닙니다.', '/learn/security/#wifi', 'Wi-Fi 보호'],
+    ['rogue-ap', '가짜 AP', 'Rogue AP', ['Evil twin', '가짜 공유기'], '진짜처럼 보이는 이름을 내건 AP입니다.', '공용 Wi-Fi 이름을 흉내 냅니다.', 'TLS가 정상이면 내용을 바로 읽지는 못합니다. 그래도 경고를 무시하면 위험합니다.', '/learn/security/#wifi', 'Wi-Fi 보호'],
+    ['metadata', '메타데이터', 'Metadata', ['부가 정보'], '내용이 아니라 언제, 누가, 어디와 통신했는지 같은 정보입니다.', '암호화해도 프레임 주소와 시간은 남습니다.', '내용이 가려졌다고 아무것도 안 드러나는 것은 아닙니다.', '/learn/security/#wifi', 'Wi-Fi 보호'],
+    ['just-works', '저스트 웍스', 'Just Works', ['인증 없는 페어링'], '값을 확인하지 않고 진행하는 BLE 페어링 방식입니다.', '화면과 버튼이 없는 작은 기기에 쓰입니다.', 'NIST에 따르면 중간자 방어를 제공하지 않습니다. 암호화와 인증은 다릅니다.', '/learn/security/#ble', 'BLE 보호'],
+    ['le-secure', 'LE 보안 연결', 'LE Secure Connections', ['Numeric Comparison', '숫자 비교', 'OOB'], '더 강한 알고리즘을 쓰는 BLE 페어링 기능입니다. 숫자 비교나 OOB로 상대를 확인할 수 있습니다.', '양쪽 화면의 숫자를 비교합니다.', '기기가 지원해야 하고, 확인 방식에 따라 보호 수준이 다릅니다.', '/learn/security/#ble', 'BLE 보호'],
+    ['challenge-response', '챌린지-응답', 'Challenge-response', ['상호 인증', 'mutual authentication'], '상대가 낸 새 문제에 비밀키로 답해 키를 가졌음을 보이는 인증입니다.', '서버가 태그에 nonce를 보내고 답을 확인합니다.', '키를 잘 지켜야 합니다. 태그에서 키가 새면 소용이 없습니다.', '/learn/security/#nfc', 'NFC 보호'],
+    ['nonce', '일회용 값', 'Nonce', ['number used once'], '한 번만 쓰도록 만든 값입니다. 예전 답의 재사용을 막습니다.', '종이 카드 놀이의 가상 값입니다.', '비밀일 필요는 없지만 다시 쓰이면 안 됩니다.', '/learn/security/#activities', '여섯 가지 활동'],
+    ['relay', '릴레이', 'Relay attack', ['중계 공격'], '먼 곳의 신호를 중계해 가까이 있는 척하는 개념입니다.', '거리가 짧다는 가정을 깨는 예입니다.', '내용을 몰라도 성립할 수 있어 암호만으로 다 막지 못합니다.', '/learn/security/#nfc', 'NFC 보호'],
+    ['replay', '재전송', 'Replay', ['재전송 공격'], '받아 둔 신호나 메시지를 나중에 다시 보내는 개념입니다.', '고정 명령 리모컨이 약한 이유입니다.', '카운터나 nonce가 있으면 막을 수 있습니다.', '/learn/security/#remote', '433MHz와 IR 보호'],
+    ['spoofing', '위조', 'Spoofing', ['스푸핑', 'GPS 위조'], '가짜 신호나 정보로 다른 것인 척하는 일입니다.', '위성 신호를 조작해 틀린 위치를 믿게 합니다.', '방해(jamming)는 못 쓰게 하는 것이고, 위조는 틀린 값을 믿게 하는 것입니다.', '/learn/security/#gps', 'GPS 보호'],
+    ['hash', '해시', 'Hash', ['SHA-256', '해시값'], '입력을 고정 길이 값으로 바꾸는 함수입니다. 값이 달라졌는지 볼 때 씁니다.', '내려받은 파일의 SHA-256 비교입니다.', '키가 없어 출처를 보장하지 않습니다. 단순 해시는 완전한 익명도 아닙니다.', '/learn/security/#crypto', '해시, 암호화, MAC, 서명'],
+    ['message-auth-code', '메시지 인증 코드', 'MAC (Message Authentication Code)', ['HMAC', '메시지 인증'], '비밀키로 만드는 체크값입니다. 바뀌었는지와 키를 가진 쪽이 만들었는지 확인합니다.', '챌린지-응답의 답입니다.', '네트워크의 MAC 주소와 전혀 다릅니다.', '/learn/security/#crypto', '해시, 암호화, MAC, 서명'],
+    ['signature', '전자 서명', 'Digital signature', ['서명'], '개인키로 만들고 공개키로 검증해 출처와 무결성을 확인하는 값입니다.', '서명된 펌웨어입니다.', '믿을 수 있는 공개키로 검증해야 출처를 말할 수 있습니다. 내용을 숨기지는 않습니다.', '/learn/security/#crypto', '해시, 암호화, MAC, 서명'],
+    ['secure-boot', '보안 부팅', 'Secure boot', ['부팅 검증'], '시작할 때 믿을 수 있는 펌웨어인지 검사하는 기능입니다.', '서명이 맞아야 실행합니다.', '이 기기의 지원 여부는 확인하지 못했습니다.', '/learn/security/#device', '기기와 데이터'],
+    ['pseudonymization', '가명 처리', 'Pseudonymization', ['가명화', '익명화'], '값을 대체해 바로 알아보지 못하게 하는 일입니다.', 'UID를 태그 A로 바꿔 적습니다.', '다른 자료와 합치면 되찾을 수 있어 완전한 익명과 다릅니다.', '/learn/security/#device', '기기와 데이터'],
+    ['csf', '사이버보안 프레임워크', 'NIST CSF', ['CSF 2.0', 'Govern', 'Identify', 'Protect', 'Detect', 'Respond', 'Recover'], '보안 활동을 관리, 식별, 보호, 탐지, 대응, 복구로 나눈 틀입니다.', '내 프로젝트 점검표로 씁니다.', '인증 시험이나 합격 기준이 아닙니다.', '/learn/security/#csf', 'NIST CSF로 정리'],
   ]),
   ...group('탐구 방법', [
     ['independent-variable', '독립 변수', 'Independent variable', ['조작 변인'], '실험자가 일부러 바꾸는 값입니다.', '단독, 지갑, 가방 조건입니다.', '한 번에 하나만 바꿔야 원인을 나눌 수 있습니다.', ...DESIGN],

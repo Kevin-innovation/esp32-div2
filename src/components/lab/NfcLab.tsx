@@ -285,6 +285,7 @@ export function Chart() {
         <div className="empty"><p>기록을 입력하면 {GROUP_LABEL[by]}별 인식률이 여기에 그려집니다.</p></div>
       ) : (
         <>
+          <div className="table-wrap" tabIndex={0} role="region" aria-label="인식률 그래프">
           <table className="chart">
             <caption>{GROUP_LABEL[by]}별 인식률. 막대는 0%에서 시작하고 눈금은 25%입니다. {allGroups.length > MAX_GROUPS ? `묶음이 많아 앞 ${MAX_GROUPS}개만 표시합니다.` : ''}</caption>
             <thead>
@@ -300,6 +301,7 @@ export function Chart() {
               ))}
             </tbody>
           </table>
+          </div>
           {cross ? (
             <div className="table-wrap" tabIndex={0} role="region" aria-label="조건과 거리 교차표">
               <table>

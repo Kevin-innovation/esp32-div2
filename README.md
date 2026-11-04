@@ -32,7 +32,7 @@ npm run check:nfc  # CSV 왕복, 입력 검증, 집계, 보고서 이스케이�
 
 ## 학습 과정
 
-`/learn/`에서 시작해 0단계(`/learn/why/`), 화면 따라 하기, NFC 원리, Wi-Fi와 네트워크, 용어 사전을 거쳐 `/lab/nfc/` 실험 워크북으로 이어집니다. 그 밖의 실험과 개발 주제는 `/learn/projects/`에 있습니다. 개발 계약과 완료 기준은 `docs/student-learning-plan.md`에 있습니다.
+`/learn/`에서 시작해 0단계(`/learn/why/`), 화면 따라 하기, NFC 원리, Wi-Fi와 네트워크, 용어 사전을 거쳐 `/lab/nfc/` 실험 워크북으로 이어집니다. 그 밖의 실험과 개발 주제는 `/learn/projects/`, 정보보호 관점의 학습은 `/learn/security/`에 있고, 학생용 활동 기록 양식은 `docs/security-learning-notes.md`에 있습니다. 개발 계약과 완료 기준은 `docs/student-learning-plan.md`에 있습니다.
 
 ## 데이터
 

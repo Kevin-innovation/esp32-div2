@@ -1,0 +1,258 @@
+---
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import Think from '../../components/learn/Think.astro';
+import { SOURCES } from '../../data/sources';
+import { url } from '../../lib/url';
+import notesFile from '../../../docs/security-learning-notes.md?url&no-inline';
+
+interface Story {
+  id: string;
+  title: string;
+  asset: string;
+  why: string;
+  attack: string;
+  defense: string;
+  limit: string;
+  links: [string, string][];
+}
+
+const stories: Story[] = [
+  {
+    id: 'wifi', title: 'Wi-Fi: 벽 너머까지 닿는 네트워크',
+    asset: '집 공유기, 연결된 기기들, 오가는 데이터, 인터넷 연결 자체.',
+    why: '전파는 벽을 넘기 때문에 접근 범위가 집 밖까지 넓어집니다. 짧은 비밀번호, 바꾸지 않은 공유기 관리자 비밀번호, 오래된 보안 설정과 펌웨어가 있으면 그 범위 안의 누군가에게 기회가 생깁니다.',
+    attack: '비밀번호 추측, 같은 이름의 가짜 AP로 유도하기, 누가 언제 어느 AP를 쓰는지 같은 메타데이터 관찰, 통신을 못 하게 만드는 가용성 공격. 가짜 AP가 곧바로 중간자가 되는 것은 아닙니다. 단말이 그 AP에 붙고, 위쪽의 TLS 경고까지 무시하는 등 조건이 맞아야 합니다.',
+    defense: '아래 표처럼 역할이 서로 다른 기술을 겹쳐 씁니다. 긴 비밀번호, 기본 관리자 비밀번호 변경, 펌웨어 업데이트, 게스트와 IoT 네트워크 분리도 함께합니다.',
+    limit: '무선 구간 보호는 AP까지입니다. 전파 방해는 암호로 막을 수 없습니다. 기기 자체가 장악되면 TLS도 내용을 지켜 주지 못합니다.',
+    links: [['/learn/projects/#ssid-map', '내 SSID와 BSSID 지도'], ['/learn/network/#monitor', '보이는 것과 안 보이는 것']],
+  },
+  {
+    id: 'ble', title: 'BLE: 누구나 들을 수 있는 광고',
+    asset: '이어폰, 운동 밴드, 건강 정보, 기기를 가진 사람의 이동 패턴.',
+    why: '광고는 연결 없이 주변 누구나 받도록 만든 신호입니다. 작은 기기는 화면과 버튼이 없어 페어링 때 상대를 확인하기도 어렵습니다.',
+    attack: '반복되는 식별 정보로 사람을 추적하기, 접근 제어가 약한 기기의 값 읽기, 인증 없는 페어링 사이에 끼어드는 중간자.',
+    defense: 'LE Secure Connections와 적절한 페어링을 씁니다. 숫자 비교나 OOB(다른 경로로 값 전달)는 상대를 확인하는 데 도움이 되지만 기기가 지원해야 합니다. 앱 권한은 필요한 만큼만 줍니다.',
+    limit: 'NIST에 따르면 Just Works는 값을 확인하는 단계가 없어 중간자 방어를 제공하지 않습니다. 랜덤 주소는 추적을 어렵게 하지만, 기기 이름이나 광고 내용, 움직임 패턴이 남으므로 익명을 보장하지 않습니다.',
+    links: [['/learn/projects/#ble-rssi', 'BLE 광고와 연결 비교'], ['/learn/network/#ble', 'BLE 이해하기']],
+  },
+  {
+    id: 'nfc', title: 'NFC: 읽히는 값과 믿을 수 있는 값',
+    asset: '출입증, 회원증, 교통과 결제 카드, 태그 안의 링크.',
+    why: 'UID는 누구나 읽을 수 있는 공개 식별값입니다. 이 사이트의 실험에서도 태그를 대면 바로 읽힙니다. 그런데 어떤 시스템이 UID 하나만 보고 문을 연다면 “누구인지 묻는 값”을 “증명”으로 잘못 쓴 것입니다. 잠그지 않은 메모리는 바뀔 수 있고, 태그 속 링크는 임의의 주소일 수 있습니다.',
+    attack: 'UID만 맞추면 통과하는 시스템 속이기, 태그 내용을 바꿔 다른 링크로 보내기, 먼 곳의 카드와 단말 사이를 중계해 가까이 있는 척하는 릴레이.',
+    defense: '암호 기능이 있는 태그, 상호 인증, 챌린지-응답. 매번 새 값(nonce)에 비밀키로 MAC을 만들어 답하면 예전 답을 다시 써도 통하지 않습니다. 서버가 UID를 조회하는 것만으로는 문제가 풀리지 않으며, 이 암호 응답을 검증해야 합니다. 권한은 태그가 아니라 서버가 판단하고, 분실한 태그는 서버에서 폐기합니다.',
+    limit: 'NTAG213의 32비트 비밀번호는 메모리 접근을 제한하는 기능입니다. 저장 내용을 암호화하거나 강한 암호 인증을 해 주는 기능이 아닙니다. 챌린지-응답은 재전송을 막으려면 nonce 중복 방지, 요청과 응답 묶기, 사용 완료 확인이 필요하고, 실시간 릴레이는 그 자체로 막지 못합니다. 짧은 거리도 가까이 있다는 증명은 아닙니다.',
+    links: [['/learn/projects/#nfc-memory', 'UID와 메모리 읽기'], ['/lab/nfc/#security', '태그와 EMV 결제 비교']],
+  },
+  {
+    id: 'remote', title: '433MHz와 IR: 같은 명령을 다시 보내면',
+    asset: '차고 문, 차단기, 경보기, TV 같은 가전.',
+    why: '단순한 리모컨은 버튼마다 같은 명령을 보냅니다. 받는 쪽은 보낸 사람을 확인하지 않고, 값이 맞는지만 봅니다.',
+    attack: '받아 둔 신호를 나중에 다시 보내는 재전송. IR은 빛이 닿아야 하지만 대개 인증이 없습니다.',
+    defense: '값이 매번 바뀌는 롤링 코드, 메시지 인증과 카운터, nonce, 일정 시간 뒤 만료, 키 관리. 받는 쪽이 이미 쓴 값을 거절합니다.',
+    limit: '롤링 코드가 곧 내용 전체의 암호화는 아니고, 항상 안전하지도 않습니다. 구현과 키 관리에 달려 있습니다.',
+    links: [['/learn/projects/#subghz-receive', '내 송신기 수신 조건'], ['/learn/projects/#ir-remote', '내 리모컨 신호 비교']],
+  },
+  {
+    id: 'energy', title: '2.4GHz 에너지: 보이는 것과 증명',
+    asset: '채널의 사용 가능 상태(가용성).',
+    why: '여러 기술이 한 대역을 나눠 씁니다. 전자레인지 같은 기기도 영향을 줍니다.',
+    attack: '일부러 대역을 시끄럽게 만드는 방해.',
+    defense: '에너지 관찰과 Wi-Fi 목록, 시간대 기록을 함께 놓고 원인 후보를 좁힙니다. 중요한 일은 다른 통신 경로도 준비합니다.',
+    limit: '에너지가 많다고 공격의 증거가 되지 않습니다. 정상 기기도 같은 모습을 만듭니다.',
+    links: [['/learn/projects/#energy-list', '에너지와 Wi-Fi 목록 비교']],
+  },
+  {
+    id: 'gps', title: 'GPS: 믿고 쓰는 위치와 시간',
+    asset: '위치와 시간에 의존하는 서비스. 길 안내, 기록, 시각 동기화.',
+    why: '수신기는 멀리서 온 약한 신호를 받아 계산합니다. GPS.gov는 의도적이거나 비의도적인 전파 방해, 우주 기상을 간섭 원인으로 듭니다.',
+    attack: '전파 방해로 신호를 못 받게 하기, 위성 신호를 조작해 틀린 위치와 시간을 믿게 하는 위조.',
+    defense: '다른 센서와 교차 검증, 갑자기 튀는 값 찾기, 수신 상태 알림, GPS가 없을 때의 동작 계획.',
+    limit: '이 기기의 GPS에 이런 보호 기능이 있는지는 확인하지 못했습니다. 신호를 못 받는 것만으로 방해라고 단정할 수도 없습니다. 건물 안에서도 흔한 일입니다.',
+    links: [['/learn/projects/#gps-first-fix', 'GPS 첫 위치 시간']],
+  },
+  {
+    id: 'device', title: '기기와 데이터: 펌웨어부터 CSV까지',
+    asset: '펌웨어, SD 카드 파일, 실험 CSV, UID, BSSID 같은 값.',
+    why: '펌웨어를 설치한다는 것은 그 파일을 만든 사람을 믿는다는 뜻입니다. 기록에는 집 위치나 주변 기기를 짐작하게 하는 값이 쌓일 수 있습니다.',
+    attack: '변조된 펌웨어 설치, 공유한 보고서나 SD 카드에서 개인정보 노출.',
+    defense: '펌웨어 출처 확인, 업데이트 검증과 전자 서명, 보안 부팅. 필요한 값만 모으고(최소 수집), 값을 가리고(가명 처리), 다 쓰면 지웁니다.',
+    limit: '이 기기가 서명 검증이나 보안 부팅을 지원하는지는 확인하지 못했습니다. UID를 단순 해시해도 같은 값끼리 연결되고 후보가 적으면 되찾을 수 있어 완전한 익명이 아닙니다. 브라우저의 localStorage는 비밀 저장소가 아닙니다.',
+    links: [['/learn/projects/#tech-note', '내 기술노트 공개하기'], ['/update/#before', '업데이트 전 확인']],
+  },
+];
+
+const wifiRoles = [
+  ['WPA2 (AES)', '무선 구간의 내용을 암호화', 'WPA2 비밀번호가 약하면 추측 위험이 남습니다.'],
+  ['WPA3 (SAE)', '비밀번호 추측에 더 강한 인증', '기기가 지원해야 합니다. 약한 비밀번호까지 해결하지는 않습니다.'],
+  ['PMF', '일부 관리 프레임의 위조 방지', '일부만 보호합니다. 전파 방해는 해결하지 못합니다.'],
+  ['TLS (HTTPS)', '브라우저와 서버 사이의 내용', '접속한 곳과 시간 등은 남고, 기기 장악까지 막지 못합니다.'],
+  ['SSID 숨김, MAC 필터', '눈에 덜 띄게 하거나 목록으로 거르기', '강한 인증이 아닙니다. 이것만 믿으면 안 됩니다.'],
+];
+
+const growth = [
+  ['관찰', '화면 값과 기록을 있는 그대로 구분한다.', 'UID, 메모리, RSSI 기록표', '내가 본 것과 추측을 나눠 적었는가?'],
+  ['통신 설명', '무엇이 어느 단계에서 오가는지 설명한다.', '통신 단계 다이어그램', '다른 사람에게 그림 없이 설명할 수 있는가?'],
+  ['위협 모델', '자산, 공격자, 접근 범위, 신뢰 경계, 피해를 적는다.', '위협 모델 표', '취약점과 위험을 구별했는가?'],
+  ['방어 설계', '위협에 맞는 방어와 그 이유를 고른다.', '개선 전후 설계도', '이 방어가 막지 못하는 것은 무엇인가?'],
+  ['검증과 한계 보고', '근거로 확인한 것과 못 한 것을 쓴다.', '증거가 달린 보고서', '하지 않은 일을 한 것처럼 쓰지 않았는가?'],
+];
+
+const csf = [
+  ['Govern (관리)', '실험 범위와 규칙 정하기. 내 태그와 내 공유기만 다룹니다.'],
+  ['Identify (식별)', '자산 표 만들기. 태그, CSV, 사진, 공유기 주소.'],
+  ['Protect (보호)', '최소 수집, 가명 처리, 관리자 비밀번호 바꾸기.'],
+  ['Detect (탐지)', '값이 튀거나 예상과 다른 UID가 나오면 표시하기.'],
+  ['Respond (대응)', '잘못된 기록을 찾으면 분리하고 이유를 적기.'],
+  ['Recover (복구)', 'CSV 백업에서 되살리고 어디까지 복구됐는지 확인하기.'],
+];
+---
+<LearnLayout
+  title="정보보호로 보기"
+  heading="무엇을 어떻게 지킬까: 정보보호의 관점"
+  lead="내 기술을 지킨다는 것은 무엇을, 누구로부터, 어디까지 지킬지 정하는 일입니다. 기술마다 왜 약해지는지와 방어의 한계까지 봅니다."
+  description="위협 모델, 기밀성과 무결성과 가용성, Wi-Fi, BLE, NFC, 433MHz, GPS의 위협과 방어, 진로와 연결되는 학습 활동을 다룹니다."
+  toc={[['model', '위협 모델'], ...stories.map((s): [string, string] => [s.id, s.title.split(':')[0]]), ['crypto', '해시, 암호화, MAC, 서명'], ['activities', '여섯 가지 활동'], ['growth', '5단계 성장 목표'], ['subjects', '교과와 진로'], ['csf', 'NIST CSF로 정리'], ['think', '생각해 보기']]}
+  sources={['nistCsf', 'nistBt', 'btGuide', 'wifiSecurity', 'arubaPmf', 'rfcTls', 'ntag', 'emvco', 'gpsInterference', 'nistSpoof', 'nistMac', 'deviceScreens']}
+>
+  <div class="callout">
+    <p>이 장의 위협은 각 기술에 일반적으로 알려진 설명입니다. <strong>이 기기나 내 태그에서 찾아낸 취약점이 아닙니다.</strong> 실행 절차는 싣지 않고, 공격 없이 할 수 있는 활동을 뒤에 적었습니다.</p>
+  </div>
+
+  <section id="model" aria-labelledby="h-model" style="margin-top: var(--space-xl)">
+    <h2 id="h-model">위협 모델부터</h2>
+    <p>공격 이름을 외우기 전에 다섯 가지를 먼저 적습니다. 예는 UID로 문을 여는 동아리방입니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="위협 모델 다섯 요소">
+      <table>
+        <thead><tr><th scope="col">요소</th><th scope="col">묻는 말</th><th scope="col">동아리방 예</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">자산</th><td>무엇을 지키나?</td><td>방 안의 장비, 출입 기록</td></tr>
+          <tr><th scope="row">공격자</th><td>누가, 무엇을 원하나?</td><td>회원이 아닌 사람이 들어오려 함</td></tr>
+          <tr><th scope="row">접근 범위</th><td>어디까지 닿을 수 있나?</td><td>문 앞, 잠깐 빌린 태그</td></tr>
+          <tr><th scope="row">신뢰 경계</th><td>어디부터 믿지 않아야 하나?</td><td>태그가 보낸 값은 믿지 않고 서버가 확인</td></tr>
+          <tr><th scope="row">피해</th><td>뚫리면 어떻게 되나?</td><td>장비 분실, 거짓 출입 기록</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>세 낱말을 구별하기</h3>
+    <ul>
+      <li><strong>취약점:</strong> 약한 곳. UID만 확인하는 설계.</li>
+      <li><strong>위협:</strong> 그 약점을 이용할 수 있는 사람이나 사건. 들어오려는 비회원.</li>
+      <li><strong>위험:</strong> 일어날 가능성과 피해를 함께 본 크기. 방 안에 귀한 장비가 없다면 위험도 달라집니다.</li>
+    </ul>
+    <h3>지키려는 세 가지</h3>
+    <ul>
+      <li><strong>기밀성:</strong> 허락된 사람만 내용을 봅니다. 예: HTTPS 내용.</li>
+      <li><strong>무결성:</strong> 몰래 바뀌지 않습니다. 예: 서명된 펌웨어.</li>
+      <li><strong>가용성:</strong> 필요할 때 쓸 수 있습니다. 예: 방해받지 않는 통신.</li>
+    </ul>
+    <h3>설계의 기본</h3>
+    <ul>
+      <li><strong>인증과 인가:</strong> 누구인지 확인하고, 무엇을 해도 되는지 따로 정합니다.</li>
+      <li><strong>최소 권한:</strong> 일에 필요한 권한만 줍니다.</li>
+      <li><strong>다층 방어:</strong> 하나가 뚫려도 다음 층이 남도록 겹칩니다.</li>
+    </ul>
+  </section>
+
+  {stories.map((s) => (
+    <section id={s.id} aria-labelledby={`h-${s.id}`}>
+      <h2 id={`h-${s.id}`} style="font-size: var(--text-xl)">{s.title}</h2>
+      <dl class="facts">
+        <div><dt>일상의 자산</dt><dd>{s.asset}</dd></div>
+        <div><dt>왜 약해지나</dt><dd>{s.why}</dd></div>
+        <div><dt>공격 개념</dt><dd>{s.attack}</dd></div>
+        <div><dt>방어 기술</dt><dd>{s.defense}</dd></div>
+        <div><dt>방어의 한계</dt><dd>{s.limit}</dd></div>
+        <div><dt>실험 연계</dt><dd>{s.links.map(([h, l], i) => <>{i > 0 && ', '}<a href={url(h)}>{l}</a></>)}</dd></div>
+      </dl>
+      {s.id === 'wifi' && (
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Wi-Fi 보호 기술의 역할">
+          <table>
+            <caption>기술마다 지키는 구간이 다릅니다. 출처: <a href={SOURCES.wifiSecurity.url} rel="noopener">Wi-Fi Alliance</a>, <a href={SOURCES.arubaPmf.url} rel="noopener">HPE Aruba</a>, <a href={SOURCES.rfcTls.url} rel="noopener">RFC 8446</a></caption>
+            <thead><tr><th scope="col">기술</th><th scope="col">하는 일</th><th scope="col">기억할 한계</th></tr></thead>
+            <tbody>{wifiRoles.map(([a, b, c]) => <tr><th scope="row">{a}</th><td>{b}</td><td>{c}</td></tr>)}</tbody>
+          </table>
+        </div>
+      )}
+      {s.id === 'ble' && <p class="small">근거: <a href={SOURCES.nistBt.url} rel="noopener">NIST SP 800-121</a>, <a href={SOURCES.btGuide.url} rel="noopener">Bluetooth SIG 보안과 개인정보 가이드</a></p>}
+      {s.id === 'nfc' && <p class="small">근거: <a href={SOURCES.ntag.url} rel="noopener">NXP 데이터시트</a>. 금융 카드는 <a href={SOURCES.emvco.url} rel="noopener">EMVCo</a> 설명처럼 거래마다 일회용 보안 코드를 만들고 추가 검증을 거칩니다. UID를 읽는 것은 결제 복제가 아닙니다.</p>}
+      {s.id === 'gps' && <p class="small">근거: <a href={SOURCES.gpsInterference.url} rel="noopener">GPS.gov 간섭 안내</a>, <a href={SOURCES.nistSpoof.url} rel="noopener">NIST 용어집 spoofing</a></p>}
+    </section>
+  ))}
+
+  <section id="crypto" aria-labelledby="h-crypto">
+    <h2 id="h-crypto">해시, 암호화, MAC, 서명은 다릅니다</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="해시, 암호화, MAC, 서명 비교">
+      <table>
+        <thead><tr><th scope="col">이름</th><th scope="col">키</th><th scope="col">주는 것</th><th scope="col">주지 않는 것</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">해시</th><td>없음</td><td>값이 달라졌는지 확인 (우연한 손상 등)</td><td>출처 보장. 공격자가 해시까지 바꾸면 알 수 없습니다.</td></tr>
+          <tr><th scope="row">암호화</th><td>있음</td><td>내용을 숨김 (기밀성)</td><td>암호화만으로 보낸 사람을 증명하지 못할 수 있습니다.</td></tr>
+          <tr><th scope="row">MAC</th><td>함께 아는 비밀키</td><td>키를 가진 쪽이 만들었고 안 바뀌었음</td><td>제3자에게 누가 만들었는지 증명. 양쪽 다 같은 키를 갖습니다.</td></tr>
+          <tr><th scope="row">전자 서명</th><td>개인키로 서명, 공개키로 검증</td><td>믿을 수 있는 공개키나 인증서로 확인했을 때의 출처와 무결성</td><td>내용을 숨기지는 않습니다.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>여기서 MAC은 <a href={SOURCES.nistMac.url} rel="noopener">Message Authentication Code</a>입니다. 네트워크의 MAC 주소와 이름만 같습니다.</p>
+    <p>서명은 어떤 공개키로 검증했는지가 핵심입니다. 공격자가 자기 키로 서명한 파일은 공격자 공개키로 검증해도 “맞음”으로 나오므로, 믿을 수 있는 공개키나 인증서인지 먼저 확인합니다.</p>
+  </section>
+
+  <section id="activities" aria-labelledby="h-activities">
+    <h2 id="h-activities">공격 없이 할 수 있는 여섯 가지 활동</h2>
+    <ol class="num-steps">
+      <li><span><strong>내 태그 읽기 분석:</strong> <a href={url('/learn/device/#reader')}>Card Reader</a>로 내 태그의 UID와 메모리를 읽고, 누구나 읽을 수 있는 값이 무엇인지 표로 정리합니다.</span></li>
+      <li><span><strong>공유기 설정 읽기:</strong> 집 공유기 관리 화면에서 보안 방식, PMF, 펌웨어 판을 보호자와 함께 읽어 적습니다. 네트워크를 끊거나 다른 사람 망을 건드리지 않습니다.</span></li>
+      <li><span><strong>종이 카드 응답 검증 놀이:</strong> 가상의 nonce와 예시 MAC 응답이 쌍으로 적힌 카드를 만듭니다. 공유키로 계산했다고 가정할 뿐, 실제 키와 계산은 쓰지 않습니다. 검증자가 새 nonce를 내면 응답자가 짝이 되는 응답을 내고, 검증자는 표와 맞는지와 이미 쓴 nonce인지 확인합니다. 지난 응답을 다시 내면 왜 거절되는지 봅니다.</span></li>
+      <li><span><strong>익명화 보고서:</strong> <a href={url('/lab/nfc/#report')}>내 보고서</a>에서 UID, SSID, BSSID를 가리고, 가려도 알 수 있는 것이 남는지 친구에게 확인받습니다.</span></li>
+      <li><span><strong>설계 전후 위협 모델:</strong> UID로 여는 동아리방의 위협 모델을 쓰고, 서버 확인과 챌린지-응답으로 고친 뒤 무엇이 나아지고 무엇이 남는지 비교합니다.</span></li>
+      <li><span><strong>프로젝트 점검표:</strong> 내 실험을 아래 <a href="#csf">NIST CSF 여섯 기능</a>으로 점검해 빠진 항목을 찾습니다.</span></li>
+    </ol>
+  </section>
+
+  <section id="growth" aria-labelledby="h-growth">
+    <h2 id="h-growth">5단계 성장 목표</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="5단계 성장 목표">
+      <table>
+        <thead><tr><th scope="col">단계</th><th scope="col">할 수 있어야 할 것</th><th scope="col">산출물</th><th scope="col">스스로 묻기</th></tr></thead>
+        <tbody>{growth.map(([a, b, c, d], i) => <tr><th scope="row">{i + 1}. {a}</th><td>{b}</td><td>{c}</td><td>{d}</td></tr>)}</tbody>
+      </table>
+    </div>
+    <h3>면접에서 설명하는 예</h3>
+    <p><em>“실험용 태그의 UID를 읽어 보니 대기만 해도 값이 나왔습니다. 그래서 이 값만으로 문을 연다면 왜 위험한지 위협 모델로 정리했고, 서버 확인과 챌린지-응답으로 바꾼 설계를 비교했습니다. 실제 시스템을 공격해 보지는 않았고, 설계 비교까지가 제가 한 일입니다.”</em></p>
+    <p>하지 않은 공격을 했다고 쓰지 않습니다. 한계를 말하는 것이 오히려 근거가 됩니다.</p>
+  </section>
+
+  <section id="subjects" aria-labelledby="h-subjects">
+    <h2 id="h-subjects">교과와 진로로 이어지는 길</h2>
+    <ul>
+      <li><strong>수학:</strong> 확률로 인식률과 반복을 해석합니다. 지수로 비밀번호의 경우의 수를 봅니다(32비트는 약 43억 가지). 로그로 dBm을 읽습니다.</li>
+      <li><strong>물리:</strong> 파동과 전자기 유도로 안테나와 NFC를 이해합니다.</li>
+      <li><strong>정보:</strong> 파이썬으로 데이터를 분석합니다.</li>
+      <li><strong>대학 전공 기초:</strong> 네트워크, 운영체제, 암호, 보안 설계로 이어집니다.</li>
+    </ul>
+    <p>활동 기록과 자소서에는 직접 한 활동, 쓴 근거, 그 뒤 달라진 생각을 씁니다.</p>
+  </section>
+
+  <section id="csf" aria-labelledby="h-csf">
+    <h2 id="h-csf">NIST CSF 2.0으로 내 프로젝트 정리하기</h2>
+    <p><a href={SOURCES.nistCsf.url} rel="noopener">NIST CSF 2.0</a>은 조직의 보안 활동을 여섯 기능으로 나눕니다. 아래는 학생 프로젝트에 빗댄 예입니다.</p>
+    <dl class="facts">{csf.map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
+    <p><a href={notesFile} download="security-learning-notes.md">학습 노트 내려받기 (Markdown)</a>: 5단계 점검표와 활동 기록 양식이 들어 있습니다.</p>
+  </section>
+
+  <section id="think" aria-labelledby="h-think">
+    <h2 id="h-think">생각해 보기</h2>
+    <Think q="SSID를 숨기면 안전해지나요?">
+      <p>눈에 덜 띌 뿐입니다. 단말이 찾거나 연결할 때 이름이 드러날 수 있어 인증을 대신하지 못합니다. WPA2나 WPA3 인증과 비밀번호가 실제 방어입니다.</p>
+    </Think>
+    <Think q="파일의 SHA-256 해시가 맞으면 믿어도 되나요?">
+      <p>내려받는 동안 손상되지 않았다는 데는 도움이 됩니다. 그러나 해시를 같은 곳에서 받았고 공격자가 파일과 해시를 함께 바꿨다면 알 수 없습니다. 출처를 확인하려면 믿을 수 있는 공개키로 검증한 서명이 필요합니다.</p>
+    </Think>
+    <Think q="UID를 해시해 보고서에 쓰면 익명인가요?">
+      <p>완전한 익명은 아닙니다. 같은 태그는 같은 해시가 되어 연결되고, 후보가 적으면 전부 해시해 찾아낼 수 있습니다. 필요 없으면 아예 빼는 것이 가장 낫습니다.</p>
+    </Think>
+    <Think q="에너지 그래프가 갑자기 높아지면 공격받는 건가요?">
+      <p>알 수 없습니다. 전자레인지나 다른 기기일 수 있습니다. 다른 기록과 함께 보고, 근거가 없으면 원인 후보로만 적습니다.</p>
+    </Think>
+  </section>
+</LearnLayout>

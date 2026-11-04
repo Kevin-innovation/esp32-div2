@@ -14,6 +14,23 @@ export const STATUS_HELP: Record<ProjectStatus, string> = {
   extra: '기기와 사이트만으로는 끝나지 않습니다. 필요한 것을 먼저 준비합니다.',
 };
 
+// 카드마다 이어지는 보안 질문과 학습 위치.
+export const SECURITY_QUESTIONS: Record<string, [string, string]> = {
+  'nfc-conditions': ['지갑 안에서 읽힌다면 UID를 지갑째 읽히는 것은 왜 비밀 유출과 다른가?', '/learn/security/#nfc'],
+  'nfc-distance': ['짧은 거리가 곧 가까이 있다는 증명일까?', '/learn/security/#nfc'],
+  'nfc-memory': ['이 UID 하나로 문을 연다면 무엇이 문제일까?', '/learn/security/#nfc'],
+  'wifi-rssi': ['신호가 집 밖까지 닿는다면 접근 범위는 어디까지일까?', '/learn/security/#wifi'],
+  'ssid-map': ['이 지도를 공개하면 어떤 정보가 드러날까?', '/learn/security/#device'],
+  'channel-busy': ['채널이 붐비는 것을 가용성 문제로 어떻게 설명할까?', '/learn/security/#energy'],
+  'ble-rssi': ['광고만으로 사람의 이동을 짐작할 수 있을까?', '/learn/security/#ble'],
+  'energy-list': ['에너지가 높다는 것은 공격의 증거일까?', '/learn/security/#energy'],
+  'ir-remote': ['이 신호에는 보낸 사람을 확인하는 값이 있을까?', '/learn/security/#remote'],
+  'subghz-receive': ['고정 명령과 롤링 코드는 무엇이 다를까?', '/learn/security/#remote'],
+  'gps-first-fix': ['위치를 믿기 전에 무엇과 비교해야 할까?', '/learn/security/#gps'],
+  'csv-offline': ['이 CSV에서 지우거나 가려야 할 값은 무엇일까?', '/learn/security/#device'],
+  'tech-note': ['공개하기 전에 위협 모델로 무엇을 점검할까?', '/learn/security/#model'],
+};
+
 export interface Project {
   id: string;
   title: string;

@@ -44,12 +44,12 @@ const stories = [
   heading="왜 이렇게 많은 무선 기술이 있을까"
   lead="기술마다 잘 푸는 생활 문제가 다릅니다. 집의 유선 컴퓨터에서 출발해 여섯 가지 무선이 왜 따로 있는지 따라갑니다."
   description="Wi-Fi, BLE, IR, NFC, Sub-GHz, GPS가 왜 생겼는지 생활 장면으로 이해하고, 주파수와 프로토콜, 파장과 변조를 배웁니다."
-  toc={[['scene', '하루의 장면'], ...stories.map((s): [string, string] => [s.id, s.title.split(': ')[1]]), ['layers', '주파수, 언어, 내용'], ['wave', '파장과 변조'], ['myths', '자주 하는 오해'], ['antenna', '안테나가 여러 개인 이유'], ['same-band', '같은 2.4GHz, 다른 언어'], ['think', '생각해 보기'], ['next', '다음 단계']]}
+  toc={[['scene', '일상 속 불편'], ...stories.map((s): [string, string] => [s.id, s.title.split(': ')[1]]), ['layers', '주파수, 언어, 내용'], ['wave', '파장과 변조'], ['myths', '자주 하는 오해'], ['antenna', '안테나가 여러 개인 이유'], ['same-band', '같은 2.4GHz, 다른 언어'], ['think', '생각해 보기'], ['next', '다음 단계']]}
   sources={['ieeeWifi', 'btTech', 'btRange', 'espBle', 'tiCc1101', 'nordicNrf24', 'nistGps', 'gpsTrilateration', 'ntag', 'metal', 'deviceScreens']}
 >
   <section id="scene" aria-labelledby="h-scene">
-    <h2 id="h-scene">하루의 장면에서 시작하기</h2>
-    <p>아래 이야기는 실제 발명 순서나 역사가 아닙니다. 각 기술이 어떤 문제에 잘 맞는지 생활 장면으로 재구성한 도입입니다.</p>
+    <h2 id="h-scene">일상 속 불편에서 시작된 무선 기술</h2>
+    <p>우리가 쓰는 무선 기술은 저마다 다른 불편을 풀어 줍니다. 아래는 실제 발명 순서가 아니라, 각 기술이 어떤 문제에 잘 맞는지 일상의 예로 풀어 본 이야기입니다.</p>
     <p>책상의 컴퓨터는 랜선으로 인터넷에 붙어 있습니다. 선 없이 네트워크에 들어가려면 Wi-Fi가 맞습니다. 손목 밴드처럼 건전지가 작은 기기에는 그 전력이 부담이어서 BLE가 더 어울립니다.</p>
     <p>TV는 버튼 하나면 충분하니 값싼 적외선이 어울립니다. 개찰구에는 카드를 대기만 하면 되는 NFC가, 벽 너머의 작은 센서에는 낮은 대역이, 처음 가는 길에는 위성이 맞습니다. <strong>하나가 더 좋아서가 아니라 풀려는 문제가 달라서 따로 씁니다.</strong></p>
     <p class="small muted">이 기기에서 실행을 확인한 것은 NFC 읽기입니다. 다른 기능의 실험 주제는 공식 문서 기준입니다.</p>
@@ -59,7 +59,7 @@ const stories = [
     <section id={s.id} aria-labelledby={`h-${s.id}`}>
       <h2 id={`h-${s.id}`} style="font-size: var(--text-xl)">{s.title}</h2>
       <dl class="facts">
-        <div><dt>생활 장면</dt><dd>{s.scene}</dd></div>
+        <div><dt>일상의 불편</dt><dd>{s.scene}</dd></div>
         <div><dt>왜 이 방식인가</dt><dd>{s.born}</dd></div>
         <div><dt>작동</dt><dd>{s.how}</dd></div>
         <div><dt>절충</dt><dd>{s.cost}</dd></div>
@@ -184,6 +184,6 @@ const stories = [
 
   <section id="next" aria-labelledby="h-next">
     <h2 id="h-next">다음 단계</h2>
-    <p>이제 <a href={url('/start/')}>처음 시작</a>에서 기기를 켜고, <a href={url('/learn/device/')}>화면 따라 하기</a>로 태그를 읽어 봅니다. 해 보고 싶은 질문은 <a href={url('/learn/projects/')}>실험과 개발 기술노트</a>에 모아 두었습니다.</p>
+    <p>이제 <a href={url('/start/')}>처음 시작</a>에서 기기를 켜고, <a href={url('/learn/device/')}>화면 따라 하기</a>로 태그를 읽어 봅니다. 해 보고 싶은 질문은 <a href={url('/learn/projects/')}>실험과 개발 기술노트</a>에 모아 두었고, 각 기술을 지키는 방법은 <a href={url('/learn/security/')}>정보보호로 보기</a>에 있습니다.</p>
   </section>
 </LearnLayout>

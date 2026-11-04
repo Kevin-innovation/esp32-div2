@@ -194,6 +194,7 @@ export const LEARN_LINKS: [string, string][] = [
   ['/learn/device/', '화면 따라 하기'],
   ['/learn/nfc/', 'NFC 원리'],
   ['/learn/network/', 'Wi-Fi와 네트워크'],
+  ['/learn/security/', '정보보호로 보기'],
   ['/learn/glossary/', '용어 사전'],
   ['/lab/nfc/', '실험 워크북'],
   ['/learn/projects/', '기술노트'],

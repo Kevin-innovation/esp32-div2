@@ -69,9 +69,6 @@ const path = Astro.url.pathname.replace(base, '') || '/';
         var sync = function () { b.setAttribute('aria-checked', String(d.dataset.theme === 'dark')); };
         var chosen = function () { try { return localStorage.getItem('esp32div.theme'); } catch (e) { return null; } };
         sync();
-        document.querySelectorAll('.nav [aria-current], .learn-nav [aria-current]').forEach(function (now) {
-          now.parentElement.scrollLeft = now.offsetLeft - now.parentElement.offsetLeft;
-        });
         b.addEventListener('click', function () {
           d.dataset.theme = d.dataset.theme === 'dark' ? 'light' : 'dark';
           sync();
