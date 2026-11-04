@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import tagStructure from '../../assets/learning/nfc-tag-structure.webp';
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import Evidence from '../../components/Evidence.astro';
 import ScreenShot from '../../components/learn/ScreenShot.astro';
@@ -101,6 +103,7 @@ const pages = [
     <Think q="UID를 알면 결제할 수 있나요?">
       <p>아닙니다. UID는 식별값입니다. 비접촉 결제는 <a href={url('/lab/nfc/#security')}>거래마다 만드는 일회용 보안 코드</a> 등 다른 검증을 거칩니다.</p>
     </Think>
+    <p class="section-next">값과 명령의 뜻을 봤습니다. 이제 이것들이 언제 오가는지 봅니다. <a href="#flow">통신 단계 따라가기</a></p>
   </section>
 
   <section id="flow" aria-labelledby="h-flow">
@@ -108,11 +111,21 @@ const pages = [
     <p>처음부터 끝까지 한 단계씩 넘겨 보세요. 왼쪽이 리더, 오른쪽이 태그입니다. 값의 뜻은 <a href="#atqa">ATQA</a>, <a href="#uid">UID</a>, <a href="#sak">SAK</a>에서 다시 볼 수 있습니다.</p>
     <Stepper client:load label="NFC 통신 단계" actors={['리더 (PN532)', '태그']} steps={NFC_STEPS} note={MODEL_NOTE} />
     <p class="small muted">이 기기에서 무선 신호를 직접 캡처하지는 않았습니다. 일반 ISO14443A 흐름을 원리 수준으로 보여 주며, 실제 바이트 순서를 그대로 옮긴 기록이 아닙니다.</p>
+    <p class="section-next">누가 언제 말하는지 봤습니다. 다음은 그 대화가 왜 약해지는지입니다. <a href="#coupling">결합이 약해지는 이유</a></p>
   </section>
 
   <section id="coupling" aria-labelledby="h-coupling">
     <h2 id="h-coupling">결합이 약해지는 이유</h2>
     <p>리더 코일과 태그 코일은 자기장으로 이어져 있습니다. 이어지는 정도가 약해지면 태그가 쓸 에너지도, 리더가 알아챌 답도 작아집니다.</p>
+    <figure class="tag-figure">
+      <div class="tag-figure__image">
+        <Image src={tagStructure} alt="투명한 원형 필름 위에 금속선 코일이 여러 겹 돌아 있고, 코일 아래쪽 끝에 작은 검은 칩이 이어진 NFC 태그 구조 예시" widths={[320, 640]} sizes="(min-width: 640px) 360px, 100vw" format="webp" quality={82} loading="lazy" />
+        <p class="tag-pin tag-pin--coil"><span>코일</span></p>
+        <p class="tag-pin tag-pin--chip"><span>칩</span></p>
+      </div>
+      <figcaption class="field__help">구조 이해를 위한 AI 생성 이미지. 실제 구매 태그 분해 사진 아님. 제조 회로도도 아닙니다.</figcaption>
+    </figure>
+    <p>여러 겹 돌아간 금속선이 코일이고, 그 끝에 이어진 작은 칩이 명령을 처리합니다. 그림에 배터리가 없듯이 태그는 코일로 얻은 에너지로 동작합니다.</p>
     <ul>
       <li><strong>거리:</strong> 자기장은 멀어질수록 빠르게 약해집니다.</li>
       <li><strong>방향:</strong> 코일 면이 나란할 때와 수직일 때 결합이 달라집니다.</li>
@@ -120,6 +133,7 @@ const pages = [
       <li><strong>금속:</strong> 가까운 금속은 안테나 특성을 바꿔 인식 거리를 줄일 수 있습니다(<a href={SOURCES.metal.url} rel="noopener">NXP AN11564</a>).</li>
     </ul>
     <p>NXP 데이터시트는 NTAG21x의 동작 거리를 최대 100mm로 적되, 자기장 세기와 안테나 모양에 따라 달라진다고 밝힙니다(<a href={SOURCES.ntag.url} rel="noopener">NXP</a>). 이 기기의 값은 그보다 짧을 수 있으니 직접 잽니다.</p>
+    <p class="section-next">거리와 방향이 결합을 바꾼다는 것을 봤습니다. 이제 내 화면의 값을 읽습니다. <a href="#screen">화면 값은 어디서 왔나</a></p>
   </section>
 
   <section id="screen" aria-labelledby="h-screen">
@@ -137,6 +151,7 @@ const pages = [
         </tbody>
       </table>
     </div>
+    <p class="section-next">화면 값의 출처를 찾았습니다. 이제 직접 풀어 봅니다. <a href="#bytes">바이트 실습</a></p>
   </section>
 
   <section id="bytes" aria-labelledby="h-bytes">

@@ -1,5 +1,6 @@
 // 실행: npm run check:nfc. CSV 왕복, 집계, 위험 입력을 한 번에 검사한다.
 import assert from 'node:assert/strict';
+import { NFC_STEPS, SCAN_EXAMPLE, SCAN_SCENARIOS } from '../src/data/learn.ts';
 import { aggregate, crossTab, csvCell, designWarnings, demoTrials, importCsv, mergeTrials, notesToCsv, parseCsv, reportToMarkdown, buildReport, trialsToCsv, validateTrial, type Trial } from '../src/lib/nfc.ts';
 
 const make = (over: Record<string, string>): Trial => {
@@ -84,5 +85,16 @@ assert.ok(!md.includes('<script>') && !md.includes('<img'), '보고서에 생 HT
 assert.ok(md.includes('&lt;script&gt;'));
 const demoMd = reportToMarkdown(buildReport({ trials: demo, notes: {}, dataType: 'demo', date: '2026-11-04', sources: [] }));
 assert.ok(demoMd.includes('데모 자료') && demoMd.includes('아직 작성하지 않음'));
+
+// 원리 그림: 두 탐색 방식은 첫 줄의 먼저 말하는 쪽이 다르고, 목록은 줄어들지 않으며 끝에 가상 예시 전체가 찬다.
+const [passive, active] = SCAN_SCENARIOS;
+assert.equal(passive.steps[1].from, 1, '수동 탐색은 AP가 먼저 말한다');
+assert.equal(active.steps[0].from, 0, '능동 탐색은 스캔 장비가 먼저 말한다');
+for (const { steps } of SCAN_SCENARIOS) {
+  const listed = steps.map((step) => step.listed ?? 0);
+  assert.deepEqual(listed, [...listed].sort((a, b) => a - b));
+  assert.equal(listed.at(-1), SCAN_EXAMPLE.length);
+}
+assert.ok(NFC_STEPS.findIndex((step) => step.powered) < NFC_STEPS.findIndex((step) => step.signal), '태그는 전원을 얻은 뒤 신호가 오간다');
 
 console.log('check:nfc 통과');

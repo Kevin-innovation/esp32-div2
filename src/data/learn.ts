@@ -140,45 +140,89 @@ export const MAIN_MENU: MenuItem[] = [
 export interface VisualStep {
   title: string;
   body: string;
-  /** 0이면 왼쪽에서 오른쪽, 1이면 오른쪽에서 왼쪽으로 가는 신호 */
+  /** 먼저 말하는 쪽. 0이면 왼쪽(리더, 스캔 장비, 단말기), 1이면 오른쪽 */
   from?: 0 | 1;
   signal?: string;
+  /** signal에 대한 답. 반대 방향으로 돌아온다. */
+  returns?: string;
   state?: string;
   layers?: string[];
+  /** 오른쪽 상대가 단계마다 다를 때 (DNS 서버, 웹 서버 등) */
+  peer?: string;
+  /** 리더가 자기장을 켠 상태 */
+  field?: boolean;
+  /** 태그가 전원을 얻었는지 */
+  powered?: boolean;
+  channel?: number;
+  /** 이 단계에서 옮겨 오기 전 채널 */
+  channelFrom?: number;
+  /** 스캔 목록에 몇 줄까지 찼는지, 그중 이번에 새로 들어온 줄 */
+  listed?: number;
+  newRow?: number;
+  /** 작은 관찰 질문과 답 */
+  ask?: [string, string];
 }
 
-export const NFC_STEPS: VisualStep[] = [
-  { title: '자기장 켜기', state: '13.56MHz 자기장', body: '리더가 안테나로 13.56MHz 자기장을 만듭니다. 아직 태그와 주고받는 내용은 없습니다.' },
-  { title: '태그가 에너지 얻기', state: '유도 결합', body: '태그에는 배터리가 없습니다. 태그의 코일이 자기장 안에 들어오면 유도 결합으로 전기를 얻어 칩이 깨어납니다. 멀어지거나 방향이 틀어지면 이 결합이 약해집니다.' },
-  { title: '탐색 요청', from: 0, signal: 'REQA 또는 WUPA', body: '리더가 “ISO14443A 태그가 있나요?”라고 묻습니다. 아직 어떤 태그인지 모릅니다.' },
-  { title: '태그의 첫 답', from: 1, signal: 'ATQA', body: '태그가 답합니다. 태그는 리더에서 얻은 에너지로 동작하며, 별도 송신기로 새 신호를 만드는 대신 코일의 전기적 부하를 바꿔 자기장에 작은 변화를 만듭니다. 이것이 부하 변조입니다. 화면의 ATQA(탐색 요청에 대한 응답) 0044가 이 답을 표시한 값입니다.' },
-  { title: '충돌 방지와 UID 확인', from: 1, signal: 'UID', body: '여러 태그가 함께 답해도 하나씩 가려낼 수 있도록 리더가 UID를 단계적으로 확인합니다. 화면의 UID(고유 식별값) 530105D0430001이 여기서 얻은 값입니다.' },
-  { title: '선택', from: 0, signal: 'SELECT', body: '리더가 찾은 UID의 태그를 고릅니다. 태그는 SAK(선택 응답)로 답합니다. 화면의 SAK 00이 그 값입니다.' },
-  { title: '메모리 읽기', from: 0, signal: 'READ', body: '리더가 페이지를 지정해 읽기를 요청하면 태그가 그 내용을 돌려줍니다. UID를 읽은 것만으로 메모리까지 읽은 것은 아니며, 이 단계가 따로 있어야 P4~P7 값을 볼 수 있습니다.' },
-  { title: '화면에 표시', state: '기기 안에서 처리', body: 'PN532 칩이 받은 값을 ESP32-S3로 넘기고 화면에 그립니다. 이 과정에 Wi-Fi 접속이나 인터넷 전송은 필요하지 않습니다.' },
+export interface StepScenario {
+  id: string;
+  label: string;
+  steps: VisualStep[];
+}
+
+// 시각화와 '스캔 목록 읽기' 표가 함께 쓰는 가상 예시.
+export const SCAN_EXAMPLE = [
+  { ssid: 'MyHome_2G', bssid: 'AA:BB:CC:11:22:33', channel: 6, rssi: -42 },
+  { ssid: 'MyHome_2G', bssid: 'AA:BB:CC:44:55:66', channel: 11, rssi: -71 },
 ];
 
-export const SCAN_STEPS: VisualStep[] = [
-  { title: '수동 탐색: 듣기', state: '채널을 맞추고 듣기', body: '스캔 장비가 한 채널에 머물며 아무것도 보내지 않고 기다립니다.' },
-  { title: '수동 탐색: Beacon 받기', from: 1, signal: 'Beacon', body: 'AP는 자기 존재를 알리는 Beacon을 주기적으로 보냅니다. 스캔 장비는 이것을 듣고 이름과 주소를 적습니다.' },
-  { title: '능동 탐색: 먼저 묻기', from: 0, signal: 'Probe Request', body: '스캔 장비가 “근처에 AP가 있나요?”라고 먼저 프레임을 보냅니다. 수동 탐색과 달리 전파를 내보냅니다.' },
-  { title: '능동 탐색: 답 받기', from: 1, signal: 'Probe Response', body: 'AP가 자기 정보를 담아 답합니다. 스캔 장비는 이 값을 목록에 적습니다.' },
-  { title: '다음 채널로', state: '채널 이동', body: '스캔 장비는 채널을 옮겨 같은 일을 반복합니다. 그래서 스캔에는 시간이 걸립니다.' },
-  { title: '목록 만들기', state: 'SSID, BSSID, 채널, RSSI', body: '받은 값을 모아 화면에 목록으로 보여 줍니다. 어떤 방식을 쓰는지는 펌웨어 설정에 달려 있고, 이 기기의 MK 펌웨어 방식은 아직 확인하지 못했습니다.' },
+export const NFC_STEPS: VisualStep[] = [
+  { title: '자기장 켜기', field: true, powered: false, state: '13.56MHz 자기장', body: '리더가 안테나로 13.56MHz 자기장을 만듭니다. 아직 태그와 주고받는 내용은 없습니다.' },
+  { title: '태그가 에너지 얻기', field: true, powered: true, state: '유도 결합', body: '태그에는 배터리가 없습니다. 태그의 코일이 자기장 안에 들어오면 유도 결합으로 전기를 얻어 칩이 깨어납니다. 멀어지거나 방향이 틀어지면 이 결합이 약해집니다.' },
+  { title: '탐색 요청', field: true, powered: true, from: 0, signal: 'REQA 또는 WUPA', body: '리더가 “ISO14443A 태그가 있나요?”라고 묻습니다. 아직 어떤 태그인지 모릅니다.', ask: ['지금 누가 먼저 말했나요?', '리더입니다. 태그는 자기장에서 에너지를 얻은 뒤 요청을 받아야 답합니다.'] },
+  { title: '태그의 첫 답', field: true, powered: true, from: 1, signal: 'ATQA', body: '태그가 답합니다. 태그는 리더에서 얻은 에너지로 동작하며, 별도 송신기로 새 신호를 만드는 대신 코일의 전기적 부하를 바꿔 자기장에 작은 변화를 만듭니다. 이것이 부하 변조입니다. 화면의 ATQA(탐색 요청에 대한 응답) 0044가 이 답을 표시한 값입니다.' },
+  { title: '충돌 방지와 UID 확인', field: true, powered: true, from: 0, signal: '충돌 방지', returns: 'UID', body: '여러 태그가 함께 답해도 하나씩 가려낼 수 있도록 리더가 UID를 단계적으로 확인합니다. 화면의 UID(고유 식별값) 530105D0430001이 여기서 얻은 값입니다.' },
+  { title: '선택', field: true, powered: true, from: 0, signal: 'SELECT', returns: 'SAK', body: '리더가 찾은 UID의 태그를 고릅니다. 태그는 SAK(선택 응답)로 답합니다. 화면의 SAK 00이 그 값입니다.' },
+  { title: '메모리 읽기', field: true, powered: true, from: 0, signal: 'READ', returns: '데이터 16바이트', body: '리더가 페이지를 지정해 읽기를 요청하면 태그가 그 페이지부터 16바이트를 돌려줍니다. UID를 읽은 것만으로 메모리까지 읽은 것은 아니며, 이 단계가 따로 있어야 P4~P7 값을 볼 수 있습니다.', ask: ['이 단계에서 인터넷을 거치나요?', '아닙니다. 리더와 태그 사이의 ISO14443A 프레임입니다.'] },
+  { title: '화면에 표시', field: true, powered: true, state: '기기 안에서 처리', body: 'PN532 칩이 받은 값을 ESP32-S3로 넘기고 화면에 그립니다. 이 과정에 Wi-Fi 접속이나 인터넷 전송은 필요하지 않습니다.' },
+];
+
+const LIST_DONE = '받은 값을 모아 목록을 보여 줍니다. 아래 “스캔 목록 읽기”의 표가 이 목록입니다. 목록이 보인다고 AP에 연결된 것은 아니며, 연결은 그 다음의 별도 과정입니다.';
+
+export const SCAN_SCENARIOS: StepScenario[] = [
+  {
+    id: 'passive',
+    label: '수동 탐색',
+    steps: [
+      { title: '채널을 맞추고 듣기', channel: 6, listed: 0, state: '듣는 중, 보내는 것 없음', body: '스캔 장비가 6번 채널에 머물며 아무것도 보내지 않고 기다립니다.', ask: ['스캔 장비가 전파를 보냈나요?', '아닙니다. 수동 탐색은 듣기만 합니다.'] },
+      { title: 'Beacon 받기', channel: 6, listed: 1, newRow: 0, from: 1, signal: 'Beacon', body: 'AP는 자기 존재를 알리는 Beacon을 주기적으로 보냅니다. 먼저 말한 쪽은 AP입니다. 스캔 장비는 이름과 주소를 적습니다.' },
+      { title: '다음 채널로', channel: 11, channelFrom: 6, listed: 2, newRow: 1, from: 1, signal: 'Beacon', body: '채널을 옮겨 듣기를 되풀이합니다. 11번 채널의 AP에서 온 Beacon이 목록에 더해집니다. 채널마다 머물러야 하므로 시간이 걸립니다.' },
+      { title: '목록 완성', channel: 11, listed: 2, state: '스캔 끝', body: LIST_DONE },
+    ],
+  },
+  {
+    id: 'active',
+    label: '능동 탐색',
+    steps: [
+      { title: 'Probe Request 보내기', channel: 6, listed: 0, from: 0, signal: 'Probe Request', body: '스캔 장비가 6번 채널에서 “근처에 AP가 있나요?”라고 먼저 프레임을 보냅니다. 수동 탐색과 달리 전파를 내보냅니다.', ask: ['이번에는 누가 먼저 말했나요?', '스캔 장비입니다. 수동 탐색에서는 AP의 Beacon을 기다렸습니다.'] },
+      { title: 'Probe Response 받기', channel: 6, listed: 1, newRow: 0, from: 1, signal: 'Probe Response', body: 'AP가 자기 정보를 담아 답합니다. 스캔 장비는 이 값을 목록에 적습니다.' },
+      { title: '다음 채널로', channel: 11, channelFrom: 6, listed: 2, newRow: 1, from: 0, signal: 'Probe Request', returns: 'Probe Response', body: '채널을 옮겨 같은 왕복을 되풀이합니다. 11번 채널의 AP가 답하면 목록에 더해집니다.' },
+      { title: '목록 완성', channel: 11, listed: 2, state: '스캔 끝', body: LIST_DONE },
+    ],
+  },
 ];
 
 export const WEB_STEPS: VisualStep[] = [
-  { title: 'AP에 연결', from: 0, signal: '연결과 Wi-Fi 인증', body: '단말기가 AP와 연결을 맺습니다. 여기까지는 같은 Wi-Fi 안의 이야기입니다.' },
-  { title: '주소 받기', from: 1, signal: 'DHCP', body: '단말기가 쓸 IP 주소, 공유기 주소, DNS 서버 주소를 받습니다.' },
-  { title: '이름을 주소로', from: 0, signal: 'DNS', body: 'example.com 같은 이름을 IP 주소로 바꾸어 달라고 묻습니다.' },
-  { title: '연결 맺기', from: 0, signal: 'TCP', body: '서버와 데이터를 순서대로 주고받을 통로를 만듭니다.' },
-  { title: '암호화 준비', from: 1, signal: 'TLS', body: '서버를 확인하고 암호화 키를 합의합니다. 이후의 내용은 암호화됩니다.' },
-  { title: '요청과 응답', from: 0, signal: 'HTTPS', body: '브라우저가 페이지를 요청하고 서버가 응답합니다.' },
+  { title: 'AP에 연결', peer: 'AP (공유기)', from: 0, signal: '연결과 Wi-Fi 인증', returns: '연결 완료', body: '단말기가 AP와 연결을 맺습니다. 여기까지는 같은 Wi-Fi 안의 이야기이고, 아직 인터넷을 쓴 것은 아닙니다.' },
+  { title: '주소 받기', peer: 'DHCP 서버 (보통 공유기)', from: 0, signal: '주소 요청', returns: 'IP 주소', body: 'DHCP로 단말기가 쓸 IP 주소, 공유기 주소, DNS 서버 주소를 받습니다.' },
+  { title: '이름을 주소로', peer: 'DNS 서버', from: 0, signal: 'example.com은 어디?', returns: 'IP 주소', body: 'DNS로 example.com 같은 이름을 IP 주소로 바꿉니다. 상대는 웹 서버가 아니라 DNS 서버입니다.', ask: ['지금 웹 서버와 말하고 있나요?', '아직 아닙니다. 주소를 알아내는 단계입니다. 웹 서버와는 다음 단계부터 말합니다.'] },
+  { title: '연결 맺기', peer: '웹 서버 (AP를 거쳐)', from: 0, signal: 'TCP 연결 요청', returns: '수락', body: 'TCP로 웹 서버와 데이터를 순서대로 주고받을 통로를 만듭니다. 신호는 AP를 거쳐 인터넷으로 나갑니다.' },
+  { title: '암호화 준비', peer: '웹 서버 (AP를 거쳐)', from: 0, signal: 'TLS 시작', returns: '서버 인증서', body: 'TLS로 서버를 확인하고 암호화 키를 합의합니다. 이후의 내용은 암호화됩니다.' },
+  { title: '요청과 응답', peer: '웹 서버 (AP를 거쳐)', from: 0, signal: 'HTTPS 요청', returns: 'HTTPS 응답', body: '브라우저가 페이지를 요청하고 서버가 응답합니다.' },
 ];
 
 export const LAYER_STEPS: VisualStep[] = [
   { title: '응용 데이터', layers: ['HTTP 요청'], body: '브라우저가 만든 요청입니다.' },
-  { title: 'TLS 암호화', layers: ['TLS 암호문'], body: 'HTTPS에서는 TLS가 요청을 암호문으로 바꿉니다. 이후 단계에서는 이 암호문을 안에 담아 나릅니다.' },
+  { title: 'TLS 암호화', layers: ['TLS 암호문'], body: 'HTTPS에서는 TLS가 요청을 암호문으로 바꿉니다. 이후 단계에서는 이 암호문을 안에 담아 나릅니다.', ask: ['이 뒤로 요청 내용이 그대로 보일까요?', '아닙니다. 이후 계층은 암호문을 담아 나릅니다. 다만 주소 같은 헤더는 따로 보입니다.'] },
   { title: '전송 계층', layers: ['TCP 헤더', 'TLS 암호문'], body: 'TCP 헤더가 앞에 붙습니다. 어느 프로그램으로 갈지 정하는 포트 번호와 순서 정보가 들어 있습니다.' },
   { title: 'IP 패킷', layers: ['IP 헤더', 'TCP 헤더', 'TLS 암호문'], body: 'IP 헤더가 붙습니다. 출발지와 목적지 IP 주소가 들어 있어 같은 내부망은 물론 인터넷 너머까지 찾아갈 수 있습니다.' },
   { title: 'Wi-Fi 프레임', layers: ['Wi-Fi 헤더', 'IP 헤더', 'TCP 헤더', 'TLS 암호문'], body: 'Wi-Fi 헤더가 붙습니다. 같은 무선 구간의 MAC 주소가 들어 있습니다. WPA2, WPA3 같은 보안 설정을 쓰면 프레임 내용이 무선 구간에서 한 번 더 암호화됩니다.' },
