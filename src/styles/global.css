@@ -390,15 +390,28 @@ details[open] > summary { margin-bottom: var(--space-sm); }
 .stepper__list { margin: var(--space-md) 0 0; padding: 0; list-style: none; }
 .stepper__step { margin: 0; }
 .stepper__step > * + * { margin-top: var(--space-sm); }
-.js .stepper__step:not(.is-current) { display: none; }
+/* Shared intrinsic rows reserve every picture, caption and expanded question,
+   including the other scenario. Hidden steps still size the same grid. */
+.js .stepper__stages { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: repeat(4, auto); margin-top: var(--space-md); }
+.js .stepper__group, .js .stepper__list, .js .stepper__step { display: grid; grid-area: 1 / 1 / 5 / 2; grid-template-rows: subgrid; min-width: 0; transition-property: none; }
+.js .stepper__list { margin: 0; }
+.js .stepper__group:not(.is-current), .js .stepper__step:not(.is-current) { visibility: hidden; }
+.js .stepper__step > :nth-child(1) { grid-row: 1; }
+.js .stepper__step > :nth-child(2) { grid-row: 2; }
+.js .stepper__step > :nth-child(3) { grid-row: 3; }
+.js .stepper__step > :nth-child(4) { grid-row: 4; }
+.stepper__question, .stepper__status { display: grid; min-width: 0; }
+.stepper__question > *, .stepper__status > * { grid-area: 1 / 1; }
+.stepper__reserve { visibility: hidden; pointer-events: none; }
+.stepper__status { flex-basis: 100%; }
+html:not(.js) .stepper__reserve { display: none; }
 html:not(.js) .stepper__step + .stepper__step { margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: 1px solid var(--color-rule); }
 html:not(.js) .stepper__controls, html:not(.js) .explorer__grid, html:not(.js) .search { display: none; }
 .stepper__n { color: var(--color-accent); font-variant-numeric: tabular-nums; }
-.stepper__picture { display: flex; align-items: center; min-height: 176px; padding: var(--space-md); border-radius: var(--radius-control); background: var(--color-paper-2); }
+.stepper__picture { display: flex; align-items: center; padding: var(--space-md); border-radius: var(--radius-control); background: var(--color-paper-2); }
 .stepper__controls { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); margin-top: var(--space-lg); }
 .stepper__modes { margin-top: var(--space-md); }
 .stepper__group-title { display: none; }
-.js .stepper__group:not(.is-current) { display: none; }
 html:not(.js) .stepper__group-title { display: block; margin-top: var(--space-lg); }
 html:not(.js) .stepper__modes, html:not(.js) .stepper__replay { display: none; }
 .scene-wrap { width: 100%; min-width: 0; }

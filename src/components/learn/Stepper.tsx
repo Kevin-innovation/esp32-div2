@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { SCAN_EXAMPLE, type StepScenario, type VisualStep } from '../../data/learn';
 
 interface StepperProps {
@@ -83,6 +83,8 @@ export function Stepper({ label, actors, steps = [], scenarios, note }: StepperP
   const [scenario, setScenario] = useState(groups[0].id);
   const [current, setCurrent] = useState(0);
   const [play, setPlay] = useState(0);
+  const [interactive, setInteractive] = useState(false);
+  useEffect(() => setInteractive(true), []);
   const active = groups.find((g) => g.id === scenario) ?? groups[0];
   const last = active.steps.length - 1;
   const go = (n: number) => { setCurrent(n); setPlay((p) => p + 1); };
@@ -104,34 +106,45 @@ export function Stepper({ label, actors, steps = [], scenarios, note }: StepperP
           </div>
         </fieldset>
       )}
-      {groups.map((g) => (
-        <div key={g.id} className={g.id === active.id ? 'stepper__group is-current' : 'stepper__group'}>
-          {scenarios && <h3 className="stepper__group-title">{g.label}</h3>}
-          <ol className="stepper__list">
-            {g.steps.map((s, i) => (
-              <li key={s.title} className={g.id === active.id && i === current ? 'stepper__step is-current' : 'stepper__step'}>
-                <div className="stepper__picture" key={g.id === active.id && i === current ? play : 0}>
-                  <Scene step={s} actors={actors} />
-                </div>
-                <h3><span className="stepper__n">{i + 1}.</span> {s.title}</h3>
-                <p>{s.body}</p>
-                {s.ask && (
-                  <details className="think">
-                    <summary>{s.ask[0]}</summary>
-                    <div className="think__answer"><p>{s.ask[1]}</p></div>
-                  </details>
-                )}
-              </li>
-            ))}
-          </ol>
-        </div>
-      ))}
+      <div className="stepper__stages">
+        {groups.map((g) => (
+          <div key={g.id} className={g.id === active.id ? 'stepper__group is-current' : 'stepper__group'}>
+            {scenarios && <h3 className="stepper__group-title">{g.label}</h3>}
+            <ol className="stepper__list">
+              {g.steps.map((s, i) => (
+                <li key={s.title} className={g.id === active.id && i === current ? 'stepper__step is-current' : 'stepper__step'} inert={interactive && (g.id !== active.id || i !== current)}>
+                  <div className="stepper__picture" key={g.id === active.id && i === current ? play : 0}>
+                    <Scene step={s} actors={actors} />
+                  </div>
+                  <h3><span className="stepper__n">{i + 1}.</span> {s.title}</h3>
+                  <p>{s.body}</p>
+                  {s.ask && (
+                    <div className="stepper__question">
+                      <details className="think">
+                        <summary>{s.ask[0]}</summary>
+                        <div className="think__answer"><p>{s.ask[1]}</p></div>
+                      </details>
+                      <details className="think stepper__reserve" open aria-hidden="true" inert>
+                        <summary>{s.ask[0]}</summary>
+                        <div className="think__answer"><p>{s.ask[1]}</p></div>
+                      </details>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </div>
       <div className="stepper__controls">
         <button className="btn btn--quiet btn--small" type="button" disabled={current === 0} onClick={() => go(0)}>처음</button>
         <button className="btn btn--quiet btn--small" type="button" disabled={current === 0} onClick={() => go(current - 1)}>이전</button>
         <button className="btn btn--small" type="button" disabled={current === last} onClick={() => go(current + 1)}>다음</button>
         <button className="btn btn--quiet btn--small stepper__replay" type="button" onClick={() => setPlay((p) => p + 1)}>이 단계 다시 보기</button>
-        <p className="status" role="status">{scenarios ? `${active.label}, ` : ''}{current + 1}/{active.steps.length} 단계: {active.steps[current].title}</p>
+        <div className="stepper__status">
+          {groups.flatMap((g) => g.steps.map((s, i) => <p key={`${g.id}-${i}`} className="status stepper__reserve" aria-hidden="true">{scenarios ? `${g.label}, ` : ''}{i + 1}/{g.steps.length} 단계: {s.title}</p>))}
+          <p className="status" role="status">{scenarios ? `${active.label}, ` : ''}{current + 1}/{active.steps.length} 단계: {active.steps[current].title}</p>
+        </div>
       </div>
     </section>
   );

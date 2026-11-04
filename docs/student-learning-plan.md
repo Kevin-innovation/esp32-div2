@@ -211,3 +211,11 @@ Python에는 준비/CSV 파일 위치/실행 명령/결과 PNG 위치와 read_cs
 - 그림 출처: 신호와 계층 그림은 이 사이트가 직접 만든 원리 모형이며 실제 패킷 캡처가 아니다. `src/assets/learning/nfc-tag-structure.webp`는 메인이 imagegen으로 만든 AI 구조 예시(`exec-4e5a3614-a75c-4043-8d2c-94d3c9262e73.png`, 1254px을 1000px WebP로 변환, EXIF 없음)이며 실제 구매 태그 분해 사진이나 제조 회로도가 아니다. 학생 원본 사진은 쓰지 않았다.
 - Wi-Fi 로고: `src/assets/learning/wifi-official.webp`(270x221)는 Wi-Fi Alliance 공식 브랜드 페이지(https://www.wi-fi.org/who-we-are/our-brands)가 제공하는 이미지(https://www.wi-fi.org/sites/default/files/public/styles/large/public/2024-12/Wi-Fi-B-W.png.webp?itok=xn8gyf-i)를 내용 변경 없이 복사했다. `/learn/network/#scan`에만 작게 표시하고 인증 표시가 아니라고 캡션에 적었다. 원리 그림과 구분된다.
 - 검사: `npm run typecheck` 오류 0, `npm run build` 완료, `node scripts/check-nfc.ts` 통과, Stepper 네 개와 태그 그림, 로고, 모션 줄이기, JS 꺼짐 범위 423개 통과(320, 375, 768, 1280, 양 테마), 공통 CSS 변경으로 배치 검사 377개와 내부 링크 184개 통과.
+
+## 변경 기록: 단계 그림 높이 고정과 워크북 목록
+
+- 공통 Stepper는 모든 단계와 두 탐색 방식의 그림·제목·본문·펼친 질문을 CSS subgrid의 같은 행에 겹쳐 현재 화면 폭에서 가장 큰 자연 높이를 예약한다. 상태 문구도 최대 줄 수를 예약한다. 비활성 단계는 숨김·inert로 처리하고, 스크립트가 없으면 모든 단계와 질문을 읽을 수 있다. 고정 픽셀 높이, 잘라내기, 새 의존성은 쓰지 않았다.
+- `/lab/`은 사용 가능한 NFC 워크북과 `추후 개발 예정` 12개 주제를 구분한다. 예정 카드에는 생활 문제, 관찰 메뉴·추가 준비물, 위협과 방어, 예정 산출물과 배경 기술노트만 있다. 전역 메뉴와 참고 링크는 목록으로, 학습 6단계는 실제 NFC 워크북으로 연결한다. NFC 기록과 보고서·면접 앵커는 유지했다.
+- 검사: `npm run typecheck` 오류·경고·힌트 0, 최종 CSS·목록 문구 변경 후 `npm run build` 24페이지 완료, `git diff --check` 통과. `node scripts/check-stepper.mjs`의 최종 코드 대상 headless test-chromium 검사 892개 기하 샘플 통과: 네 Stepper의 모든 단계와 두 방식, 이전·처음·다시 보기·질문 열기, 320·375·768·1280 양 테마에서 그림 높이·컨트롤 문서 Y·전체 하단 변동 1px 이내. 뷰포트 변경, 글꼴 준비·125% 확대, 모션 줄이기, JS 꺼짐, 콘텐츠 경계·dt/dd·태그·문서 넘침, 예정 12개 표시, 메뉴와 학습 6단계, 기존 보고서·면접 및 기술노트 앵커도 통과했다. 콘솔 오류 0. 변경 없는 NFC 데이터 검사는 반복하지 않았다.
+- 대표 전후 그림은 `/tmp/esp32-stable-qa/before-scan-first.png`, `before-scan-next.png`, `after-scan-first.png`, `after-scan-next.png`, `after-scan-two-rows.png`, `after-scan-reply-pair.png`에, 목록은 같은 폴더의 `catalog-375-light.png`, `catalog-1280-dark.png`에 있다. 임시 QA 파일이며 저장소에는 넣지 않는다. 기존 단계별 신호 방향·값과 학생 입력 저장 로직은 바꾸지 않았다.
+- 기기 실행 확인 범위는 여전히 NFC 읽기까지다. 나머지 워크북은 개발 계획이며 실제 장비 실행이나 취약점 검증 결과가 아니다.
