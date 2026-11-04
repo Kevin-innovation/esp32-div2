@@ -188,14 +188,30 @@ export const LAYER_STEPS: VisualStep[] = [
 export const MODEL_NOTE = '원리 설명용 모형입니다. 실제 전파를 캡처한 기록이 아닙니다.';
 export const SCREEN_CAPTION = '실제 화면을 바탕으로 재구성한 학습 이미지입니다.';
 
-export const LEARN_LINKS: [string, string][] = [
-  ['/learn/', '학습 홈'],
-  ['/learn/why/', '0단계: 왜 생겼나'],
-  ['/learn/device/', '화면 따라 하기'],
-  ['/learn/nfc/', 'NFC 원리'],
-  ['/learn/network/', 'Wi-Fi와 네트워크'],
-  ['/learn/security/', '정보보호로 보기'],
-  ['/learn/glossary/', '용어 사전'],
-  ['/lab/nfc/', '실험 워크북'],
-  ['/learn/projects/', '기술노트'],
+export interface PathStep {
+  n: number;
+  href: string;
+  title: string;
+  does: string;
+  done: string;
+}
+
+// 학습 순서의 유일한 원본. 메뉴, 현재 위치, 이전과 다음 링크가 모두 이 목록을 쓴다.
+export const LEARNING_PATH: PathStep[] = [
+  { n: 0, href: '/learn/why/', title: '기술이 생긴 배경', does: '여섯 가지 무선 기술이 어떤 일상의 불편을 푸는지 읽습니다.', done: 'Wi-Fi, BLE, NFC가 각각 어떤 문제에 맞는지 한 문장씩 말할 수 있습니다.' },
+  { n: 1, href: '/start/', title: '기기 준비', does: '안테나, 전원, 버튼, SD 카드를 확인합니다.', done: '기기를 켜고 About과 Card Reader 화면까지 들어갈 수 있습니다.' },
+  { n: 2, href: '/learn/device/', title: '첫 태그 읽기', does: '메뉴를 따라가 내 태그를 한 번 읽습니다.', done: '태그의 UID와 Info 화면 값을 공책에 옮겨 적었습니다.' },
+  { n: 3, href: '/learn/nfc/', title: 'NFC 통신 원리', does: '태그와 리더 사이에 무엇이 오가는지 배웁니다.', done: '화면의 값이 어느 통신 단계에서 왔는지 설명할 수 있습니다.' },
+  { n: 4, href: '/learn/network/', title: 'Wi-Fi와 네트워크', does: 'NFC와 다른 점과 데이터가 전달되는 길을 배웁니다.', done: 'NFC와 Wi-Fi가 데이터를 전하는 방식의 차이를 설명할 수 있습니다.' },
+  { n: 5, href: '/learn/security/', title: '정보보호학 관점에서 이해하기', does: '무엇을 지킬지 정하고 기술별 방어와 한계를 봅니다.', done: 'UID로 문을 여는 예를 위협 모델 표로 쓸 수 있습니다.' },
+  { n: 6, href: '/lab/nfc/', title: '실험, 분석, 보고서', does: '조건을 나눠 재고 분석해 내 말로 보고서를 씁니다.', done: '실험 기록, 그래프, 내 말로 쓴 보고서가 있습니다.' },
+];
+
+export const REFERENCE_LINKS: [string, string, string][] = [
+  ['/learn/glossary/', '용어 사전', '낯선 말을 찾을 때'],
+  ['/learn/projects/', '기술노트', 'NFC 실험 다음에 해 볼 주제를 고를 때'],
+  ['/device/', '기기 알아보기', '부품과 표기를 원본 사진으로 볼 때'],
+  ['/guide/', '기능 가이드', '메뉴의 기능을 찾아볼 때'],
+  ['/lab/', '관찰 실험 모음', 'Wi-Fi, BLE, IR, GPS 관찰 주제를 볼 때'],
+  ['/update/', '업데이트·문제 해결', '문제가 생겼거나 펌웨어가 궁금할 때'],
 ];

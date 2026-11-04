@@ -1,0 +1,76 @@
+---
+import { LEARNING_PATH } from '../../data/learn';
+import { url } from '../../lib/url';
+
+interface Props {
+  where: 'top' | 'bottom';
+  path: string;
+}
+const { where, path } = Astro.props;
+const index = LEARNING_PATH.findIndex((s) => s.href === path);
+const step = LEARNING_PATH[index];
+const prev = LEARNING_PATH[index - 1];
+const next = LEARNING_PATH[index + 1];
+const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
+---
+{where === 'top' && (step ? (
+  <nav class="path-top wrap" aria-label="학습 순서">
+    <p class="path-top__now"><strong>{step.n}단계</strong> {step.title} <span class="muted small">(0~6단계 중)</span></p>
+    {next && <p class="small"><a href={url(next.href)}>다음은 {name(next)}</a></p>}
+    <details class="path-top__all">
+      <summary>전체 학습 순서</summary>
+      <ol class="path-list">
+        {LEARNING_PATH.map((s) => (
+          <li>
+            <a href={url(s.href)} aria-current={s.n === step.n ? 'step' : undefined}>
+              {name(s)}{s.n === step.n && ' (지금 여기)'}
+            </a>
+          </li>
+        ))}
+      </ol>
+    </details>
+  </nav>
+) : (
+  <nav class="path-top wrap" aria-label="학습 순서">
+    <p class="path-top__now"><strong>참고 자료</strong></p>
+    <p class="small"><a href={url('/learn/')}>학습 전체 순서로 돌아가기</a></p>
+  </nav>
+))}
+
+{where === 'bottom' && (step ? (
+  <nav class="path-next wrap" aria-label="이전과 다음 단계">
+    <p class="path-next__done"><strong>다음으로 넘어가도 좋을 때:</strong> {step.done}</p>
+    {next ? (
+      <div class="path-next__links">
+        <a class="path-link" href={url(prev ? prev.href : '/learn/')}>
+          <small>이전</small>
+          <span>{prev ? name(prev) : '학습 안내'}</span>
+        </a>
+        <a class="path-link path-link--next" href={url(next.href)}>
+          <small>다음</small>
+          <span>{name(next)}</span>
+          <span class="small">{next.does}</span>
+        </a>
+      </div>
+    ) : (
+      <div class="path-next__links">
+        <a class="path-link" href={url(prev.href)}>
+          <small>이전</small>
+          <span>{name(prev)}</span>
+        </a>
+        <div class="path-link path-link--end">
+          <small>마지막 단계입니다</small>
+          <span><a href="#report">보고서 쓰기</a>, <a href="#interview">자소서와 면접 준비</a></span>
+          <span class="small">다음 탐구는 <a href={url('/learn/projects/')}>기술노트</a>에서 고릅니다.</span>
+        </div>
+      </div>
+    )}
+  </nav>
+) : (
+  <nav class="path-next wrap" aria-label="학습 순서로 돌아가기">
+    <a class="path-link" href={url('/learn/')}>
+      <small>참고 자료를 다 봤다면</small>
+      <span>학습 전체 순서로 돌아가기</span>
+    </a>
+  </nav>
+))}

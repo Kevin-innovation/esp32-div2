@@ -197,3 +197,12 @@ Python에는 준비/CSV 파일 위치/실행 명령/결과 PNG 위치와 read_cs
 - 배치 버그를 공통 원인에서 고쳤다. 태그의 `nowrap`, `.facts`의 `dt` 폭, `.fields`와 `.field`의 `auto` 그리드 열, 스크롤 상자 밖으로 나가던 절대 위치 자식, 스크롤 상자가 없던 그래프 표. 상단 메뉴와 학습 목차는 가로 스크롤 대신 줄바꿈한다.
 - 검사: `npm run typecheck` 오류 0, `npm run build` 완료. 전체 23페이지를 320, 375, 768, 1280 폭과 양 테마로 검사해 387개 통과했다. 문서 폭뿐 아니라 요소 경계, `dt`와 `dd` 겹침, 태그 이탈, 메뉴 가림을 재고, 접힌 내용과 긴 기록까지 펼쳐 확인했다. 내부 링크 184개와 앵커, 노트 내려받기 200도 확인했다.
 - 스크린샷은 `/private/tmp/claude-501/-Users-mk-Herdr-esp32-div2/721a9067-b1bc-430b-8872-560fc1a9ff7f/scratchpad/qa/shots/`의 `projects-status`, `security`, `why` 파일이다.
+
+## 변경 기록: 학습 순서 정리
+
+- 약속한 순서: 0 `/learn/why/`, 1 `/start/`, 2 `/learn/device/`, 3 `/learn/nfc/`, 4 `/learn/network/`, 5 `/learn/security/`, 6 `/lab/nfc/`. 보고서와 면접은 6단계 안의 활동이고 별도 단계가 아니다.
+- `src/data/learn.ts`의 `LEARNING_PATH` 하나로 번호, 이름, 할 일, 넘어갈 기준을 관리한다. `LearningPath.astro`를 `Base.astro`에 넣어 모든 페이지에 같은 위치 표시와 이전, 다음이 붙는다. 전체 순서는 `details`로 접는다. 참고 자료에는 번호를 붙이지 않고 학습 순서로 돌아가는 링크를 둔다.
+- 메뉴 첫 항목은 학습 안내다. `/start/`는 메뉴에서 빼고 1단계로만 들어간다. Wi-Fi 첫 스캔은 선택 항목으로 접었고 앵커는 유지했다.
+- 검사: `npm run typecheck` 오류 0, `npm run build` 완료. 홈에서 0~6단계 클릭 완주, 역행, 참고 자료 복귀, 직접 URL, 키보드, 44px 터치 100개 통과. 23페이지 320, 375, 768, 1280 양 테마 배치 검사 377개 통과, 내부 링크 185개. `BASE_PATH=/esp32-div2` 빌드에서 내부 경로 588개가 모두 하위 경로를 유지했다.
+- 스크린샷은 `/private/tmp/claude-501/-Users-mk-Herdr-esp32-div2/721a9067-b1bc-430b-8872-560fc1a9ff7f/scratchpad/qa/shots/`의 `ux-` 파일이다.
+- 학습 안내는 길 안내 페이지라 목차를 뺐다. 소개 바로 아래에 시작 버튼이 온다. 이 변경 뒤 `/learn/`만 375 라이트, 1280 다크로 확인해 넘침, 겹침, 콘솔 오류가 없었다. 버튼 위치는 375폭에서 397~445px이다.

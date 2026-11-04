@@ -108,11 +108,11 @@ const csf = [
 ];
 ---
 <LearnLayout
-  title="정보보호로 보기"
-  heading="무엇을 어떻게 지킬까: 정보보호의 관점"
+  title="정보보호학 관점에서 이해하기"
+  heading="정보보호학 관점에서 이해하기"
   lead="내 기술을 지킨다는 것은 무엇을, 누구로부터, 어디까지 지킬지 정하는 일입니다. 기술마다 왜 약해지는지와 방어의 한계까지 봅니다."
   description="위협 모델, 기밀성과 무결성과 가용성, Wi-Fi, BLE, NFC, 433MHz, GPS의 위협과 방어, 진로와 연결되는 학습 활동을 다룹니다."
-  toc={[['model', '위협 모델'], ...stories.map((s): [string, string] => [s.id, s.title.split(':')[0]]), ['crypto', '해시, 암호화, MAC, 서명'], ['activities', '여섯 가지 활동'], ['growth', '5단계 성장 목표'], ['subjects', '교과와 진로'], ['csf', 'NIST CSF로 정리'], ['think', '생각해 보기']]}
+  toc={[['model', '위협 모델'], ...stories.map((s): [string, string] => [s.id, s.title.split(':')[0]]), ['crypto', '해시, 암호화, MAC, 서명'], ['activities', '여섯 가지 활동'], ['growth', '성장 목표'], ['subjects', '교과와 진로'], ['csf', 'NIST CSF로 정리'], ['think', '생각해 보기']]}
   sources={['nistCsf', 'nistBt', 'btGuide', 'wifiSecurity', 'arubaPmf', 'rfcTls', 'ntag', 'emvco', 'gpsInterference', 'nistSpoof', 'nistMac', 'deviceScreens']}
 >
   <div class="callout">
@@ -210,10 +210,10 @@ const csf = [
   </section>
 
   <section id="growth" aria-labelledby="h-growth">
-    <h2 id="h-growth">5단계 성장 목표</h2>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="5단계 성장 목표">
+    <h2 id="h-growth">다섯 가지 성장 목표</h2>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="다섯 가지 성장 목표">
       <table>
-        <thead><tr><th scope="col">단계</th><th scope="col">할 수 있어야 할 것</th><th scope="col">산출물</th><th scope="col">스스로 묻기</th></tr></thead>
+        <thead><tr><th scope="col">목표</th><th scope="col">할 수 있어야 할 것</th><th scope="col">산출물</th><th scope="col">스스로 묻기</th></tr></thead>
         <tbody>{growth.map(([a, b, c, d], i) => <tr><th scope="row">{i + 1}. {a}</th><td>{b}</td><td>{c}</td><td>{d}</td></tr>)}</tbody>
       </table>
     </div>
@@ -237,7 +237,7 @@ const csf = [
     <h2 id="h-csf">NIST CSF 2.0으로 내 프로젝트 정리하기</h2>
     <p><a href={SOURCES.nistCsf.url} rel="noopener">NIST CSF 2.0</a>은 조직의 보안 활동을 여섯 기능으로 나눕니다. 아래는 학생 프로젝트에 빗댄 예입니다.</p>
     <dl class="facts">{csf.map(([a, b]) => <div><dt>{a}</dt><dd>{b}</dd></div>)}</dl>
-    <p><a href={notesFile} download="security-learning-notes.md">학습 노트 내려받기 (Markdown)</a>: 5단계 점검표와 활동 기록 양식이 들어 있습니다.</p>
+    <p><a href={notesFile} download="security-learning-notes.md">학습 노트 내려받기 (Markdown)</a>: 성장 목표 점검표와 활동 기록 양식이 들어 있습니다.</p>
   </section>
 
   <section id="think" aria-labelledby="h-think">

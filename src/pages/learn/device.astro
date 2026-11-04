@@ -19,14 +19,14 @@ const functions = [
 ];
 ---
 <LearnLayout
-  title="화면 따라 하기"
+  title="첫 태그 읽기"
   heading="메뉴부터 태그 읽기까지 따라 하기"
   lead="기기를 손에 들고 한 화면씩 넘어갑니다. 각 단계에 누를 것, 화면 변화, 확인할 것을 적었습니다."
   description="ESP32-DIV V2.1의 메인 메뉴, About, More, RFID/NFC, Card Reader, Info 화면을 한글로 풀어 따라 합니다."
   toc={[['menu', '메인 메뉴 8개'], ['status-bar', '위쪽 상태 표시'], ['about', 'About 읽기'], ['more', 'More'], ['nfc-menu', 'RFID/NFC 목록'], ['reader', '태그 읽기'], ['info', 'Info 화면'], ['again', '다시 읽기'], ['functions', 'NFC 메뉴 차이'], ['think', '생각해 보기']]}
   sources={['deviceScreens', 'navigation', 'codeMenu', 'nfcOverview', 'nfcReader', 'pn532']}
 >
-  <p class="small muted">메뉴가 왜 이렇게 나뉘었는지 궁금하면 <a href={url('/learn/why/')}>0단계</a>를 먼저 보세요.</p>
+  <p class="small muted">메뉴가 왜 이렇게 나뉘었는지는 <a href={url('/learn/why/')}>0단계</a>에 있습니다.</p>
   <section id="menu" aria-labelledby="h-menu" style="margin-top: var(--space-lg)">
     <h2 id="h-menu">메인 메뉴 8개</h2>
     <ScreenShot name="main-menu" />
@@ -37,7 +37,7 @@ const functions = [
   <section id="status-bar" aria-labelledby="h-status">
     <h2 id="h-status">위쪽 상태 표시</h2>
     <p>화면 위의 배터리 %, <code>CHG</code>, <code>BAT</code>는 충전 또는 배터리 사용 상태의 표시로 보입니다. 정확한 전원 상태를 재는 계측값으로 쓰지는 마세요.</p>
-    <p>빨간 SD 아이콘은 카드 상태와 관련 있어 보이지만, 그 색만 보고 고장이나 미삽입으로 단정하지 않습니다. SD 카드는 <a href={url('/start/#sd')}>처음 시작</a>의 절차로 확인합니다. <Evidence kind="unverified" /></p>
+    <p>빨간 SD 아이콘은 카드 상태와 관련 있어 보이지만, 그 색만 보고 고장이나 미삽입으로 단정하지 않습니다. SD 카드는 <a href={url('/start/#sd')}>기기 준비</a>의 절차로 확인합니다. <Evidence kind="unverified" /></p>
   </section>
 
   <section id="about" aria-labelledby="h-about">

@@ -19,12 +19,12 @@
 | Wi-Fi, BLE, NFC, 433MHz와 IR, 2.4GHz, GPS, 기기와 데이터 | `/learn/security/#wifi` 등 |
 | 해시, 암호화, MAC, 서명 | `/learn/security/#crypto` |
 | 여섯 가지 활동 | `/learn/security/#activities` |
-| 5단계 성장 목표 | `/learn/security/#growth` |
+| 다섯 가지 성장 목표 | `/learn/security/#growth` |
 | 실제 실험 주제 | `/learn/projects/` |
 
-## 5단계 자기 평가
+## 성장 목표 자기 평가
 
-| 단계 | 산출물 | 내 산출물 위치 | 완료 날짜 | 아직 부족한 점 |
+| 목표 | 산출물 | 내 산출물 위치 | 완료 날짜 | 아직 부족한 점 |
 |---|---|---|---|---|
 | 1. 관찰 | 기록표 | | | |
 | 2. 통신 설명 | 다이어그램 | | | |

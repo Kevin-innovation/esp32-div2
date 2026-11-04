@@ -2,26 +2,37 @@
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import Evidence from '../../components/Evidence.astro';
 import ScreenShot from '../../components/learn/ScreenShot.astro';
+import { LEARNING_PATH, REFERENCE_LINKS } from '../../data/learn';
 import { url } from '../../lib/url';
-
-const route = [
-  ['/learn/why/', '왜 이렇게 많은 무선이 있을까', '집의 유선 컴퓨터에서 시작해 여섯 가지 무선의 이유를 봅니다.', '기술별 생활 문제와 절충 메모'],
-  ['/start/', '기기 켜기', '안테나, 전원, 버튼, SD 카드를 확인합니다.', '내 기기 기록 네 가지'],
-  ['/learn/device/', '화면 따라 하기', '메뉴를 읽고 태그를 한 번 읽습니다.', 'UID와 Info 화면 값'],
-  ['/learn/nfc/', 'NFC 원리', '태그와 리더 사이에 무엇이 오가는지 배웁니다.', '내 말로 쓴 통신 단계'],
-  ['/learn/network/', 'Wi-Fi와 네트워크', 'NFC와 다른 점, 패킷이 전달되는 길을 배웁니다.', 'NFC와 Wi-Fi 비교 메모'],
-  ['/lab/nfc/', '실험 워크북', '조건을 나눠 재고 기록합니다.', 'CSV, 그래프, 분석 결과'],
-  ['/lab/nfc/#report', '보고서와 면접 준비', '내가 한 것만 내 말로 정리합니다.', '보고서와 답변 메모'],
-];
 ---
 <LearnLayout
-  title="학습 홈"
-  heading="기기를 이해하고 내 실험으로 끝내기"
-  lead="0단계에서 왜 이런 기술이 생겼는지 보고, 여섯 단계를 따라 태그를 직접 읽고, 실험하고, 내 데이터로 보고서를 씁니다."
-  description="ESP32-DIV V2.1로 NFC와 무선 통신 원리를 배우고 직접 실험해 보고서까지 쓰는 학생용 학습 안내입니다."
-  toc={[['goal', '학습 목표'], ['ready', '준비 상태'], ['route', '0단계와 여섯 단계'], ['output', '남는 결과물']]}
+  title="학습 안내"
+  heading="여기서 시작하세요"
+  lead="왜 이런 기술이 생겼는지부터 보고, 기기를 준비해 태그를 읽고, 원리를 이해한 뒤 내 실험으로 끝냅니다."
+  description="ESP32-DIV V2.1로 NFC와 무선 통신 원리를 배우고 직접 실험해 보고서까지 쓰는 학생용 학습 순서입니다."
   sources={['photos', 'deviceScreens', 'wiki']}
 >
+  <section id="route" aria-labelledby="h-route">
+    <div class="btn-row">
+      <a class="btn" href={url(LEARNING_PATH[0].href)}>0단계부터 시작하기</a>
+      <a class="small" href={url(LEARNING_PATH[2].href)}>기기 준비를 마쳤다면 2단계로 바로 가기</a>
+    </div>
+    <h2 id="h-route" style="margin-top: var(--space-xl)">전체 순서</h2>
+    <p>0단계는 기기 없이 읽어도 됩니다. 기기는 1단계에서 준비합니다.</p>
+    <ol class="path-map">
+      {LEARNING_PATH.map((s) => (
+        <li>
+          <span class="path-map__n">{s.n}단계</span>
+          <div>
+            <h3><a href={url(s.href)}>{s.title}</a></h3>
+            <p>{s.does}</p>
+            <p class="small muted">넘어가도 좋을 때: {s.done}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </section>
+
   <section id="goal" aria-labelledby="h-goal">
     <h2 id="h-goal">학습 목표</h2>
     <ul>
@@ -32,9 +43,18 @@ const route = [
     </ul>
   </section>
 
+  <section id="output" aria-labelledby="h-output">
+    <h2 id="h-output">마지막에 남는 결과물</h2>
+    <ul>
+      <li>실험 기록 CSV와 탐구 서술 CSV</li>
+      <li>조건별, 거리별 인식률 그래프 PNG</li>
+      <li>내 데이터로 쓴 보고서 Markdown 또는 인쇄본</li>
+      <li>실제로 한 일만 담은 자소서와 면접 답변 메모</li>
+    </ul>
+  </section>
+
   <section id="ready" aria-labelledby="h-ready">
     <h2 id="h-ready">지금 준비된 것</h2>
-    <ScreenShot name="reader-detected" />
     <h3>이 기기에서 확인한 것 <Evidence kind="device" /></h3>
     <ul>
       <li>전원을 켜면 부팅되고 메인 메뉴 8개가 표시됩니다.</li>
@@ -50,25 +70,18 @@ const route = [
     </ul>
     <h3>준비물</h3>
     <p>기기, 25mm 접착식 NFC 태그 한 개, 자, 고정대나 테이프, 지갑, 가방, 기록 도구. 실제 결제 카드와 학생증은 쓰지 않습니다.</p>
+    <details>
+      <summary>태그를 읽은 화면 보기</summary>
+      <ScreenShot name="reader-detected" />
+    </details>
   </section>
 
-  <section id="route" aria-labelledby="h-route">
-    <h2 id="h-route">0단계와 여섯 단계</h2>
-    <ol class="num-steps" start="0" style="counter-reset: step -1">
-      {route.map(([href, title, text, out]) => (
-        <li><span><a href={url(href)}><strong>{title}</strong></a><br />{text}<br /><span class="small muted">남는 것: {out}</span></span></li>
+  <section id="reference" aria-labelledby="h-reference">
+    <h2 id="h-reference">필요할 때 찾아보는 참고 자료</h2>
+    <dl class="facts">
+      {REFERENCE_LINKS.map(([href, label, when]) => (
+        <div><dt><a href={url(href)}>{label}</a></dt><dd>{when}</dd></div>
       ))}
-    </ol>
-    <p>낯선 말이 나오면 <a href={url('/learn/glossary/')}>용어 사전</a>에서 찾으세요. 다른 실험과 개발 주제는 <a href={url('/learn/projects/')}>기술노트</a>에, 정보보호 진로와 이어지는 내용은 <a href={url('/learn/security/')}>정보보호로 보기</a>에 있습니다.</p>
-  </section>
-
-  <section id="output" aria-labelledby="h-output">
-    <h2 id="h-output">마지막에 남는 결과물</h2>
-    <ul>
-      <li>실험 기록 CSV와 탐구 서술 CSV</li>
-      <li>조건별, 거리별 인식률 그래프 PNG</li>
-      <li>내 데이터로 쓴 보고서 Markdown 또는 인쇄본</li>
-      <li>실제로 한 일만 담은 자소서와 면접 답변 메모</li>
-    </ul>
+    </dl>
   </section>
 </LearnLayout>

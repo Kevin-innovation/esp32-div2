@@ -16,20 +16,20 @@ const toc = [
   ['power', '전원'],
   ['controls', '조작'],
   ['sd', 'SD 카드'],
-  ['first-scan', '첫 스캔'],
+  ['first-scan', '준비 확인'],
 ];
 ---
-<Base title="처음 시작 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1의 구성품, 안테나, 전원, 조작, SD 카드, 첫 스캔을 순서대로 안내합니다.">
+<Base title="기기 준비 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1의 구성품, 안테나, 전원, 조작, SD 카드를 순서대로 확인합니다.">
   <div class="wrap">
     <header class="page-head">
-      <h1>처음 시작: 안테나부터 첫 스캔까지</h1>
-      <p class="lead">여섯 단계입니다. 마지막에 내 기기에서 확인한 값을 적어 두면, 다음 학습에서 바로 쓸 수 있습니다.</p>
+      <h1>기기 준비: 구성품부터 화면 확인까지</h1>
+      <p class="lead">위에서 아래로 차례대로 확인합니다. 마지막에 내 기기의 값을 적어 두면 다음 단계에서 바로 씁니다.</p>
       <p class="small muted">동봉 설명서는 어린이 단독 사용을 금하고 성인 감독을 요구합니다.</p>
     </header>
     <div class="doc">
       <div class="doc__main">
         <section id="parts" aria-labelledby="h-parts">
-          <h2 id="h-parts">1. 구성품 확인</h2>
+          <h2 id="h-parts">구성품 확인</h2>
           <div class="tags"><Evidence kind="photo" /></div>
           <p>사진에는 본체 1대, 곧은 안테나 4개, 꺾이는 안테나 1개, 인쇄 설명서가 있습니다.</p>
           <p>사진에 없는 것은 따로 확인하세요.</p>
@@ -42,7 +42,7 @@ const toc = [
         </section>
 
         <section id="antenna" aria-labelledby="h-antenna">
-          <h2 id="h-antenna">2. 안테나 연결</h2>
+          <h2 id="h-antenna">안테나 연결</h2>
           <Plate src={backCutout} alt="기기 뒷면의 소개용 이미지. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있다." sizes="(min-width: 960px) 640px, 100vw" widths={[640, 960, 1400, 1774]} cutout class="art-back" caption="실물 사진 기반 AI 편집 소개용 이미지입니다. 작은 각인이 생략되어 있어, 표기는 아래 원본 사진으로 확인합니다." />
           <details>
             <summary>안테나 표기 원본 사진 보기</summary>
@@ -62,7 +62,7 @@ const toc = [
         </section>
 
         <section id="power" aria-labelledby="h-power">
-          <h2 id="h-power">3. 전원과 USB-C</h2>
+          <h2 id="h-power">전원과 USB-C</h2>
           <details>
             <summary>전원 스위치 원본 사진 보기</summary>
             <Plate src={sideSwitch} alt="기기 긴 옆면 사진. 초록색 슬라이드 스위치 왼쪽과 오른쪽 멀리에 네모난 구멍이 있다." sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="긴 옆면의 초록 슬라이드 스위치와 네모난 구멍 두 개. 뒷면에는 스위치 옆으로 ON, OFF 음각이 있습니다." />
@@ -85,7 +85,7 @@ const toc = [
         </section>
 
         <section id="controls" aria-labelledby="h-controls">
-          <h2 id="h-controls">4. 조작</h2>
+          <h2 id="h-controls">조작</h2>
           <div class="split split--even">
             <Plate src={frontCutout} alt="기기 앞면의 소개용 이미지. 위로 안테나 네 개, 가운데 화면, 그 위에 MK SIGNAL 글자, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front" caption="실물 사진 기반 AI 편집 소개용 이미지입니다." />
             <div class="prose">
@@ -113,7 +113,7 @@ const toc = [
         </section>
 
         <section id="sd" aria-labelledby="h-sd">
-          <h2 id="h-sd">5. SD 카드</h2>
+          <h2 id="h-sd">SD 카드</h2>
           <div class="tags"><Evidence kind="manual" /><Evidence kind="doc" /><Evidence kind="unverified" /></div>
           <ol>
             <li>컴퓨터에서 microSD 카드를 FAT32로 포맷합니다. 안에 있는 자료는 모두 지워지니 먼저 옮겨 둡니다.</li>
@@ -137,16 +137,7 @@ const toc = [
         </section>
 
         <section id="first-scan" aria-labelledby="h-first">
-          <h2 id="h-first">6. 첫 스캔과 내 기기 기록</h2>
-          <p>첫 스캔은 주변 공유기 목록을 보는 <a href={url('/guide/wifi/#wifi-scanner')}>Wi-Fi 스캐너</a>로 합니다. 이 기기에서 아직 실행해 확인하지 못한 기능이니 결과를 적어 두세요. <Evidence kind="unverified" /></p>
-          <ol>
-            <li>메인 메뉴에서 WiFi를 고릅니다.</li>
-            <li>WiFi Scanner를 고릅니다.</li>
-            <li>스캔이 끝나면 내 공유기 이름을 찾습니다.</li>
-            <li>채널과 RSSI를 적습니다. RSSI는 0에 가까울수록 강합니다.</li>
-            <li>종료 아이콘으로 나옵니다.</li>
-          </ol>
-          <h3>내 기기 기록 네 가지</h3>
+          <h2 id="h-first">준비 확인: 내 기기 기록 네 가지</h2>
           <p>이 기기에서 아래 값까지 확인했습니다. 내 기기와 같은지 비교해 적습니다. <Evidence kind="device" /></p>
           <ul>
             <li>About의 펌웨어 표시: <code>1.7.2 stable by MK_SIGNAL_V1</code></li>
@@ -154,14 +145,25 @@ const toc = [
             <li>More 안의 IR Remote, RFID/NFC, GPS, Games</li>
             <li>Card Reader의 <code>Waiting for tag...</code> 화면</li>
           </ul>
-          <p>이어서 <a href={url('/learn/device/')}>화면 따라 하기</a>로 태그를 읽어 보고, <a href={url('/learn/')}>학습 과정</a>을 따라 <a href={url('/lab/nfc/')}>NFC 실험</a>으로 넘어갑니다.</p>
+          <p>넷 다 확인했으면 다음 단계에서 태그를 읽습니다.</p>
+          <details>
+            <summary>선택: Wi-Fi 스캔으로 화면 익히기</summary>
+            <p>주변 공유기 목록을 보는 <a href={url('/guide/wifi/#wifi-scanner')}>Wi-Fi 스캐너</a>를 써 볼 수 있습니다. 이 기기에서 아직 실행해 확인하지 못한 기능이니 결과를 적어 두세요. <Evidence kind="unverified" /></p>
+            <ol>
+              <li>메인 메뉴에서 WiFi를 고릅니다.</li>
+              <li>WiFi Scanner를 고릅니다.</li>
+              <li>스캔이 끝나면 내 공유기 이름을 찾습니다.</li>
+              <li>채널과 RSSI를 적습니다. RSSI는 0에 가까울수록 강합니다.</li>
+              <li>종료 아이콘으로 나옵니다.</li>
+            </ol>
+          </details>
         </section>
 
         <Sources ids={['photos', 'deviceScreens', 'manual', 'navigation', 'hardware', 'faq', 'codeMenu']} />
       </div>
       <nav class="doc__aside toc" aria-label="이 페이지 목차">
         <h2>이 페이지</h2>
-        <ol>{toc.map(([id, label], i) => <li><a href={`#${id}`}>{i + 1}. {label}</a></li>)}</ol>
+        <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
       </nav>
     </div>
   </div>

@@ -5,16 +5,8 @@ import Plate from '../components/Plate.astro';
 import backCutout from '../assets/device/back-cutout.webp';
 import frontCutout from '../assets/device/front-cutout.webp';
 import { GROUPS } from '../data/guide';
+import { LEARNING_PATH } from '../data/learn';
 import { url } from '../lib/url';
-
-const startSteps = [
-  ['parts', '구성품 확인', '본체, 안테나, 준비물을 맞춰 봅니다.'],
-  ['antenna', '안테나 연결', '실물 뒷면 표기대로 체결을 확인합니다.'],
-  ['power', '전원 켜기', '스위치와 USB-C를 확인합니다.'],
-  ['controls', '조작 익히기', '버튼 5개와 터치로 메뉴를 움직입니다.'],
-  ['sd', 'SD 카드 준비', 'FAT32로 포맷해 넣습니다.'],
-  ['first-scan', '첫 스캔', '내 공유기를 찾아 신호 세기를 적습니다.'],
-];
 
 const nfcSteps = [
   '질문과 가설, 실험 설계',
@@ -35,8 +27,8 @@ const nfcSteps = [
       <div class="hero__side">
         <p class="lead">기기를 익히고, NFC 실험을 기록하고, 파이썬으로 분석하세요.</p>
         <div class="btn-row">
-          <a class="btn" href={url('/start/')}>처음 시작하기</a>
-          <a class="btn btn--quiet" href={url('/lab/nfc/')}>NFC 실험하기</a>
+          <a class="btn" href={url('/learn/why/')}>0단계부터 시작하기</a>
+          <a class="btn btn--quiet" href={url('/learn/')}>전체 학습 순서</a>
         </div>
       </div>
     </div>
@@ -53,29 +45,21 @@ const nfcSteps = [
     </Plate>
   </section>
 
-  <section class="section section--rule" style="padding-block: var(--space-xl)" aria-labelledby="h-why">
-    <div class="wrap split split--center">
-      <h2 id="h-why">0단계: 왜 이렇게 많은 무선 기술이 있을까</h2>
-      <div>
-        <p>집의 유선 컴퓨터에서 시작해 Wi-Fi, BLE, 적외선, NFC, Sub-GHz, GPS가 왜 따로 있는지 생활 장면으로 따라갑니다.</p>
-        <p style="margin-top: var(--space-sm)"><a href={url('/learn/why/')}>0단계 읽기</a></p>
-      </div>
-    </div>
-  </section>
-
   <section class="section section--rule" aria-labelledby="h-start">
     <div class="wrap split split--center">
       <Plate src={frontCutout} alt="기기 앞면의 배경을 지운 이미지. 위로 안테나 네 개, 가운데 화면, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front">
         실물 사진 기반 AI 편집 이미지. <a href={url('/device/')}>원본 사진과 부품 설명</a>
       </Plate>
       <div>
-        <h2 id="h-start">처음 켜는 날, 여섯 단계</h2>
-        <ol class="num-steps" style="margin-top: var(--space-lg)">
-          {startSteps.map(([id, title, text]) => (
-            <li><span><a href={url(`/start/#${id}`)}><strong>{title}</strong></a><br />{text}</span></li>
+        <h2 id="h-start">학습 지도: 배경에서 내 실험까지</h2>
+        <ol class="path-map">
+          {LEARNING_PATH.map((p) => (
+            <li>
+              <span class="path-map__n">{p.n}단계</span>
+              <div><a href={url(p.href)}><strong>{p.title}</strong></a><p>{p.does}</p></div>
+            </li>
           ))}
         </ol>
-        <p style="margin-top: var(--space-md)"><a href={url('/learn/')}>원리와 실험까지 이어지는 학습 과정 보기</a> <a href={url('/learn/security/')}>정보보호로 보기</a></p>
       </div>
     </div>
   </section>
@@ -84,10 +68,8 @@ const nfcSteps = [
     <div class="wrap split">
       <div>
         <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
-        <p style="margin-top: var(--space-md)">실제 신용카드 대신 실험용 태그로, 지갑과 가방 속 인식을 직접 비교합니다.</p>
-        <div class="btn-row" style="margin-top: var(--space-lg)">
-          <a class="btn btn--quiet" href={url('/lab/nfc/')}>실험 노트 열기</a>
-        </div>
+        <p style="margin-top: var(--space-md)">6단계에서 하는 탐구입니다. 실제 신용카드 대신 실험용 태그로, 지갑과 가방 속 인식을 직접 비교합니다.</p>
+        <p style="margin-top: var(--space-md)"><a href={url('/lab/nfc/')}>6단계 워크북 미리 보기</a></p>
       </div>
       <ol class="num-steps">
         {nfcSteps.map((s) => <li><span>{s}</span></li>)}
