@@ -206,3 +206,4 @@ Python에는 준비/CSV 파일 위치/실행 명령/결과 PNG 위치와 read_cs
 - 검사: `npm run typecheck` 오류 0, `npm run build` 완료. 홈에서 0~6단계 클릭 완주, 역행, 참고 자료 복귀, 직접 URL, 키보드, 44px 터치 100개 통과. 23페이지 320, 375, 768, 1280 양 테마 배치 검사 377개 통과, 내부 링크 185개. `BASE_PATH=/esp32-div2` 빌드에서 내부 경로 588개가 모두 하위 경로를 유지했다.
 - 스크린샷은 `/private/tmp/claude-501/-Users-mk-Herdr-esp32-div2/721a9067-b1bc-430b-8872-560fc1a9ff7f/scratchpad/qa/shots/`의 `ux-` 파일이다.
 - 학습 안내는 길 안내 페이지라 목차를 뺐다. 소개 바로 아래에 시작 버튼이 온다. 이 변경 뒤 `/learn/`만 375 라이트, 1280 다크로 확인해 넘침, 겹침, 콘솔 오류가 없었다. 버튼 위치는 375폭에서 397~445px이다.
+- `/learn/nfc/` 맨 앞에 UID, ATQA, SAK와 리더 명령을 설명하는 `#concepts`를 넣고 `#uid`, `#atqa`, `#sak`을 통신 단계, 화면 해석, 용어 사전에서 연결했다. 근거는 NXP 데이터시트와 AN10833이다. 값이 중간에서 끊기던 인라인 코드 줄바꿈도 고쳤다. 검사: `npm run typecheck` 오류 0, `npm run build` 완료, `/learn/nfc/` 범위 57개 통과, 공통 CSS 변경으로 23페이지 배치 검사 재실행 통과.

@@ -32,6 +32,7 @@ export const SOURCES = {
   emvco: { title: 'EMVCo: EMV Contactless Chip', url: 'https://www.emvco.com/emv-technologies/contactless/' },
   ntag: { title: 'NXP 데이터시트: NTAG213/215/216', url: 'https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf' },
   metal: { title: 'NXP 앱노트 AN11564: 금속 주변 NFC 안테나', url: 'https://www.nxp.com/docs/en/application-note/AN11564.pdf' },
+  an10833: { title: 'NXP 앱노트 AN10833: MIFARE type identification procedure', url: 'https://www.nxp.com/docs/en/application-note/AN10833.pdf' },
   pn532: { title: 'NXP PN532 User Manual (UM0701-02)', url: 'https://www.nxp.com/docs/en/user-guide/141520.pdf' },
   espScan: { title: 'Espressif: ESP32-S3 Wi-Fi Station Scenarios', url: 'https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-guides/wifi-driver/station-scenarios.html' },
   espBle: { title: 'Espressif: ESP32-S3 Bluetooth LE 개요', url: 'https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-guides/ble/overview.html' },
