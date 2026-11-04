@@ -1,26 +1,36 @@
 ---
+import { Image } from 'astro:assets';
+import wifiRssi from '../../assets/learning/workbook/wifi-rssi.webp';
+import ssidMap from '../../assets/learning/workbook/ssid-map.webp';
+import wpaPmf from '../../assets/learning/workbook/wpa-pmf.webp';
+import channel from '../../assets/learning/workbook/channel.webp';
+import bleAd from '../../assets/learning/workbook/ble-ad.webp';
+import blePair from '../../assets/learning/workbook/ble-pair.webp';
+import interference from '../../assets/learning/workbook/interference.webp';
+import ir from '../../assets/learning/workbook/ir.webp';
+import subghz from '../../assets/learning/workbook/subghz.webp';
+import gps from '../../assets/learning/workbook/gps.webp';
+import firmware from '../../assets/learning/workbook/firmware.webp';
+import csv from '../../assets/learning/workbook/csv.webp';
+
 interface Props { index: number; }
-// 원리만 떠올리기 위한 도식. 측정값이나 실제 장비 화면이 아니다.
 const scenes = [
-  { caption: '방을 옮기며 신호의 빈틈 찾기', path: 'M24 26H110V82H24Z M120 26H200V82H120Z M210 26H296V82H210Z M38 68V42 M54 68V36 M70 68V30 M134 68V52 M150 68V42 M164 68V34 M224 68V62 M240 68V56', labels: [[66,102,'거실'],[160,102,'방 1'],[254,102,'방 2']] },
-  { caption: '이름 하나, 서로 다른 기기 주소', path: 'M110 12H210V42H110Z M160 42V57 M72 72V57H248V72 M24 72H120V104H24Z M200 72H296V104H200Z', labels: [[160,33,'같은 SSID'],[72,94,'BSSID A'],[248,94,'BSSID B']] },
-  { caption: '보안 설정마다 지키는 구간은?', path: 'M22 20L62 8L102 20V46Q102 74 62 94Q22 74 22 46Z M112 20L152 8L192 20V46Q192 74 152 94Q112 74 112 46Z M202 20L242 8L282 20V46Q282 74 242 94Q202 74 202 46Z', labels: [[62,52,'WPA2'],[152,52,'WPA3'],[242,52,'PMF']] },
-  { caption: '같은 시간, 다른 채널의 풍경', path: 'M24 90H296 M42 82V64 M62 82V38 M82 82V56 M132 82V22 M152 82V12 M172 82V32 M222 82V62 M242 82V48 M262 82V68', labels: [[62,108,'채널 1'],[152,108,'채널 6'],[242,108,'채널 11']] },
-  { caption: '벽 너머에서도 광고가 보일까?', path: 'M34 38H64V76H34Z M84 32Q118 56 84 82 M104 18Q156 56 104 96 M132 12Q192 56 132 102 M208 12V100 M222 12V100 M260 42H282V72H260Z', labels: [[49,102,'내 기기'],[215,110,'벽'],[273,96,'멀리']] },
-  { caption: '연결되었다는 것과 믿는다는 것', path: 'M20 30H92V84H20Z M228 30H300V84H228Z M92 56H130 M190 56H228 M140 48V34Q140 14 160 14Q180 14 180 34V48 M132 48H188V86H132Z M160 64V74', labels: [[56,63,'기기'],[264,63,'휴대폰'],[160,108,'상대 확인?']] },
-  { caption: '신호의 세기만으로 원인을 알까?', path: 'M20 86H300 M20 84L46 78L58 46L70 76L100 70L126 22L144 74L172 60L188 38L206 76L236 72L252 16L270 70L300 82 M20 96L70 90L96 94L138 88L182 96L230 90L300 94', labels: [[62,24,'생활 간섭'],[246,108,'공격 징후?']] },
-  { caption: '같은 버튼, 같은 명령, 다른 거리', path: 'M24 32H64V92H24Z M42 46H46 M42 62H46 M82 44H228 M216 34L228 44L216 54 M82 78H228 M216 68L228 78L216 88 M246 24H298V94H246Z', labels: [[154,31,'같은 명령'],[154,104,'거리 · 방향']] },
-  { caption: '고정 코드와 매번 바뀌는 코드', path: 'M100 12H142V44H100Z M166 12H208V44H166Z M232 12H274V44H232Z M100 58H142V90H100Z M166 58H208V90H166Z M232 58H274V90H232Z', labels: [[42,34,'고정'],[121,34,'A'],[187,34,'A'],[253,34,'A'],[42,80,'롤링'],[121,80,'A'],[187,80,'B'],[253,80,'C'],[187,112,'누를 때마다 코드 비교']] },
-  { caption: '위치 하나를 세 가지 근거로 보기', path: 'M160 42V70 M160 70L70 92 M160 70L250 92 M140 14H180V42H140Z M34 78H104V106H34Z M216 78H286V106H216Z M152 62L168 78 M168 62L152 78', labels: [[160,34,'GPS'],[70,99,'지도'],[250,99,'시간']] },
-  { caption: '파일이 같은가, 출처를 믿는가?', path: 'M28 16H88L108 36V96H28Z M88 16V36H108 M44 52H90 M44 66H90 M44 80H76 M124 56H164 M152 46L164 56L152 66 M186 32H292V90H186Z M202 70L214 82L236 54', labels: [[68,111,'배포 파일'],[236,23,'해시 · 서명'],[268,76,'출처']] },
-  { caption: '식별자는 가리고, 관찰은 남기기', path: 'M20 26H120V90H20Z M136 56H180 M168 46L180 56L168 66 M198 26H298V90H198Z M34 72H106 M212 72H284', labels: [[70,53,'UID / BSSID'],[248,53,'태그 A / AP A'],[160,108,'가명 처리 + 원본 백업']] },
+  { image: wifiRssi, alt: '집 평면도 위 공유기에서 방마다 퍼지는 신호와 휴대용 측정기', caption: '방을 옮기며 신호의 빈틈 찾기' },
+  { image: ssidMap, alt: '평면도 위 두 공유기와 각각의 연결을 살피는 휴대폰', caption: '이름 하나, 서로 다른 기기 주소' },
+  { image: wpaPmf, alt: '공유기를 둘러싼 여러 겹의 보호막과 세 개의 방패', caption: '보안 설정마다 지키는 구간은?' },
+  { image: channel, alt: '여러 무선 기기와 서로 다른 높이의 주파수 봉우리가 보이는 화면', caption: '같은 시간, 다른 채널의 풍경' },
+  { image: bleAd, alt: '이어폰에서 퍼지는 근거리 신호와 책상 위 휴대폰', caption: '벽 너머에서도 광고가 보일까?' },
+  { image: blePair, alt: '자물쇠로 연결된 휴대폰과 이어폰, 연결 확인과 보호를 비교하는 표시', caption: '연결되었다는 것과 믿는다는 것' },
+  { image: interference, alt: '공유기와 전자레인지 등 여러 생활 기기의 신호를 살피는 측정기', caption: '신호의 세기만으로 원인을 알까?' },
+  { image: ir, alt: '리모컨에서 TV로 향하는 적외선 신호와 버튼별 명령을 그린 노트', caption: '같은 버튼, 같은 명령, 다른 거리' },
+  { image: subghz, alt: '두 실험 송수신기 쌍에서 고정된 신호 패턴과 바뀌는 패턴을 비교하는 책상', caption: '고정 코드와 매번 바뀌는 코드' },
+  { image: gps, alt: '위성 신호를 받는 위치 기기와 위치를 대조할 지도, 시계, 나침반', caption: '위치 하나를 세 가지 근거로 보기' },
+  { image: firmware, alt: '파일의 일치 여부를 확인하는 노트북과 서명 봉투, 연결된 회로 기판', caption: '파일이 같은가, 출처를 믿는가?' },
+  { image: csv, alt: '식별 정보를 가린 표와 자물쇠가 보이는 노트북, 공유기와 태그', caption: '식별자는 가리고, 관찰은 남기기' },
 ];
 const scene = scenes[Astro.props.index];
 ---
 <figure class="workbook-scene">
-  <svg viewBox="0 0 320 120" role="img" aria-label={scene.caption}>
-    <path d={scene.path} fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-    {scene.labels.map(([x,y,text]) => <text x={x} y={y} text-anchor="middle">{text}</text>)}
-  </svg>
+  <Image src={scene.image} alt={scene.alt} widths={[450, 900]} sizes="(min-width: 768px) 45vw, 90vw" loading="lazy" decoding="async" />
   <figcaption>{scene.caption}</figcaption>
 </figure>

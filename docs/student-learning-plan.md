@@ -227,3 +227,27 @@ Python에는 준비/CSV 파일 위치/실행 명령/결과 PNG 위치와 read_cs
 - 12개 도식은 `WorkbookScene.astro`의 정적인 SVG다. RSSI와 방, SSID/BSSID 분기, 보안 설정, 채널, BLE 광고, 페어링, 간섭, IR 명령, 고정/롤링 코드, 위치 교차 확인, 해시/서명, 가명 처리를 각각 그렸다. 도식마다 접근 가능한 이름과 보이는 설명을 넣었으며 실제 측정값·공식 로고로 제시하지 않는다.
 - 검사: `npm run typecheck` 오류·경고·힌트 0, 최종 `npm run build` 24페이지 완료, `git diff --check` 통과. `/tmp/esp32-workbook-cards/check.mjs`로 375·768·1280 양 테마, JS 켜짐·꺼짐 120항목 통과(12개 카드·상태·NFC 링크, 40px 가로/세로 간격, 문서·카드·SVG 문자 넘침 없음, 이미지 alt/loading/decoding/로딩, 콘솔 오류 0). 이후 고정/롤링 도식을 추상 코드 A/A/A와 A/B/C로 명확히 바꾸고 해당 도식만 6개 화면 조합으로 다시 확인했다(`check-code-diagram.mjs`, 문자·경계·콘솔 통과). 변경 없는 Stepper·NFC 입력 검사는 반복하지 않았다.
 - 대표 스크린샷: `/tmp/esp32-workbook-cards/lab-1280-light.png`, `lab-375-dark.png`, `cards-768-dark.png`, `card-first-light.png`, `code-diagram-dark.png`. 임시 QA 파일은 저장소에 넣지 않는다.
+
+
+## 변경 기록: 워크북 장면 이미지 12개
+
+- 사용자 요청에 따라 카드의 SVG·HTML 미니 도식 12개를 제공된 생성 이미지 12개로 교체했다. 기존 상단 `workbook-desk.webp`는 그대로 두었다. `WorkbookScene.astro`는 카드 순서대로 Astro Image를 렌더링하며 장면 설명 alt, `loading="lazy"`, `decoding="async"`, 반응형 450·900px 소스와 정사각 비율을 사용한다. 카드 간격 40px, 768px 이상 2열·모바일 1열, 예정 상태와 실제 NFC 시작 링크는 유지한다. 제작 고지나 원본 경로는 화면에 노출하지 않는다.
+- 아래 PNG는 모두 imagegen으로 생성한 학습 장면이며 실제 기기 화면·측정 결과 사진이 아니다. 각 파일을 기존 sharp로 900×900 WebP(quality 82)로 최적화했다. 12개 합계 938,528바이트, EXIF·XMP·IPTC 없음. 저장소에는 최적화한 WebP만 넣었다.
+
+| 카드 순서 | 생성 PNG 원본 | 저장소 WebP |
+|---|---|---|
+| 1 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-f782f171-d961-44b8-be91-9fa6f5be2deb.png` | `src/assets/learning/workbook/wifi-rssi.webp` |
+| 2 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-247d672f-360d-4f27-9313-af7709fbc647.png` | `src/assets/learning/workbook/ssid-map.webp` |
+| 3 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-c80c5975-52a6-405e-a016-08bde4f43767.png` | `src/assets/learning/workbook/wpa-pmf.webp` |
+| 4 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-639a954f-41ee-4f3e-a191-e19dbea335a9.png` | `src/assets/learning/workbook/channel.webp` |
+| 5 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-cd162e15-de35-413b-9f02-086d6983d7bc.png` | `src/assets/learning/workbook/ble-ad.webp` |
+| 6 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-1c72ac29-2bf2-4ca9-a571-decd65fc08ef.png` | `src/assets/learning/workbook/ble-pair.webp` |
+| 7 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-70b0094d-0330-4af0-9314-4ad31a77999a.png` | `src/assets/learning/workbook/interference.webp` |
+| 8 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-63aaf9ab-dabc-40ae-b555-cbf9c255e700.png` | `src/assets/learning/workbook/ir.webp` |
+| 9 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-cfeee9d5-b3e2-4b87-b72b-6949cbfe4121.png` | `src/assets/learning/workbook/subghz.webp` |
+| 10 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-eab03252-3fce-474d-9ccd-b4783710f309.png` | `src/assets/learning/workbook/gps.webp` |
+| 11 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-3cd9c899-746e-4d1f-bbfb-055a826a2bab.png` | `src/assets/learning/workbook/firmware.webp` |
+| 12 | `/Users/mk/.codex/generated_images/01a1a5a3-90f9-7a32-8f52-8bba55f3c682/exec-fb0a07fd-a4d9-436d-b41c-7f3cab8f2552.png` | `src/assets/learning/workbook/csv.webp` |
+
+- 검사: `npm run typecheck` 오류·경고·힌트 0, `npm run build` 24페이지 완료, `git diff --check` 통과. `/tmp/esp32-workbook-images/check.mjs`로 375·768·1280 양 테마와 JS 켜짐·꺼짐 12개 화면 조합에서 996항목 통과했다. 이미지 12개의 순서·alt·lazy/async·실제 디코딩·정사각 비율, 카드 가로·세로 간격 40px, 예정 상태와 NFC 시작 링크, SVG 없음, 문서·카드 넘침 없음, 상단 제작 고지 제거 유지, 콘솔 오류 0을 확인했다. 변경 없는 Stepper·NFC 기록 검사는 반복하지 않았다.
+- 대표 스크린샷은 `/tmp/esp32-workbook-images/lab-1280-light.png`, `lab-375-dark.png`, `first-card-light.png`다. 전후 비교용 원본 최적화 목록과 검증 로그도 같은 임시 폴더에 있으며 저장소에는 넣지 않는다. 브라우저와 작업용 개발 서버는 확인 후 종료했다.

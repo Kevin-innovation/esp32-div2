@@ -300,15 +300,14 @@ td:last-child, th:last-child { padding-right: 0; }
 .workbook-intro > .workbook-desk { margin: 0; min-width: 0; }
 .workbook-desk img { width: 100%; height: auto; border-radius: var(--radius-plate); }
 .workbook-desk figcaption { margin-top: var(--space-xs); color: var(--color-muted); font-size: var(--text-xs); }
-.workbook-diagram-note { margin-bottom: var(--space-lg); }
+.workbook-scene-note { margin-bottom: var(--space-lg); }
 .workbook-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-xl); margin: 0; padding: 0; list-style: none; }
 .workbook-planned { display: flex; flex-direction: column; min-width: 0; margin: 0; padding: clamp(var(--space-md), 3vw, var(--space-xl)); border: 1px solid var(--color-rule); border-radius: var(--radius-plate); background: var(--color-paper-2); }
 .workbook-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); }
 .workbook-card__number { color: var(--color-muted); font-size: var(--text-sm); font-variant-numeric: tabular-nums; }
 .workbook-card__state { margin-left: auto; }
-.workbook-scene { margin: var(--space-lg) 0; padding: var(--space-md); border-radius: var(--radius-control); background: var(--color-paper); color: var(--color-accent); }
-.workbook-scene svg { display: block; width: 100%; height: auto; max-height: 148px; }
-.workbook-scene text { fill: var(--color-ink-2); stroke: none; font-size: 16px; font-family: inherit; }
+.workbook-scene { margin: var(--space-lg) 0; color: var(--color-accent); }
+.workbook-scene img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-control); }
 .workbook-scene figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); font-weight: 600; }
 .workbook-planned h3 { font-size: var(--text-xl); line-height: 1.45; }
 .workbook-card__facts { margin: var(--space-lg) 0; }

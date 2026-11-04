@@ -102,9 +102,15 @@ try {
       }
       await page.goto(origin + '/lab/', { waitUntil: 'networkidle' }); await page.evaluate(() => document.fonts.ready);
       const cards = page.locator('.workbook-planned'); assert.ok(await cards.count() >= 10);
+      assert.equal(await page.locator('.workbook-scene svg').count(), 0);
+      assert.equal(await page.locator('.workbook-scene img').count(), 12);
       for (const card of await cards.all()) {
         assert.equal(await card.locator('.workbook-card__state').textContent(), '추후 개발 예정');
         assert.equal(await card.locator('dt').count(), 3);
+        const image = card.locator('.workbook-scene img');
+        assert.ok(await image.getAttribute('alt'));
+        assert.equal(await image.getAttribute('loading'), 'lazy');
+        assert.equal(await image.getAttribute('decoding'), 'async');
         for (const a of await card.locator('a').all()) assert.match(await a.getAttribute('href'), /^\/learn\/(projects|security)\/#/);
       }
       assert.equal(await page.getByRole('link', { name: 'NFC 워크북 시작하기' }).getAttribute('href'), '/lab/nfc/');
