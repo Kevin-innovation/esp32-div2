@@ -436,6 +436,7 @@ html:not(.js) .explorer__panel + .explorer__panel { margin-top: var(--space-lg);
 /* 학습 순서 */
 .path-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-lg); padding-block: var(--space-sm); border-bottom: var(--rule-hair) solid var(--color-rule); }
 .path-top__now strong { color: var(--color-ink); }
+.path-top__next { flex: 1 0 100%; max-width: var(--measure); }
 .path-top__all { flex: 1 0 100%; }
 .path-list { margin: 0; padding: 0; list-style: none; }
 .path-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-xs); margin: 0; }

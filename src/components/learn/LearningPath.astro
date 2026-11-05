@@ -16,7 +16,13 @@ const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
 {where === 'top' && (step ? (
   <nav class="path-top wrap" aria-label="학습 순서">
     <p class="path-top__now"><strong>{step.n}단계</strong> {step.title} <span class="muted small">(0~6단계 중)</span></p>
-    {next && <p class="small"><a href={url(next.href)}>다음은 {name(next)}</a></p>}
+    {next && (
+      <a class="path-link path-link--next path-top__next" href={url(next.href)}>
+        <small>이어서 학습하기 · 다음 단계</small>
+        <span>{name(next)} <span aria-hidden="true">→</span></span>
+        <span class="small">{next.does}</span>
+      </a>
+    )}
     <details class="path-top__all">
       <summary>전체 학습 순서</summary>
       <ol class="path-list">
