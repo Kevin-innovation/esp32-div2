@@ -30,6 +30,7 @@ export const SOURCES = {
   codeFirmware: { title: '펌웨어 코드 wifi.cpp의 FIRMWARE_FILE', url: `${BLOB}/ESP32-DIV/wifi.cpp#L9245`, note: `커밋 ${COMMIT}.` },
   codeMenu: { title: '펌웨어 코드 ESP32-DIV.ino의 메뉴 목록', url: `${BLOB}/ESP32-DIV/ESP32-DIV.ino#L32`, note: `커밋 ${COMMIT}.` },
   emvco: { title: 'EMVCo: EMV Contactless Chip', url: 'https://www.emvco.com/emv-technologies/contactless/' },
+  colabFiles: { title: 'Google Colab: 외부 파일 업로드·다운로드 예제', url: 'https://colab.research.google.com/notebooks/io.ipynb' },
   ntag: { title: 'NXP 데이터시트: NTAG213/215/216', url: 'https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf' },
   metal: { title: 'NXP 앱노트 AN11564: 금속 주변 NFC 안테나', url: 'https://www.nxp.com/docs/en/application-note/AN11564.pdf' },
   an10833: { title: 'NXP 앱노트 AN10833: MIFARE type identification procedure', url: 'https://www.nxp.com/docs/en/application-note/AN10833.pdf' },
