@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import react from '@astrojs/react';
+import vercel from '@astrojs/vercel';
 
 // 프로젝트 페이지로 배포할 때만 BASE_PATH=/esp32-div2 를 준다.
 export default defineConfig({
@@ -7,4 +8,8 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [react()],
   devToolbar: { enabled: false },
+  output: 'server',
+  adapter: vercel({
+    webAnalytics: { enabled: true },
+  }),
 });
