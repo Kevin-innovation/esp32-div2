@@ -356,7 +356,7 @@ details[open] > summary { margin-bottom: var(--space-sm); }
 .js .stepper__step > :nth-child(4) { grid-row: 4; }
 .stepper__question, .stepper__status { display: grid; min-width: 0; }
 .stepper__question > *, .stepper__status > * { grid-area: 1 / 1; }
-.stepper__reserve { visibility: hidden; pointer-events: none; }
+.js .stepper__reserve { visibility: hidden; pointer-events: none; }
 .stepper__status { flex-basis: 100%; }
 html:not(.js) .stepper__reserve { display: none; }
 html:not(.js) .stepper__step + .stepper__step { margin-top: var(--space-lg); padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
