@@ -1,5 +1,5 @@
 /* Hallmark · shape: narrative workflow (home), long document (learn, reference), app screen (lab tools) · genre: editorial · theme: Ink (deal 1/3, seed esp32-div-nfc-0815·89577fe7·2026-11-05·r0) · redesign: full
- * hero: Ledge (/), Banner (other routes) · nav: edge-aligned, the wordmark, five links and the theme switch · footer: statement, the unverified-device line set large over the source links · imagery: AI-edited cutouts of the real device and the existing learning images, kept as found · signature: the seven-stage ledger, each stage a display numeral on an ink rule, the stage you are on in the green that means in · ink: paper
+ * hero: Ledge (/), Banner (other routes) · nav: edge-aligned, the wordmark, five links and the theme switch · footer: statement, the unverified-device line set large over the source links · imagery: device cutouts and learning images · signature: the seven-stage ledger, each stage a display numeral on an ink rule, the stage you are on in the green that means in · ink: paper
  * axes: light/grotesk-sans/chromatic-green · posture: restrained · contrast: pass · fold: pass · modes: light+dark · draw: 2f2c4a (Conversational FAQ swapped for Narrative Workflow: the material is a seven-stage path, not questions) · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R4 V4 · weakest: H, the hero is the device on a plain well; the ledger and the evidence pills carry the idea instead of ornament */
 /* Hallmark · waive 22 · ink, greys and the ink band at zero chroma · a lab notebook printed in plain black, the green kept as the one signal */
@@ -12,7 +12,7 @@
 @import url("./base.css");
 
 /* 바탕 */
-html { -webkit-text-size-adjust: 100%; }
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: 8rem; }
 body { line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; font-synthesis: none; color: var(--color-ink-2); }
 ::selection { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); }
 a { color: var(--color-ink); font-weight: 600; text-decoration-color: var(--color-rule); text-decoration-thickness: 1px; text-underline-offset: 0.22em; transition: text-decoration-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
@@ -434,15 +434,15 @@ html:not(.js) .explorer__panel + .explorer__panel { margin-top: var(--space-lg);
 .glossary dd > * + * { margin-top: var(--space-2xs); }
 
 /* 학습 순서 */
-.path-top { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-lg); padding-block: var(--space-sm); border-bottom: var(--rule-hair) solid var(--color-rule); }
-.path-top__now strong { color: var(--color-ink); }
-.path-top__next { flex: 1 0 100%; max-width: var(--measure); }
-.path-top__all { flex: 1 0 100%; }
-.path-list { margin: 0; padding: 0; list-style: none; }
-.path-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-xs); margin: 0; }
-.path-list a { display: flex; align-items: center; min-height: 44px; color: var(--color-ink-2); font-weight: 400; text-decoration: none; }
-.path-list a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); }
-.path-list a[aria-current] { color: var(--color-ink); font-weight: 700; box-shadow: inset 3px 0 0 var(--color-accent); padding-left: var(--space-sm); }
+.path-top { position: sticky; top: 64px; z-index: var(--z-sticky); padding-block: var(--space-2xs); }
+.path-top::before { position: absolute; z-index: 0; inset-block: 0; left: 50%; width: 100vw; border-bottom: var(--rule-hair) solid var(--color-rule); background: var(--color-paper); content: ''; transform: translateX(-50%); }
+.path-steps { position: relative; z-index: 1; display: flex; gap: var(--space-2xs); width: 100%; max-width: var(--container); margin: 0 auto; padding: 0; overflow-x: auto; list-style: none; scrollbar-width: thin; }
+.path-steps li { flex: 1 0 auto; min-width: 0; margin: 0; }
+.path-steps a { display: grid; align-content: center; justify-items: center; gap: 1px; min-height: 48px; padding-inline: var(--space-sm); border-radius: var(--radius-control); color: var(--color-muted); font-size: var(--text-sm); line-height: 1.25; text-decoration: none; white-space: nowrap; }
+.path-steps a:hover { background: var(--color-paper-2); color: var(--color-ink); }
+.path-steps a[aria-current='step'] { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); }
+.path-steps a > span { font-size: var(--text-xs); }
+.path-steps a > strong { font-weight: 700; }
 .path-next { padding-block: var(--space-2xl); border-top: var(--rule-hair) solid var(--color-ink); }
 .path-next__done { max-width: var(--measure); margin-bottom: var(--space-lg); }
 .path-next__links { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-md); }
@@ -482,7 +482,8 @@ a.path-link:active { background: var(--color-paper-3); }
   .site-head { position: static; }
   .site-head__row { flex-wrap: wrap; gap: 0 var(--space-md); padding-top: var(--space-xs); justify-content: space-between; }
   .nav { order: 3; flex: 0 0 100%; justify-content: flex-start; margin-inline: calc(-1 * var(--space-sm)); }
-  html { scroll-padding-top: var(--space-md); }
+  html { scroll-padding-top: 4.5rem; }
+  .path-top { top: 0; }
   .ledger > li { grid-template-columns: 5rem minmax(0, 1fr); }
   .ledger > li > p { grid-column: 2; }
   .num-steps--grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }

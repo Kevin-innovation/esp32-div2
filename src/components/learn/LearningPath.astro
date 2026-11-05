@@ -12,28 +12,20 @@ const step = LEARNING_PATH[index];
 const prev = LEARNING_PATH[index - 1];
 const next = LEARNING_PATH[index + 1];
 const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
+const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', '보안', '실험·보고서'];
 ---
 {where === 'top' && (step ? (
-  <nav class="path-top wrap" aria-label="학습 순서">
-    <p class="path-top__now"><strong>{step.n}단계</strong> {step.title} <span class="muted small">(0~6단계 중)</span></p>
-    {next && (
-      <a class="path-link path-link--next path-top__next" href={url(next.href)}>
-        <small>이어서 학습하기 · 다음 단계</small>
-        <span>{name(next)} <span aria-hidden="true">→</span></span>
-        <span class="small">{next.does}</span>
-      </a>
-    )}
-    <details class="path-top__all">
-      <summary>전체 학습 순서</summary>
-      <ol class="path-list">
-        {LEARNING_PATH.map((s) => (
-          <li>
-            <a href={url(s.href)} aria-current={s.n === step.n ? 'step' : undefined}>{name(s)}</a>
-            {s.n === step.n && <span class="small muted">(지금 여기)</span>}
-          </li>
-        ))}
-      </ol>
-    </details>
+  <nav class="path-top wrap" aria-label="수업 단계 내비게이션">
+    <ol class="path-steps">
+      {LEARNING_PATH.map((s) => (
+        <li>
+          <a href={url(s.href)} aria-label={name(s)} aria-current={s.n === step.n ? 'step' : undefined} title={name(s)}>
+            <span>{s.n}단계</span>
+            <strong>{labels[s.n]}</strong>
+          </a>
+        </li>
+      ))}
+    </ol>
   </nav>
 ) : (
   <nav class="path-top wrap" aria-label="학습 순서">

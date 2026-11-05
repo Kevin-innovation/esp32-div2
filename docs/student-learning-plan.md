@@ -201,7 +201,7 @@ Python에는 준비/CSV 파일 위치/실행 명령/결과 PNG 위치와 read_cs
 ## 변경 기록: 학습 순서 정리
 
 - 약속한 순서: 0 `/learn/why/`, 1 `/start/`, 2 `/learn/device/`, 3 `/learn/nfc/`, 4 `/learn/network/`, 5 `/learn/security/`, 6 `/lab/nfc/`. 보고서와 면접은 6단계 안의 활동이고 별도 단계가 아니다.
-- `src/data/learn.ts`의 `LEARNING_PATH` 하나로 번호, 이름, 할 일, 넘어갈 기준을 관리한다. `LearningPath.astro`를 `Base.astro`에 넣어 모든 페이지에 같은 위치 표시와 이전, 다음이 붙는다. 전체 순서는 `details`로 접는다. 참고 자료에는 번호를 붙이지 않고 학습 순서로 돌아가는 링크를 둔다.
+- `src/data/learn.ts`의 `LEARNING_PATH` 하나로 번호, 이름, 할 일, 넘어갈 기준을 관리한다. `LearningPath.astro`를 `Base.astro`에 넣어 수업 페이지 상단에 현재 단계가 표시된 고정 내비게이션과 이전·다음 링크를 둔다. 참고 자료에는 번호를 붙이지 않고 학습 순서로 돌아가는 링크를 둔다.
 - 메뉴 첫 항목은 학습 안내다. `/start/`는 메뉴에서 빼고 1단계로만 들어간다. Wi-Fi 첫 스캔은 선택 항목으로 접었고 앵커는 유지했다.
 - 검사: `npm run typecheck` 오류 0, `npm run build` 완료. 홈에서 0~6단계 클릭 완주, 역행, 참고 자료 복귀, 직접 URL, 키보드, 44px 터치 100개 통과. 23페이지 320, 375, 768, 1280 양 테마 배치 검사 377개 통과, 내부 링크 185개. `BASE_PATH=/esp32-div2` 빌드에서 내부 경로 588개가 모두 하위 경로를 유지했다.
 - 스크린샷은 `/private/tmp/claude-501/-Users-mk-Herdr-esp32-div2/721a9067-b1bc-430b-8872-560fc1a9ff7f/scratchpad/qa/shots/`의 `ux-` 파일이다.
