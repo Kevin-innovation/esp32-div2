@@ -31,11 +31,9 @@ export function Glossary({ terms, base }: { terms: Term[]; base: string }) {
 
   return (
     <div>
-      <form className="search" role="search" onSubmit={(e) => e.preventDefault()}>
-        <label htmlFor="glossary-q">용어 찾기 (한글, 영문, 약어)</label>
-        <input id="glossary-q" type="search" placeholder="예: 부하 변조, rssi, 비콘" autoComplete="off" value={q} onChange={(e) => change(e.target.value)} />
+      <form className="search glossary-search" role="search" onSubmit={(e) => e.preventDefault()}>
         <fieldset style={{ marginTop: 'var(--space-sm)' }}>
-          <legend>분류</legend>
+          <legend>분류별 용어 보기</legend>
           <div className="seg">
             {['전체', ...GLOSSARY_CATEGORIES].map((c) => (
               <span key={c} style={{ display: 'contents' }}>
@@ -45,6 +43,8 @@ export function Glossary({ terms, base }: { terms: Term[]; base: string }) {
             ))}
           </div>
         </fieldset>
+        <label htmlFor="glossary-q">용어 찾기 (한글, 영문, 약어)</label>
+        <input id="glossary-q" type="search" placeholder="예: 부하 변조, rssi, 비콘" autoComplete="off" value={q} onChange={(e) => change(e.target.value)} />
         <p className="status" role="status">{matches.length}개 용어</p>
       </form>
       {matches.length === 0 && <p>찾지 못했습니다. 더 짧은 낱말이나 영문 약어로 다시 찾아보세요.</p>}

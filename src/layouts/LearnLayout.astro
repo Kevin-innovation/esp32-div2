@@ -10,12 +10,13 @@ interface Props {
   description: string;
   toc?: [string, string][];
   sources: SourceId[];
+  compactHeader?: boolean;
 }
-const { title, heading, lead, description, toc = [], sources } = Astro.props;
+const { title, heading, lead, description, toc = [], sources, compactHeader = false } = Astro.props;
 ---
 <Base title={`${title} | ESP32-DIV 실험 노트`} description={description}>
   <div class="wrap">
-    <header class="page-head">
+    <header class:list={["page-head", { "page-head--compact": compactHeader }]}>
       <h1>{heading}</h1>
       <p class="lead">{lead}</p>
     </header>

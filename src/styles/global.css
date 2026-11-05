@@ -156,6 +156,7 @@ a.pin:hover { background: var(--color-pin-ink); color: var(--color-pin); border-
 
 /* 문서 페이지: Banner 머리 */
 .page-head { padding-block: var(--space-2xl) var(--space-xl); }
+.page-head--compact { padding-block: var(--space-lg); }
 .page-head > * + * { margin-top: var(--space-md); }
 .page-head h1 { font-size: var(--text-display-s); max-width: 22ch; }
 .page-back { font-size: var(--text-sm); }
@@ -242,6 +243,7 @@ td:last-child, th:last-child { padding-right: 0; }
 }
 
 .search { margin-bottom: var(--space-xl); }
+.glossary-search > label { margin-top: var(--space-md); }
 .search label { display: block; color: var(--color-ink); font-weight: 600; margin-bottom: var(--space-xs); }
 .search__results { margin-top: var(--space-md); }
 .search__results ol { margin: 0; padding: 0; list-style: none; border-top: var(--rule-hair) solid var(--color-ink); }
