@@ -8,7 +8,7 @@ import Sources from '../../components/Sources.astro';
 import { url } from '../../lib/url';
 
 const labs = [
-  { question: '연결이 불안정할 때 침입과 신호 음영을 어떻게 구분할까?', title: '방마다 Wi-Fi가 끊기는 이유는?', observe: 'Wi-Fi 스캐너의 RSSI와 채널을 방별로 비교할 계획입니다. 내 공유기, 휴대폰, IoT 기기가 필요합니다.', learn: '음영 지역과 침입 징후를 구분하고, 게스트망·IoT 망 분리로 접근 범위를 줄이는 방법을 배웁니다.', artifact: '방별 신호 지도와 IoT 망 분리 설계도', project: 'wifi-rssi', security: 'wifi' },
+  { href: '/lab/wifi-rssi/', question: '연결이 불안정할 때 침입과 신호 음영을 어떻게 구분할까?', title: '방마다 Wi-Fi가 끊기는 이유는?', observe: '내 공유기나 휴대폰에서 확인한 RSSI와 채널을 방별로 직접 기록합니다. 이 기기의 Wi-Fi 스캔 실행은 아직 확인하지 못했습니다.', learn: '음영 지역과 침입 징후를 구분하고, 게스트망·IoT 망 분리로 접근 범위를 줄이는 방법을 배웁니다.', artifact: '방별 신호 지도와 IoT 망 분리 설계도', project: 'wifi-rssi', security: 'wifi' },
   { question: '익숙한 이름이 뜨면 바로 연결해도 될까?', title: '이름이 같은 Wi-Fi는 같은 공유기일까?', observe: 'Wi-Fi 스캐너의 SSID·BSSID를 내 공유기 목록과 대조할 계획입니다. 내 공유기와 관리자 화면이 필요합니다.', learn: '같은 SSID만으로 신뢰할 수 없는 이유와 가짜 AP 위험을 이해하고, BSSID 대조의 한계와 자동 연결 설정을 점검합니다. 가짜 AP를 만드는 활동은 없습니다.', artifact: '내 AP 목록과 연결 확인 체크리스트', project: 'ssid-map', security: 'wifi' },
   { question: '비밀번호와 관리 프레임 보호는 같은 역할일까?', title: '공유기의 WPA2·WPA3·PMF 설정은 무엇을 지킬까?', observe: 'Wi-Fi 스캐너의 표시 항목과 공유기 관리자 설정을 비교할 계획입니다. 해당 설정을 지원하는 내 공유기와 휴대폰이 필요합니다.', learn: '암호 추측과 관리 프레임 위조 위험에 대해 WPA2·WPA3·PMF가 맡는 역할을 구분합니다. 스캔 화면만으로 보안 수준을 확정하지 않습니다.', artifact: '설정별 보호 범위 비교표', project: 'ssid-map', security: 'wifi' },
   { question: '끊김에 대비할 다른 연결 경로가 있을까?', title: '저녁마다 느린 인터넷, 혼잡 때문일까?', observe: 'Wi-Fi 스캐너의 채널별 AP 수와 RSSI를 시간대별로 비교할 계획입니다. 내 공유기, 속도를 비교할 PC와 별도 연결 경로가 필요합니다.', learn: 'AP 수만으로 혼잡을 단정하지 않고 가용성 문제를 나눠 봅니다. 채널 선택과 유선·모바일 백업 경로를 설계합니다.', artifact: '시간대별 관찰표와 통신 복구 순서도', project: 'channel-busy', security: 'wifi' },
@@ -22,13 +22,13 @@ const labs = [
   { question: '식별자를 가려도 나를 알아볼 단서가 남을까?', title: '관찰 CSV를 공유해도 내 기기가 드러나지 않을까?', observe: 'NFC Card Reader의 UID와 Wi-Fi 스캐너의 BSSID를 다룬 예시 CSV를 PC에서 검토할 계획입니다. PC와 직접 준비한 CSV가 필요하며 기기의 CSV 내보내기는 미확인입니다.', learn: '식별자 노출과 재식별 위험을 이해하고 UID·BSSID를 가명 처리합니다. 원본 분리 보관, 백업·복구 확인으로 정보 손실을 줄입니다.', artifact: '가명 처리한 예시 CSV와 백업 복구 점검표', project: 'csv-offline', security: 'device' },
 ];
 ---
-<Base title="실험 워크북 | ESP32-DIV V2.1 실험 노트" description="현재 사용할 수 있는 NFC 실험 워크북과 추후 개발 예정인 해킹·방어 학습 주제를 안내합니다.">
+<Base title="실험 워크북 | ESP32-DIV V2.1 실험 노트" description="현재 사용할 수 있는 NFC·Wi-Fi RSSI 실험 워크북과 추후 개발 예정인 해킹·방어 학습 주제를 안내합니다.">
   <div class="wrap">
     <header class="page-head workbook-intro">
       <div>
       <h1>실험 워크북</h1>
       <p class="lead">생활 속 문제를 관찰하고, 해킹 위험과 방어 방법을 함께 배우는 학생용 탐구 목록입니다.</p>
-      <p>현재 NFC 워크북에서 실험을 시작할 수 있습니다. 아래 다른 주제 12개는 <strong>추후 개발 예정</strong>이며, 입력·그래프·보고서 기능이 아직 없습니다.</p>
+      <p>현재 NFC와 Wi-Fi RSSI 워크북에서 실험을 시작할 수 있습니다. 다른 주제 11개는 <strong>추후 개발 예정</strong>입니다.</p>
       </div>
       <figure class="workbook-desk">
         <Image src={workbookDesk} alt="관찰 기기, 공유기, 이어폰과 태그를 놓고 무선 신호를 기록하는 실험 책상 장면" widths={[600, 1200]} sizes="(min-width: 768px) 50vw, 100vw" loading="eager" decoding="async" />
@@ -55,8 +55,8 @@ const labs = [
 
     <section class="section" aria-labelledby="h-more">
       <div class="section__head">
-        <h2 id="h-more">추후 개발 예정인 워크북</h2>
-        <p class="muted">생활 속 관찰에서 위협과 방어를 연결하는 개발 계획입니다. NFC 읽기 외의 기기 기능은 실행을 확인하지 못했습니다. 아래 위험은 학습할 가정이며 이 기기에서 발견한 취약점이 아닙니다. 링크는 배경 기술노트로 이어집니다.</p>
+        <h2 id="h-more">다음 실험 워크북</h2>
+        <p class="muted">Wi-Fi RSSI는 수동 관찰값을 기록하는 웹 워크북을 사용할 수 있고, 나머지는 개발 계획입니다. NFC 읽기 외의 기기 기능은 실행을 확인하지 못했습니다. 아래 위험은 학습할 가정이며 이 기기에서 발견한 취약점이 아닙니다.</p>
       </div>
       <p class="workbook-scene-note small muted">각 이미지는 관찰할 장면을 상상하도록 돕는 학습 비주얼입니다.</p>
       <ul class="workbook-grid">
@@ -65,10 +65,11 @@ const labs = [
             <div class="workbook-card__meta">
               <span class="workbook-card__number">{String(i + 1).padStart(2, '0')}</span>
               <span class="tag">{['Wi-Fi · 공간', 'Wi-Fi · 식별', 'Wi-Fi · 인증', 'Wi-Fi · 가용성', 'BLE · 개인정보', 'BLE · 페어링', '2.4GHz · 간섭', 'IR · 명령', '433MHz · 코드', 'GPS · 신뢰', '펌웨어 · 공급망', 'CSV · 데이터'][i]}</span>
-              <span class="tag tag--unverified workbook-card__state">추후 개발 예정</span>
+              <span class={`tag ${l.href ? 'tag--device' : 'tag--unverified'} workbook-card__state`}>{l.href ? '웹 워크북 사용 가능' : '추후 개발 예정'}</span>
             </div>
             <WorkbookScene index={i} />
             <h3>{l.title}</h3>
+            {l.href && <p class="workbook-card__start"><a class="btn btn--small" href={url(l.href)}>Wi-Fi 워크북 시작하기</a></p>}
             <dl class="workbook-card__facts">
               <div><dt>01 관찰 장면</dt><dd>{l.observe}</dd></div>
               <div><dt>02 보안 질문</dt><dd><p class="workbook-card__question">{l.question}</p><p>{l.learn}</p></dd></div>

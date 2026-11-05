@@ -101,17 +101,19 @@ try {
         }
       }
       await page.goto(origin + '/lab/', { waitUntil: 'networkidle' }); await page.evaluate(() => document.fonts.ready);
-      const cards = page.locator('.workbook-planned'); assert.ok(await cards.count() >= 10);
+      const cards = page.locator('.workbook-planned'); assert.equal(await cards.count(), 12);
+      assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 11);
+      assert.equal(await cards.first().getByRole('link', { name: 'Wi-Fi 워크북 시작하기' }).getAttribute('href'), '/lab/wifi-rssi/');
       assert.equal(await page.locator('.workbook-scene svg').count(), 0);
       assert.equal(await page.locator('.workbook-scene img').count(), 12);
       for (const card of await cards.all()) {
-        assert.equal(await card.locator('.workbook-card__state').textContent(), '추후 개발 예정');
+        assert.equal(await card.locator('.workbook-card__state').textContent(), await card.locator('.workbook-card__start').count() ? '웹 워크북 사용 가능' : '추후 개발 예정');
         assert.equal(await card.locator('dt').count(), 3);
         const image = card.locator('.workbook-scene img');
         assert.ok(await image.getAttribute('alt'));
         assert.equal(await image.getAttribute('loading'), 'lazy');
         assert.equal(await image.getAttribute('decoding'), 'async');
-        for (const a of await card.locator('a').all()) assert.match(await a.getAttribute('href'), /^\/learn\/(projects|security)\/#/);
+        for (const a of await card.locator('.workbook-card__links a').all()) assert.match(await a.getAttribute('href'), /^\/learn\/(projects|security)\/#/);
       }
       assert.equal(await page.getByRole('link', { name: 'NFC 워크북 시작하기' }).getAttribute('href'), '/lab/nfc/');
       assert.equal(await page.locator('.nav').getByRole('link', { name: '실험 워크북' }).getAttribute('href'), '/lab/');

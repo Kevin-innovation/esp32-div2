@@ -310,6 +310,7 @@ td:last-child, th:last-child { padding-right: 0; }
 .workbook-scene img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-control); }
 .workbook-scene figcaption { margin-top: var(--space-sm); font-size: var(--text-sm); font-weight: 600; }
 .workbook-planned h3 { font-size: var(--text-xl); line-height: 1.45; }
+.workbook-card__start { margin-top: var(--space-md); }
 .workbook-card__facts { margin: var(--space-lg) 0; }
 .workbook-card__facts > div + div { margin-top: var(--space-lg); }
 .workbook-card__facts dt { margin-bottom: var(--space-xs); color: var(--color-muted); font-size: var(--text-xs); font-weight: 600; letter-spacing: .04em; }
@@ -336,7 +337,7 @@ td:last-child, th:last-child { padding-right: 0; }
 .field { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); min-width: 0; }
 .field > label, .field > .field__label, fieldset legend { font-weight: 600; font-size: var(--text-sm); }
 .field__help { color: var(--color-muted); font-size: var(--text-sm); line-height: 1.55; }
-input[type='text'], input[type='number'], input[type='search'], select, textarea {
+input[type='text'], input[type='number'], input[type='search'], input[type='datetime-local'], select, textarea {
   width: 100%;
   min-height: 48px;
   padding: var(--space-sm);
@@ -352,6 +353,7 @@ input[type='text'], input[type='number'], input[type='search'], select, textarea
 textarea { resize: vertical; }
 input:focus-visible, select:focus-visible, textarea:focus-visible { outline-color: var(--color-focus); }
 input[aria-invalid='true'] { border-color: var(--color-error); }
+input:disabled { cursor: not-allowed; opacity: .6; }
 input::placeholder, textarea::placeholder { color: var(--color-muted); opacity: 1; }
 input[type='file'] { max-width: 100%; font-size: var(--text-sm); }
 fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
@@ -398,6 +400,11 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .iv { margin: 0; padding: 0; list-style: none; }
 .iv > li { margin: 0; padding-block: var(--space-lg); border-top: 1px solid var(--color-rule); }
 .iv > li > * + * { margin-top: var(--space-sm); }
+
+/* Wi-Fi RSSI 워크북 */
+.wifi-app { margin-top: var(--space-2xl); }
+html:not(.js) .wifi-app { display: none; }
+.wifi-chart .bar-fill { background: var(--color-accent); }
 
 /* 학습 */
 
