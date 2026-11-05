@@ -154,6 +154,11 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
             <li>노트북은 성공·실패 횟수, 성공률과 표본 수, 거리별 선 그래프, 조건×거리 히트맵, 반복 일관성 그림을 만듭니다. 지갑·가방 조건은 거리도 함께 달라질 수 있어 거리 그래프만으로 거리의 단독 효과를 결론 내리지 않습니다. 방향·내용물 비교는 같은 배치 조건 안에서 값이 달라진 기록이 있을 때만 나옵니다.</li>
             <li>기본 그래프는 읽기 쉬운 비율을 보여 줍니다. 히트맵과 반복 그림을 함께 보며 빈 조합, 작은 표본, 들쑥날쑥한 결과를 찾습니다.</li>
           </ul>
+          <h3>Colab에서 나올 수 있는 그림 미리 보기</h3>
+          <figure class="nfc-example">
+            <img src="/images/nfc-colab-example.svg" alt="가상 자료로 만든 NFC Colab 결과 예시. 왼쪽은 조건별 성공·실패 횟수, 오른쪽 위는 거리별 인식률, 오른쪽 아래는 조건과 거리별 성공/시도 히트맵이다." loading="lazy" width="1200" height="760" style="display: block; width: 100%; height: auto;" />
+            <figcaption><strong>모양을 익히기 위한 가상 예시입니다.</strong> 단독 5/5, 지갑 3/5, 가방 2/5라는 임의의 값으로 그렸습니다. 실제 실험의 예상값이나 정답이 아니며, 학생의 그림은 측정 결과에 따라 달라집니다. 그래프 종류·축·성공/시도 표시는 Colab 결과와 비교해 보세요.</figcaption>
+          </figure>
           <h3>코드를 직접 바꿔 보는 질문</h3>
           <ul>
             <li>셀에서 <code>data.groupby("condition")["success"].agg(["count", "sum"])</code>를 실행해 표본 수와 성공 수를 직접 확인해 보세요.</li>
@@ -197,7 +202,9 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
             { key: 'defensePlan', label: '권장 방어와 그 이유', help: '정보 최소화, 암호 인증, 권한 확인, 분실 대응 중 위협에 맞는 통제를 고르고 연결합니다.', rows: 3 },
             { key: 'residualRisk', label: '남는 위험과 아직 시험하지 않은 것', help: '암호화·인증·복제 저항성·다른 리더나 태그 조합은 이 실험에서 확인하지 않았습니다.', rows: 3 },
           ]} />
-          <h3>일반 태그와 EMV 비접촉 결제는 다른 시스템</h3>
+          <h3>EMV란? 일반 태그와 결제 칩 구분하기</h3>
+          <p><strong>EMV</strong>는 원래 규격을 함께 만든 Europay, Mastercard, Visa의 첫 글자에서 온 이름입니다. 지금은 결제 칩과 비접촉 결제 단말기가 데이터를 주고받는 방법을 정한 규격군을 가리킵니다. EMV 비접촉 결제에서는 칩이 거래 때마다 일회용 보안 코드(cryptogram)를 만들며, 결제 단말기와 발급사가 거래를 확인하는 데 씁니다. 자세한 흐름은 <a href={SOURCES.emvco.url} target="_blank" rel="noopener noreferrer">EMVCo의 비접촉 칩 설명</a>을 참고하세요.</p>
+          <p><strong>이번 ESP32-DIV 실험은 EMV 결제 시험이 아닙니다.</strong> 실험용 NTAG213 같은 일반 태그의 메모리 읽기와 EMV 결제 칩의 거래 인증은 목적과 보안 기능이 다릅니다. 그래서 이 실험에서 UID를 읽거나 인식률을 재도 EMV 카드의 복제 가능성이나 결제 안전성을 판단할 수 없습니다.</p>
           <p>둘 다 13.56MHz 근거리 통신이라는 공통점만으로 보안 수준을 비교할 수 없습니다. 이번 인식률은 결제 보안에 대해 아무것도 증명하지 않습니다.</p>
           <div class="table-wrap" tabindex="0" role="region" aria-label="일반 태그와 EMV 결제 비교">
             <table>

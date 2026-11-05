@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
+  <title id="title">NFC Colab 결과 예시 — 가상 자료</title>
+  <desc id="desc">단독, 지갑, 가방 조건에서 각각 5회 시도한 임의 자료의 성공·실패 막대그래프, 거리별 인식률, 조건과 거리별 성공/시도 히트맵.</desc>
+  <rect width="1200" height="760" rx="24" fill="#f7f6f1"/>
+  <text x="48" y="58" fill="#20231f" font-family="sans-serif" font-size="27" font-weight="700">Colab 결과는 이런 모양으로 나옵니다</text>
+  <text x="48" y="91" fill="#71552b" font-family="sans-serif" font-size="17" font-weight="700">가상 예시 · 임의 자료 15회 · 실제 측정 결과가 아닙니다</text>
+  <rect x="44" y="122" width="510" height="570" rx="16" fill="#fff" stroke="#d9d6cc"/>
+  <text x="72" y="164" fill="#20231f" font-family="sans-serif" font-size="20" font-weight="700">1. 조건별 성공·실패 횟수</text>
+  <text x="72" y="190" fill="#6c6b64" font-family="sans-serif" font-size="14">막대 높이 = 시도 수 · 표기 = 성공/전체</text>
+  <line x1="116" y1="570" x2="512" y2="570" stroke="#76766f"/>
+  <line x1="116" y1="270" x2="116" y2="570" stroke="#76766f"/>
+  <g fill="#77766f" font-family="sans-serif" font-size="13" text-anchor="end">
+    <text x="106" y="575">0</text><text x="106" y="515">1</text><text x="106" y="455">2</text><text x="106" y="395">3</text><text x="106" y="335">4</text><text x="106" y="275">5</text>
+  </g>
+  <g stroke="#e9e7df" stroke-width="1"><line x1="116" y1="510" x2="512" y2="510"/><line x1="116" y1="450" x2="512" y2="450"/><line x1="116" y1="390" x2="512" y2="390"/><line x1="116" y1="330" x2="512" y2="330"/><line x1="116" y1="270" x2="512" y2="270"/></g>
+  <g>
+    <rect x="166" y="270" width="70" height="300" fill="#397555"/><text x="201" y="252" fill="#20231f" font-family="sans-serif" font-size="16" text-anchor="middle">5/5</text>
+    <rect x="291" y="390" width="70" height="180" fill="#397555"/><rect x="291" y="330" width="70" height="60" fill="#c9c5b9"/><text x="326" y="312" fill="#20231f" font-family="sans-serif" font-size="16" text-anchor="middle">3/5</text>
+    <rect x="416" y="450" width="70" height="120" fill="#397555"/><rect x="416" y="330" width="70" height="120" fill="#c9c5b9"/><text x="451" y="312" fill="#20231f" font-family="sans-serif" font-size="16" text-anchor="middle">2/5</text>
+  </g>
+  <g fill="#454640" font-family="sans-serif" font-size="15" text-anchor="middle"><text x="201" y="600">단독</text><text x="326" y="600">지갑</text><text x="451" y="600">가방</text></g>
+  <g font-family="sans-serif" font-size="14"><rect x="145" y="632" width="14" height="14" fill="#397555"/><text x="166" y="645" fill="#454640">성공</text><rect x="234" y="632" width="14" height="14" fill="#c9c5b9"/><text x="255" y="645" fill="#454640">실패</text></g>
+  <text x="72" y="674" fill="#6c6b64" font-family="sans-serif" font-size="13">가상 결과: 단독 5/5 · 지갑 3/5 · 가방 2/5</text>
+  <rect x="578" y="122" width="578" height="270" rx="16" fill="#fff" stroke="#d9d6cc"/>
+  <text x="606" y="164" fill="#20231f" font-family="sans-serif" font-size="20" font-weight="700">2. 거리별 인식률</text>
+  <text x="606" y="190" fill="#6c6b64" font-family="sans-serif" font-size="14">점 옆의 성공/시도와 표본 수를 같이 읽습니다</text>
+  <line x1="660" y1="335" x2="1110" y2="335" stroke="#76766f"/><line x1="660" y1="220" x2="660" y2="335" stroke="#76766f"/>
+  <g stroke="#e9e7df"><line x1="660" y1="220" x2="1110" y2="220"/><line x1="660" y1="277" x2="1110" y2="277"/></g>
+  <g fill="#77766f" font-family="sans-serif" font-size="12"><text x="630" y="339">0%</text><text x="622" y="281">50%</text><text x="622" y="224">100%</text><text x="682" y="358">0 cm</text><text x="850" y="358">1 cm</text><text x="1017" y="358">2 cm</text></g>
+  <polyline points="710,220 878,220 1046,220" fill="none" stroke="#397555" stroke-width="3"/>
+  <polyline points="710,220 878,277 1046,335" fill="none" stroke="#bf7745" stroke-width="3"/>
+  <polyline points="710,277 878,335 1046,277" fill="none" stroke="#667eaa" stroke-width="3"/>
+  <g fill="#397555" stroke="#fff" stroke-width="2"><circle cx="710" cy="220" r="6"/><circle cx="878" cy="220" r="6"/><circle cx="1046" cy="220" r="6"/></g>
+  <g fill="#bf7745" stroke="#fff" stroke-width="2"><circle cx="710" cy="220" r="6"/><circle cx="878" cy="277" r="6"/><circle cx="1046" cy="335" r="6"/></g>
+  <g fill="#667eaa" stroke="#fff" stroke-width="2"><circle cx="710" cy="277" r="6"/><circle cx="878" cy="335" r="6"/><circle cx="1046" cy="277" r="6"/></g>
+  <g font-family="sans-serif" font-size="12"><text x="1080" y="224" fill="#397555">단독</text><text x="1080" y="280" fill="#bf7745">지갑</text><text x="1080" y="339" fill="#667eaa">가방</text></g>
+  <rect x="578" y="420" width="578" height="272" rx="16" fill="#fff" stroke="#d9d6cc"/>
+  <text x="606" y="462" fill="#20231f" font-family="sans-serif" font-size="20" font-weight="700">3. 조건 × 거리 히트맵</text>
+  <text x="606" y="488" fill="#6c6b64" font-family="sans-serif" font-size="14">칸 = 인식률 · 안의 숫자 = 성공/시도 · 빈칸 = 측정 안 함</text>
+  <g fill="#6c6b64" font-family="sans-serif" font-size="14" text-anchor="middle"><text x="820" y="526">0 cm</text><text x="928" y="526">1 cm</text><text x="1036" y="526">2 cm</text></g>
+  <g fill="#454640" font-family="sans-serif" font-size="14" text-anchor="end"><text x="746" y="567">단독</text><text x="746" y="613">지갑</text><text x="746" y="659">가방</text></g>
+  <g font-family="sans-serif" font-size="13" text-anchor="middle">
+    <rect x="770" y="538" width="100" height="38" rx="5" fill="#a5c7ad"/><text x="820" y="554" fill="#14231a">2/2</text><text x="820" y="570" fill="#14231a">100%</text>
+    <rect x="878" y="538" width="100" height="38" rx="5" fill="#a5c7ad"/><text x="928" y="554" fill="#14231a">2/2</text><text x="928" y="570" fill="#14231a">100%</text>
+    <rect x="986" y="538" width="100" height="38" rx="5" fill="#a5c7ad"/><text x="1036" y="554" fill="#14231a">1/1</text><text x="1036" y="570" fill="#14231a">100%</text>
+    <rect x="878" y="584" width="100" height="38" rx="5" fill="#e6c9ad"/><text x="928" y="600" fill="#14231a">1/2</text><text x="928" y="616" fill="#14231a">50%</text>
+    <rect x="986" y="584" width="100" height="38" rx="5" fill="#f0e5d9"/><text x="1036" y="600" fill="#14231a">0/1</text><text x="1036" y="616" fill="#14231a">0%</text>
+    <rect x="770" y="630" width="100" height="38" rx="5" fill="#e6c9ad"/><text x="820" y="646" fill="#14231a">1/2</text><text x="820" y="662" fill="#14231a">50%</text>
+    <rect x="878" y="630" width="100" height="38" rx="5" fill="#e6c9ad"/><text x="928" y="646" fill="#14231a">0/1</text><text x="928" y="662" fill="#14231a">0%</text>
+    <rect x="986" y="630" width="100" height="38" rx="5" fill="#e6c9ad"/><text x="1036" y="646" fill="#14231a">1/2</text><text x="1036" y="662" fill="#14231a">50%</text>
+  </g>
+</svg>

@@ -1,5 +1,6 @@
 // 실행: npm run check:nfc. CSV 왕복, 집계, 위험 입력을 한 번에 검사한다.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { NFC_STEPS, SCAN_EXAMPLE, SCAN_SCENARIOS } from '../src/data/learn.ts';
 import { NOTE_KEYS, aggregate, crossTab, csvCell, designWarnings, demoTrials, importCsv, mergeTrials, notebookJson, notesToCsv, parseCsv, reportToMarkdown, buildReport, trialsToCsv, validateTrial, type Trial } from '../src/lib/nfc.ts';
 
@@ -101,6 +102,9 @@ const notebookCode = notebook.cells.filter((cell: { cell_type: string }) => cell
 assert.equal(notebook.nbformat, 4);
 assert.ok(notebookCode.includes('files.upload()') && notebookCode.includes('nfc-heatmap-condition-distance.png'));
 assert.ok(notebookCode.includes('암호화') === false, '코드 셀에는 실행 가능한 코드만 둔다');
+const workbook = readFileSync(new URL('../src/pages/lab/nfc.astro', import.meta.url), 'utf8');
+assert.ok(workbook.includes('Europay, Mastercard, Visa') && workbook.includes('일회용 보안 코드(cryptogram)'));
+assert.ok(workbook.includes('/images/nfc-colab-example.svg') && workbook.includes('가상 예시입니다'));
 
 // 원리 그림: 두 탐색 방식은 첫 줄의 먼저 말하는 쪽이 다르고, 목록은 줄어들지 않으며 끝에 가상 예시 전체가 찬다.
 const [passive, active] = SCAN_SCENARIOS;

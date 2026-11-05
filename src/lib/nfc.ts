@@ -406,7 +406,7 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
   blocks.push({ type: 'p', text: `실험이 보여 주는 보안 결과: ${noteOr(notes, 'securityFinding')}` });
   blocks.push({ type: 'p', text: `권장 방어: ${noteOr(notes, 'defensePlan')}` });
   blocks.push({ type: 'p', text: `남는 위험: ${noteOr(notes, 'residualRisk')}` });
-  blocks.push({ type: 'h2', text: '5. 실험용 태그와 EMV 비접촉 결제의 범위' });
+  blocks.push({ type: 'h2', text: '5. EMV란? 실험용 태그와 비접촉 결제의 범위' });
   blocks.push({ type: 'p', text: noteOr(notes, 'security') });
   blocks.push({ type: 'h2', text: '6. 해석과 결론' });
   blocks.push({ type: 'p', text: `결과 해석: ${noteOr(notes, 'interpretation')}` });
