@@ -1,0 +1,14 @@
+---
+import { GLOSSARY } from '../../data/glossary';
+import { url } from '../../lib/url';
+
+interface Props {
+  id: string;
+  label: string;
+}
+
+const { id, label } = Astro.props;
+const term = GLOSSARY.find((item) => item.id === id);
+if (!term) throw new Error(`용어 사전에 없는 항목: ${id}`);
+---
+<a class="term-link" href={url(`/learn/glossary/#${term.id}`)} title={term.mean} aria-label={`${label}. ${term.mean}`}>{label}</a>

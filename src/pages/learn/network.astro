@@ -2,6 +2,7 @@
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import Evidence from '../../components/Evidence.astro';
 import Think from '../../components/learn/Think.astro';
+import TermLink from '../../components/learn/TermLink.astro';
 import { Stepper } from '../../components/learn/Stepper';
 import { LAYER_STEPS, MODEL_NOTE, SCAN_EXAMPLE, SCAN_SCENARIOS, WEB_STEPS } from '../../data/learn';
 import { url } from '../../lib/url';
@@ -37,7 +38,7 @@ import wifiLogo from '../../assets/learning/wifi-official.webp';
         <thead><tr><th scope="col">비교</th><th scope="col">이번 NFC 실험</th><th scope="col">Wi-Fi</th></tr></thead>
         <tbody>
           <tr><th scope="row">주파수</th><td>13.56MHz</td><td>이 기기 내장 Wi-Fi는 2.4GHz</td></tr>
-          <tr><th scope="row">상대</th><td>리더와 수동 태그</td><td>AP와 단말기</td></tr>
+          <tr><th scope="row">상대</th><td>리더와 수동 태그</td><td><TermLink id="ap" label="AP" />와 단말기</td></tr>
           <tr><th scope="row">전원</th><td>태그는 리더 자기장에서 얻음</td><td>양쪽 모두 자체 전원</td></tr>
           <tr><th scope="row">데이터 단위</th><td>ISO14443A 프레임</td><td>Wi-Fi 프레임 안의 IP 패킷</td></tr>
           <tr><th scope="row">인터넷</th><td>필요 없음</td><td>AP 너머로 이어질 수 있음</td></tr>
@@ -52,7 +53,7 @@ import wifiLogo from '../../assets/learning/wifi-official.webp';
       <span class="logo-note__plate"><img src={wifiLogo.src} width="100" height="82" alt="Wi-Fi 로고" loading="lazy" /></span>
       <figcaption class="field__help">Wi-Fi Alliance의 <a href="https://www.wi-fi.org/who-we-are/our-brands">공식 브랜드 페이지</a>에서 받은 <a href="https://www.wi-fi.org/sites/default/files/public/styles/large/public/2024-12/Wi-Fi-B-W.png.webp?itok=xn8gyf-i">로고 이미지</a>를 그대로 실었습니다. Wi-Fi 로고는 Wi-Fi Alliance의 상표이며, 이 사이트나 기기가 인증받았다는 뜻이 아닙니다. 아래 그림은 이 사이트가 만든 원리 모형입니다.</figcaption>
     </figure>
-    <p><strong>AP</strong>는 공유기처럼 연결을 받는 쪽, <strong>단말기</strong>는 연결하는 쪽, <strong>스캔 장비</strong>는 주변을 조사하는 쪽입니다. 스캔은 듣기만 하는 수동과, 먼저 묻는 능동이 있습니다.</p>
+    <p><TermLink id="ap" label="AP" />는 공유기처럼 연결을 받는 쪽, <strong>단말기</strong>는 연결하는 쪽, <strong>스캔 장비</strong>는 주변을 조사하는 쪽입니다. 스캔은 듣기만 하는 수동과, 먼저 묻는 능동이 있습니다.</p>
     <div class="callout"><p><strong>스캔, AP 연결, 인터넷 접속은 서로 다른 일입니다.</strong> 수동과 능동은 이어지는 순서가 아니라 탐색하는 두 가지 방식이니, 하나를 골라 따라가 보세요.</p></div>
     <Stepper client:load label="Wi-Fi 탐색 단계" actors={['스캔 장비', 'AP']} scenarios={SCAN_SCENARIOS} note={MODEL_NOTE} />
     <p class="small muted">Espressif 문서에서 ESP32-S3 Wi-Fi 드라이버의 기본은 능동 스캔이고 수동 스캔도 지원합니다. 이 기기의 MK 펌웨어가 어떻게 설정했는지는 확인하지 못했습니다.</p>
@@ -64,23 +65,23 @@ import wifiLogo from '../../assets/learning/wifi-official.webp';
     <div class="table-wrap" tabindex="0" role="region" aria-label="스캔 목록 예시">
       <table>
         <caption>위 탐색이 만든 목록과 같은 가상 예시입니다. 측정값이 아닙니다.</caption>
-        <thead><tr><th scope="col">SSID</th><th scope="col">BSSID</th><th scope="col">채널</th><th scope="col">RSSI</th></tr></thead>
+        <thead><tr><th scope="col"><TermLink id="ssid" label="SSID" /></th><th scope="col"><TermLink id="bssid" label="BSSID" /></th><th scope="col">채널</th><th scope="col"><TermLink id="rssi" label="RSSI" /></th></tr></thead>
         <tbody>
           {SCAN_EXAMPLE.map((r) => <tr><td>{r.ssid}</td><td><code>{r.bssid}</code></td><td>{r.channel}</td><td>{r.rssi}dBm</td></tr>)}
         </tbody>
       </table>
     </div>
     <ul>
-      <li><strong>SSID:</strong> 사람이 보는 이름입니다. 위의 두 줄처럼 같을 수 있습니다.</li>
-      <li><strong>BSSID:</strong> AP 무선 인터페이스의 주소입니다. 이름이 같아도 다릅니다.</li>
-      <li><strong>MAC:</strong> 같은 구간에서 기기를 가리키는 주소입니다. BSSID도 이 형식입니다.</li>
+      <li><TermLink id="ssid" label="SSID" />: 사람이 보는 이름입니다. 위의 두 줄처럼 같을 수 있습니다.</li>
+      <li><TermLink id="bssid" label="BSSID" />: AP 무선 인터페이스의 주소입니다. 이름이 같아도 다릅니다.</li>
+      <li><TermLink id="mac" label="MAC" />: 같은 구간에서 기기를 가리키는 주소입니다. BSSID도 이 형식입니다.</li>
       <li><strong>채널:</strong> 대역을 나눈 구간입니다. 같은 채널이 많으면 붐빕니다.</li>
     </ul>
     <p class="section-next">이름과 주소를 구별했습니다. 다음은 마지막 열의 숫자입니다. <a href="#rssi">RSSI 읽기</a></p>
   </section>
 
   <section id="rssi" aria-labelledby="h-rssi">
-    <h2 id="h-rssi">RSSI와 dBm</h2>
+    <h2 id="h-rssi"><TermLink id="rssi" label="RSSI" />와 <TermLink id="dbm" label="dBm" /></h2>
     <p>값은 보통 음수이고 0에 가까울수록 강합니다. <strong>-40dBm은 -70dBm보다 강합니다.</strong></p>
     <p>거리, 벽, 몸, 방향, 주변 혼잡이 모두 값을 바꿉니다. 그래서 RSSI 하나로 정확한 거리를 계산하거나 도청 가능성을 판정할 수 없습니다. 비교할 때는 기기 위치와 방향을 고정하고 여러 번 잽니다.</p>
     <p class="section-next">신호 세기를 읽는 법을 봤습니다. 다음은 AP에 연결한 뒤의 일입니다. <a href="#web">연결 뒤 웹 통신</a></p>
@@ -109,7 +110,7 @@ import wifiLogo from '../../assets/learning/wifi-official.webp';
         <tbody>
           <tr><th scope="row">Wi-Fi 헤더</th><td>MAC 주소, 프레임 종류</td><td>보이는 부분이 있습니다.</td></tr>
           <tr><th scope="row">Wi-Fi 페이로드</th><td>웹 요청의 데이터 프레임이라면 그 안의 IP 패킷</td><td>WPA2, WPA3 같은 보안 설정을 쓰면 키 없이 읽을 수 없습니다. Beacon 같은 관리 프레임이나 ARP는 IP 패킷을 담지 않습니다.</td></tr>
-          <tr><th scope="row">HTTPS 내용</th><td>페이지, 입력한 값</td><td>TLS로 한 번 더 암호화됩니다.</td></tr>
+          <tr><th scope="row">HTTPS 내용</th><td>페이지, 입력한 값</td><td><TermLink id="tls" label="TLS" />로 한 번 더 암호화됩니다.</td></tr>
         </tbody>
       </table>
     </div>

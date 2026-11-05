@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Evidence from '../../components/Evidence.astro';
 import Sources from '../../components/Sources.astro';
 import WifiRssiLab from '../../components/lab/WifiRssiLab';
+import TermLink from '../../components/learn/TermLink.astro';
 import { url } from '../../lib/url';
 
 const toc = [
@@ -32,12 +33,12 @@ const toc = [
 
         <section class="lab-section" id="design" aria-labelledby="h-design">
           <h2 id="h-design"><span class="lab-section__n">1</span> 질문과 실험 설계</h2>
-          <p>탐구 질문은 “어느 방의 신호가 약한가?”에서 시작해 “왜 그렇게 보였고, 다른 원인과 어떻게 구분할까?”로 이어집니다. 먼저 <a href={url('/learn/network/#scan')}>Wi-Fi 탐색 흐름</a>과 <a href={url('/learn/glossary/#rssi')}>RSSI</a>를 읽어도 좋습니다.</p>
+          <p>탐구 질문은 “어느 방의 신호가 약한가?”에서 시작해 “왜 그렇게 보였고, 다른 원인과 어떻게 구분할까?”로 이어집니다. 먼저 <a href={url('/learn/network/#scan')}>Wi-Fi 탐색 흐름</a>과 <TermLink id="rssi" label="RSSI" />를 읽어도 좋습니다.</p>
 
           <h3>준비물과 안전 범위</h3>
           <ul>
             <li>내가 관리하거나 사용 허락을 받은 공유기 한 대</li>
-            <li>RSSI와 채널을 보여 주는 내 휴대폰·PC 또는 이 기기(기기 기능은 실행 확인 뒤 사용)</li>
+            <li><TermLink id="rssi" label="RSSI" />와 채널을 보여 주는 내 휴대폰·PC 또는 이 기기(기기 기능은 실행 확인 뒤 사용)</li>
             <li>방별 거리와 위치를 적을 평면도나 공책</li>
             <li><strong>타인 네트워크 접속, 가짜 AP 생성, 재밍, 패킷·자격 증명 수집은 하지 않습니다.</strong></li>
           </ul>
@@ -45,21 +46,21 @@ const toc = [
           <h3>변수 정하기</h3>
           <dl class="facts">
             <div><dt>바꾸는 것</dt><dd>방·위치 또는 시간대 가운데 한 번에 하나</dd></div>
-            <div><dt>고정하는 것</dt><dd>같은 AP, 측정 기기, 기기 높이·방향, 한 위치의 대기 시간</dd></div>
-            <div><dt>기록하는 것</dt><dd>방, 거리, RSSI(dBm), 채널, 시각, 조건, AP 가명</dd></div>
+            <div><dt>고정하는 것</dt><dd>같은 <TermLink id="ap" label="AP" />, 측정 기기, 기기 높이·방향, 한 위치의 대기 시간</dd></div>
+            <div><dt>기록하는 것</dt><dd>방, 거리, <TermLink id="rssi" label="RSSI" />(<TermLink id="dbm" label="dBm" />), 채널, 시각, 조건, AP 가명</dd></div>
             <div><dt>반복</dt><dd>장소 3곳에서 각각 5회 권장. 장소 순서를 번갈아 배치하고 같은 시간 조건으로 비교</dd></div>
           </dl>
 
           <h3>한 번의 관찰 절차</h3>
           <ol>
-            <li>내 AP를 AP-A처럼 가명으로 정합니다. 실제 SSID와 BSSID는 워크북에 입력하지 않습니다.</li>
+            <li>내 <TermLink id="ap" label="AP" />를 AP-A처럼 가명으로 정합니다. 실제 <TermLink id="ssid" label="SSID" />와 <TermLink id="bssid" label="BSSID" />는 워크북에 입력하지 않습니다.</li>
             <li>공유기와 측정 기기의 높이·방향을 정하고 방·거리를 적습니다.</li>
             <li>Wi-Fi 목록을 새로 고친 뒤 같은 AP의 RSSI와 채널을 읽습니다. 탐색은 접속이나 인터넷 사용과 다릅니다.</li>
             <li>RSSI가 보이면 <strong>값 관찰됨</strong>, AP를 찾지 못하면 <strong>신호를 찾지 못함</strong>, 측정 자체를 못 했으면 <strong>측정하지 못함</strong>으로 구분합니다.</li>
             <li>다음 방으로 이동해 관찰하고 다시 돌아옵니다. 방별로 5회가 되도록 순서를 번갈아 반복합니다.</li>
           </ol>
           <p>채널을 확인하지 못했으면 빈 값으로 둡니다. 거리는 공유기 바깥 표면과 측정 기기 바깥 표면 사이를 같은 방법으로 재고, 기기 높이와 방향도 기록합니다.</p>
-          <p>RSSI는 보통 음수입니다. 예를 들어 -45dBm은 -80dBm보다 0에 가까워 더 강합니다. 신호를 찾지 못한 기록이나 측정하지 못한 기록을 0dBm으로 바꾸면 요약값이 왜곡되므로 빈 값으로 남깁니다.</p>
+          <p><TermLink id="rssi" label="RSSI" />는 보통 음수입니다. 예를 들어 -45<TermLink id="dbm" label="dBm" />은 -80dBm보다 0에 가까워 더 강합니다. 신호를 찾지 못한 기록이나 측정하지 못한 기록을 0dBm으로 바꾸면 요약값이 왜곡되므로 빈 값으로 남깁니다.</p>
 
           <div class="table-wrap" tabindex="0" role="region" aria-label="Wi-Fi 관찰 기록 예시">
             <table>

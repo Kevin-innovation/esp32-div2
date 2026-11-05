@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Evidence from '../../components/Evidence.astro';
 import Think from '../../components/learn/Think.astro';
 import Sources from '../../components/Sources.astro';
+import TermLink from '../../components/learn/TermLink.astro';
 import { Chart, CsvPanel, Interview, NoteFields, PythonPanel, Records, Report, SaveState } from '../../components/lab/NfcLab';
 import { SOURCES } from '../../data/sources';
 import { url } from '../../lib/url';
@@ -137,7 +138,7 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
 
         <section class="lab-section" id="python" aria-labelledby="h-python">
           <h2 id="h-python"><span class="lab-section__n">5</span> Colab에서 코드 읽고 시각화하기</h2>
-          <p>기기와 이 웹사이트는 자동 연결되지 않습니다. 기록 CSV를 직접 Colab에 옮겨 분석합니다. 실제 기록(<code>data_type=real</code>)만 쓰며, UID·실명·실제 SSID/BSSID·개인 메모는 업로드하지 마세요. Colab은 Google 계정으로 사용하는 외부 서비스입니다.</p>
+          <p>기기와 이 웹사이트는 자동 연결되지 않습니다. 기록 <TermLink id="csv" label="CSV" />를 <TermLink id="colab" label="Colab" />에 옮겨 분석합니다. 실제 기록(<code>data_type=real</code>)만 쓰며, <TermLink id="uid" label="UID" />·실명·실제 <TermLink id="ssid" label="SSID" />/<TermLink id="bssid" label="BSSID" />·개인 메모는 업로드하지 마세요. Colab은 Google 계정으로 사용하는 외부 서비스입니다.</p>
           <h3>Colab 실행 순서</h3>
           <ol>
             <li>위에서 <code>nfc-experiment.csv</code>를 내려받습니다. 분석에 필요한 것은 관찰 CSV 하나입니다.</li>
@@ -148,9 +149,9 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
           <PythonPanel client:load />
           <h3>코드가 하는 일과 읽는 법</h3>
           <ul>
-            <li><code>read_csv</code>는 CSV를 표로 읽고 <code>data_type</code> 필터는 데모 행이 실제 결과를 섞지 못하게 합니다.</li>
-            <li><code>groupby</code>와 <code>agg</code>는 조건별 시도 수·성공 수를 셉니다. 분자는 성공, 분모는 실제 시도입니다.</li>
-            <li>인식률은 성공/시도입니다. Wilson 구간은 표본이 적을 때 비율의 불확실성을 보여 주는 참고선이지, 보안 보장이나 가설 검정이 아닙니다.</li>
+            <li><code>read_csv</code>는 <TermLink id="csv" label="CSV" />를 표로 읽고 <code>data_type</code> 필터는 데모 행이 실제 결과를 섞지 못하게 합니다.</li>
+            <li><TermLink id="groupby" label="groupby" />와 <code>agg</code>는 조건별 시도 수·성공 수를 셉니다. 분자는 성공, 분모는 실제 시도입니다.</li>
+            <li><TermLink id="recognition-rate" label="인식률" />은 성공/시도입니다. <TermLink id="wilson-interval" label="Wilson 구간" />은 표본이 적을 때 비율의 불확실성을 보여 주는 참고선이지, 보안 보장이나 가설 검정이 아닙니다.</li>
             <li>노트북은 성공·실패 횟수, 성공률과 표본 수, 거리별 선 그래프, 조건×거리 히트맵, 반복 일관성 그림을 만듭니다. 지갑·가방 조건은 거리도 함께 달라질 수 있어 거리 그래프만으로 거리의 단독 효과를 결론 내리지 않습니다. 방향·내용물 비교는 같은 배치 조건 안에서 값이 달라진 기록이 있을 때만 나옵니다.</li>
             <li>기본 그래프는 읽기 쉬운 비율을 보여 줍니다. 히트맵과 반복 그림을 함께 보며 빈 조합, 작은 표본, 들쑥날쑥한 결과를 찾습니다.</li>
           </ul>
@@ -166,19 +167,19 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
             <li>히트맵의 빈 칸을 0으로 채우면 왜 잘못된 결론이 될까요? 그 조합을 측정하지 않은 사실과 0%를 구분해 보세요.</li>
             <li>조건별 인식률 차이가 보여도 어떤 추가 정보와 반복이 있어야 더 강한 주장을 할 수 있을까요?</li>
           </ul>
-          <p class="field__help">로컬에서 실행하려면 <code>nfc-analysis.py</code>와 CSV를 같은 폴더에 두고 pandas·matplotlib를 설치합니다. Colab에서는 노트북의 업로드 셀을 사용합니다.</p>
+          <p class="field__help">로컬에서 실행하려면 <code>nfc-analysis.py</code>와 <TermLink id="csv" label="CSV" />를 같은 폴더에 두고 <TermLink id="pandas" label="pandas" />·<TermLink id="matplotlib" label="matplotlib" />를 설치합니다. <TermLink id="colab" label="Colab" />에서는 노트북의 업로드 셀을 사용합니다.</p>
         </section>
 
         <section class="lab-section" id="security" aria-labelledby="h-security">
           <h2 id="h-security"><span class="lab-section__n">6</span> 실험 결과를 보안 방어로 연결</h2>
-          <p>이 실험은 내가 소유한 실험용 태그를 직접 읽는 허가된 관찰입니다. 결과를 실제 공격 성공률로 부르지 않습니다. 판독 여부는 가까이 접근 가능한 상황의 한 조건만 살피며 암호화·인증·복제·결제 보안은 시험하지 않습니다.</p>
+          <p>이 실험은 내가 소유한 실험용 태그를 직접 읽는 허가된 관찰입니다. 결과를 실제 공격 성공률로 부르지 않습니다. 판독 여부는 가까이 접근 가능한 상황의 한 조건만 살피며 <TermLink id="encryption" label="암호화" />·<TermLink id="authn-authz" label="인증" />·복제·결제 보안은 시험하지 않습니다.</p>
           <div class="table-wrap" tabindex="0" role="region" aria-label="보안 속성과 이번 실험의 범위">
             <table>
               <thead><tr><th scope="col">보안 관점</th><th scope="col">이 실험에서 확인하는 것</th><th scope="col">확인하지 않는 것</th></tr></thead>
               <tbody>
-                <tr><th scope="row">기밀성</th><td>허가된 리더가 실험 태그를 이 조건에서 읽는지</td><td>개인정보 유출이나 다른 리더의 접근 가능성</td></tr>
-                <tr><th scope="row">무결성</th><td>확인하지 않음. 이 실험은 읽기만 합니다.</td><td>태그 값의 변조 방지, 쓰기 권한, 암호 인증</td></tr>
-                <tr><th scope="row">가용성</th><td>반복 판독의 성공·실패를 관찰</td><td>방해·서비스 거부 저항성. 그런 공격은 실험하지 않습니다.</td></tr>
+                <tr><th scope="row"><TermLink id="cia" label="기밀성" /></th><td>허가된 리더가 실험 태그를 이 조건에서 읽는지</td><td>개인정보 유출이나 다른 리더의 접근 가능성</td></tr>
+                <tr><th scope="row"><TermLink id="cia" label="무결성" /></th><td>확인하지 않음. 이 실험은 읽기만 합니다.</td><td>태그 값의 변조 방지, 쓰기 권한, 암호 인증</td></tr>
+                <tr><th scope="row"><TermLink id="cia" label="가용성" /></th><td>반복 판독의 성공·실패를 관찰</td><td>방해·서비스 거부 저항성. 그런 공격은 실험하지 않습니다.</td></tr>
                 <tr><th scope="row">인증·복제</th><td>확인하지 않음. UID가 보인다고 복제나 인증을 시험한 것이 아닙니다.</td><td>위조 태그 판별, 암호 응답, 복제 저항성</td></tr>
               </tbody>
             </table>
@@ -202,8 +203,8 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
             { key: 'defensePlan', label: '권장 방어와 그 이유', help: '정보 최소화, 암호 인증, 권한 확인, 분실 대응 중 위협에 맞는 통제를 고르고 연결합니다.', rows: 3 },
             { key: 'residualRisk', label: '남는 위험과 아직 시험하지 않은 것', help: '암호화·인증·복제 저항성·다른 리더나 태그 조합은 이 실험에서 확인하지 않았습니다.', rows: 3 },
           ]} />
-          <h3>EMV란? 일반 태그와 결제 칩 구분하기</h3>
-          <p><strong>EMV</strong>는 원래 규격을 함께 만든 Europay, Mastercard, Visa의 첫 글자에서 온 이름입니다. 지금은 결제 칩과 비접촉 결제 단말기가 데이터를 주고받는 방법을 정한 규격군을 가리킵니다. EMV 비접촉 결제에서는 칩이 거래 때마다 일회용 보안 코드(cryptogram)를 만들며, 결제 단말기와 발급사가 거래를 확인하는 데 씁니다. 자세한 흐름은 <a href={SOURCES.emvco.url} target="_blank" rel="noopener noreferrer">EMVCo의 비접촉 칩 설명</a>을 참고하세요.</p>
+          <h3><TermLink id="emv" label="EMV" />란? 일반 태그와 결제 칩 구분하기</h3>
+          <p><TermLink id="emv" label="EMV" />는 원래 규격을 함께 만든 Europay, Mastercard, Visa의 첫 글자에서 온 이름입니다. 지금은 결제 칩과 비접촉 결제 단말기가 데이터를 주고받는 방법을 정한 규격군을 가리킵니다. EMV 비접촉 결제에서는 칩이 거래 때마다 <TermLink id="cryptogram" label="일회용 보안 코드(cryptogram)" />를 만들며, 결제 단말기와 발급사가 거래를 확인하는 데 씁니다. 자세한 흐름은 <a href={SOURCES.emvco.url} target="_blank" rel="noopener noreferrer">EMVCo의 비접촉 칩 설명</a>을 참고하세요.</p>
           <p><strong>이번 ESP32-DIV 실험은 EMV 결제 시험이 아닙니다.</strong> 실험용 NTAG213 같은 일반 태그의 메모리 읽기와 EMV 결제 칩의 거래 인증은 목적과 보안 기능이 다릅니다. 그래서 이 실험에서 UID를 읽거나 인식률을 재도 EMV 카드의 복제 가능성이나 결제 안전성을 판단할 수 없습니다.</p>
           <p>둘 다 13.56MHz 근거리 통신이라는 공통점만으로 보안 수준을 비교할 수 없습니다. 이번 인식률은 결제 보안에 대해 아무것도 증명하지 않습니다.</p>
           <div class="table-wrap" tabindex="0" role="region" aria-label="일반 태그와 EMV 결제 비교">

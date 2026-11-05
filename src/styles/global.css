@@ -17,6 +17,7 @@ body { line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; font-s
 ::selection { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); }
 a { color: var(--color-ink); font-weight: 600; text-decoration-color: var(--color-rule); text-decoration-thickness: 1px; text-underline-offset: 0.22em; transition: text-decoration-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
 a:hover { text-decoration-color: var(--color-accent); color: var(--color-ink); }
+.term-link { text-decoration-style: dotted; text-decoration-color: var(--color-accent); text-underline-offset: 0.18em; }
 h1, h2, h3, h4 { margin: 0; color: var(--color-ink); font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--tracking-display); overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
 h1 { font-size: var(--text-display-s); line-height: 1.15; max-width: 22ch; }
 h2 { font-size: var(--text-section); line-height: 1.2; max-width: 28ch; }

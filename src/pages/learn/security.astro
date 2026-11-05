@@ -1,6 +1,7 @@
 ---
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import Think from '../../components/learn/Think.astro';
+import TermLink from '../../components/learn/TermLink.astro';
 import { SOURCES } from '../../data/sources';
 import { url } from '../../lib/url';
 import notesFile from '../../../docs/security-learning-notes.md?url&no-inline';
@@ -121,30 +122,30 @@ const csf = [
 
   <section id="model" aria-labelledby="h-model" style="margin-top: var(--space-xl)">
     <h2 id="h-model">위협 모델부터</h2>
-    <p>공격 이름을 외우기 전에 다섯 가지를 먼저 적습니다. 예는 UID로 문을 여는 동아리방입니다.</p>
+    <p>공격 이름을 외우기 전에 다섯 가지를 먼저 적습니다. 예는 <TermLink id="uid" label="UID" />로 문을 여는 동아리방입니다.</p>
     <div class="table-wrap" tabindex="0" role="region" aria-label="위협 모델 다섯 요소">
       <table>
         <thead><tr><th scope="col">요소</th><th scope="col">묻는 말</th><th scope="col">동아리방 예</th></tr></thead>
         <tbody>
-          <tr><th scope="row">자산</th><td>무엇을 지키나?</td><td>방 안의 장비, 출입 기록</td></tr>
-          <tr><th scope="row">공격자</th><td>누가, 무엇을 원하나?</td><td>회원이 아닌 사람이 들어오려 함</td></tr>
-          <tr><th scope="row">접근 범위</th><td>어디까지 닿을 수 있나?</td><td>문 앞, 잠깐 빌린 태그</td></tr>
-          <tr><th scope="row">신뢰 경계</th><td>어디부터 믿지 않아야 하나?</td><td>태그가 보낸 값은 믿지 않고 서버가 확인</td></tr>
-          <tr><th scope="row">피해</th><td>뚫리면 어떻게 되나?</td><td>장비 분실, 거짓 출입 기록</td></tr>
+          <tr><th scope="row"><TermLink id="asset" label="자산" /></th><td>무엇을 지키나?</td><td>방 안의 장비, 출입 기록</td></tr>
+          <tr><th scope="row"><TermLink id="attacker" label="공격자" /></th><td>누가, 무엇을 원하나?</td><td>회원이 아닌 사람이 들어오려 함</td></tr>
+          <tr><th scope="row"><TermLink id="access-scope" label="접근 범위" /></th><td>어디까지 닿을 수 있나?</td><td>문 앞, 잠깐 빌린 태그</td></tr>
+          <tr><th scope="row"><TermLink id="trust-boundary" label="신뢰 경계" /></th><td>어디부터 믿지 않아야 하나?</td><td>태그가 보낸 값은 믿지 않고 서버가 확인</td></tr>
+          <tr><th scope="row"><TermLink id="impact" label="피해" /></th><td>뚫리면 어떻게 되나?</td><td>장비 분실, 거짓 출입 기록</td></tr>
         </tbody>
       </table>
     </div>
     <h3>세 낱말을 구별하기</h3>
     <ul>
-      <li><strong>취약점:</strong> 약한 곳. UID만 확인하는 설계.</li>
-      <li><strong>위협:</strong> 그 약점을 이용할 수 있는 사람이나 사건. 들어오려는 비회원.</li>
-      <li><strong>위험:</strong> 일어날 가능성과 피해를 함께 본 크기. 방 안에 귀한 장비가 없다면 위험도 달라집니다.</li>
+      <li><strong><TermLink id="vulnerability" label="취약점" />:</strong> 약한 곳. UID만 확인하는 설계.</li>
+      <li><strong><TermLink id="threat" label="위협" />:</strong> 그 약점을 이용할 수 있는 사람이나 사건. 들어오려는 비회원.</li>
+      <li><strong><TermLink id="risk" label="위험" />:</strong> 일어날 가능성과 피해를 함께 본 크기. 방 안에 귀한 장비가 없다면 위험도 달라집니다.</li>
     </ul>
     <h3>지키려는 세 가지</h3>
     <ul>
-      <li><strong>기밀성:</strong> 허락된 사람만 내용을 봅니다. 예: HTTPS 내용.</li>
-      <li><strong>무결성:</strong> 몰래 바뀌지 않습니다. 예: 서명된 펌웨어.</li>
-      <li><strong>가용성:</strong> 필요할 때 쓸 수 있습니다. 예: 방해받지 않는 통신.</li>
+      <li><strong><TermLink id="cia" label="기밀성" />:</strong> 허락된 사람만 내용을 봅니다. 예: HTTPS 내용.</li>
+      <li><strong><TermLink id="cia" label="무결성" />:</strong> 몰래 바뀌지 않습니다. 예: 서명된 펌웨어.</li>
+      <li><strong><TermLink id="cia" label="가용성" />:</strong> 필요할 때 쓸 수 있습니다. 예: 방해받지 않는 통신.</li>
     </ul>
     <h3>설계의 기본</h3>
     <ul>
@@ -175,7 +176,7 @@ const csf = [
         </div>
       )}
       {s.id === 'ble' && <p class="small">근거: <a href={SOURCES.nistBt.url} rel="noopener">NIST SP 800-121</a>, <a href={SOURCES.btGuide.url} rel="noopener">Bluetooth SIG 보안과 개인정보 가이드</a></p>}
-      {s.id === 'nfc' && <p class="small">근거: <a href={SOURCES.ntag.url} rel="noopener">NXP 데이터시트</a>. 금융 카드는 <a href={SOURCES.emvco.url} rel="noopener">EMVCo</a> 설명처럼 거래마다 일회용 보안 코드를 만들고 추가 검증을 거칩니다. UID를 읽는 것은 결제 복제가 아닙니다.</p>}
+      {s.id === 'nfc' && <p class="small">근거: <a href={SOURCES.ntag.url} rel="noopener">NXP 데이터시트</a>. <TermLink id="emv" label="EMV" /> 금융 카드는 <a href={SOURCES.emvco.url} rel="noopener">EMVCo</a> 설명처럼 거래마다 <TermLink id="cryptogram" label="일회용 보안 코드" />를 만들고 추가 검증을 거칩니다. UID를 읽는 것은 결제 복제가 아닙니다.</p>}
       {s.id === 'gps' && <p class="small">근거: <a href={SOURCES.gpsInterference.url} rel="noopener">GPS.gov 간섭 안내</a>, <a href={SOURCES.nistSpoof.url} rel="noopener">NIST 용어집 spoofing</a></p>}
     </section>
   ))}
