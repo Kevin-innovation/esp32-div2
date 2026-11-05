@@ -44,6 +44,7 @@ const current = (href: string) => {
         d.dataset.theme = t;
       })();
     </script>
+    <style is:global>html, body { overflow-x: clip; }</style>
   </head>
   <body>
     <a class="skip" href="#main">본문으로 건너뛰기</a>
@@ -67,9 +68,12 @@ const current = (href: string) => {
       {showPath && <LearningPath where="bottom" path={path} />}
     </main>
     <footer class="site-foot">
-      <div class="wrap small">
-        <p>CiferTech의 공식 사이트가 아닙니다. 이 기기에서는 부팅, 메뉴 표시, NFC 태그 읽기까지 확인했고 다른 기능은 미검증입니다. 자료 확인일은 {CHECKED}입니다.</p>
-        <p><a href="https://github.com/cifertech/ESP32-DIV#readme" rel="noopener">원본 프로젝트의 사용 조건과 경고 보기</a></p>
+      <div class="wrap">
+        <p class="site-foot__statement">CiferTech의 공식 사이트가 아닙니다. 이 기기에서는 부팅, 메뉴 표시, NFC 태그 읽기까지 확인했고 다른 기능은 미검증입니다.</p>
+        <div class="site-foot__links">
+          <p class="muted">자료 확인일은 {CHECKED}입니다.</p>
+          <p><a href="https://github.com/cifertech/ESP32-DIV#readme" rel="noopener">원본 프로젝트의 사용 조건과 경고 보기</a></p>
+        </div>
       </div>
     </footer>
     <script is:inline>

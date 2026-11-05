@@ -21,17 +21,7 @@ const nfcSteps = [
 ];
 ---
 <Base title="ESP32-DIV 실험 노트" description="ESP32-DIV를 처음 쓰는 학생과 입문자를 위한 한국어 안내입니다. 기기를 익히고, NFC 실험을 기록하고, 파이썬으로 분석합니다.">
-  <section class="hero wrap">
-    <div class="hero__text">
-      <h1>ESP32-DIV,<br />처음 사용부터 실험까지</h1>
-      <div class="hero__side">
-        <p class="lead">기기를 익히고, NFC 실험을 기록하고, 파이썬으로 분석하세요.</p>
-        <div class="btn-row">
-          <a class="btn" href={url('/learn/why/')}>0단계부터 시작하기</a>
-          <a class="btn btn--quiet" href={url('/learn/')}>전체 학습 순서</a>
-        </div>
-      </div>
-    </div>
+  <section class="hero wrap" aria-labelledby="h-hero">
     <Plate
       src={backCutout}
       alt="ESP32-DIV V2.1 뒷면의 배경을 지운 이미지. 왼쪽으로 안테나 네 개, 아래로 꺾인 안테나 하나가 달려 있고 초록 글자로 ESP32-DIV V2.1, NFC, GPS가 보인다."
@@ -43,60 +33,75 @@ const nfcSteps = [
     >
       실물 사진 기반 AI 편집 이미지. <a href={url('/device/')}>원본 사진과 부품 설명</a>
     </Plate>
-  </section>
-
-  <section class="section section--rule" aria-labelledby="h-start">
-    <div class="wrap split split--center">
-      <Plate src={frontCutout} alt="기기 앞면의 배경을 지운 이미지. 위로 안테나 네 개, 가운데 화면, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front">
-        실물 사진 기반 AI 편집 이미지. <a href={url('/device/')}>원본 사진과 부품 설명</a>
-      </Plate>
-      <div>
-        <h2 id="h-start">학습 지도: 배경에서 내 실험까지</h2>
-        <ol class="path-map">
-          {LEARNING_PATH.map((p) => (
-            <li>
-              <span class="path-map__n">{p.n}단계</span>
-              <div><a href={url(p.href)}><strong>{p.title}</strong></a><p>{p.does}</p></div>
-            </li>
-          ))}
-        </ol>
+    <div class="hero__text">
+      <h1 id="h-hero">ESP32-DIV,<br />처음 사용부터 실험까지</h1>
+      <div class="hero__side">
+        <p class="lead">기기를 익히고, NFC 실험을 기록하고, 파이썬으로 분석하세요.</p>
+        <div class="btn-row">
+          <a class="btn" href={url('/learn/why/')}>0단계부터 시작하기</a>
+          <a class="btn btn--quiet" href={url('/learn/')}>전체 학습 순서</a>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section section--well" aria-labelledby="h-nfc">
-    <div class="wrap split">
-      <div>
-        <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
-        <p style="margin-top: var(--space-md)">6단계에서 하는 탐구입니다. 실제 신용카드 대신 실험용 태그로, 지갑과 가방 속 인식을 직접 비교합니다.</p>
-        <p style="margin-top: var(--space-md)"><a href={url('/lab/nfc/')}>6단계 워크북 미리 보기</a></p>
+  <section class="section section--rule" aria-labelledby="h-start">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 id="h-start">학습 지도: 배경에서 내 실험까지</h2>
       </div>
-      <ol class="num-steps">
+      <ol class="ledger">
+        {LEARNING_PATH.map((p) => (
+          <li>
+            <span class="ledger__n">{p.n}<small>단계</small></span>
+            <h3><a href={url(p.href)}>{p.title}</a></h3>
+            <p>{p.does}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section band" aria-labelledby="h-nfc">
+    <div class="wrap">
+      <div class="nfc-band__head">
+        <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
+        <div>
+          <p>6단계에서 하는 탐구입니다. 실제 신용카드 대신 실험용 태그로, 지갑과 가방 속 인식을 직접 비교합니다.</p>
+          <p><a href={url('/lab/nfc/')}>6단계 워크북 미리 보기</a></p>
+        </div>
+      </div>
+      <ol class="num-steps num-steps--grid">
         {nfcSteps.map((s) => <li><span>{s}</span></li>)}
       </ol>
     </div>
   </section>
 
   <section class="section" aria-labelledby="h-groups">
-    <div class="wrap">
-      <div class="section__head">
-        <h2 id="h-groups">메뉴 여덟 묶음을 한글로</h2>
-        <p class="muted">기기 화면의 영문 메뉴 이름을 함께 적어 그대로 찾아갈 수 있습니다.</p>
+    <div class="wrap groups">
+      <Plate src={frontCutout} alt="기기 앞면의 배경을 지운 이미지. 위로 안테나 네 개, 가운데 화면, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 360px, 240px" widths={[320, 640, 900]} cutout class="art-front">
+        실물 사진 기반 AI 편집 이미지. <a href={url('/device/')}>원본 사진과 부품 설명</a>
+      </Plate>
+      <div>
+        <div class="section__head">
+          <h2 id="h-groups">메뉴 여덟 묶음을 한글로</h2>
+          <p class="muted">기기 화면의 영문 메뉴 이름을 함께 적어 그대로 찾아갈 수 있습니다.</p>
+        </div>
+        <ul class="group-list">
+          {GROUPS.map((g) => (
+            <li>
+              <a class="group-link" href={url(`/guide/${g.slug}/`)}>
+                <strong>{g.title}</strong>
+                <span>{g.summary}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-      <ul class="group-list">
-        {GROUPS.map((g) => (
-          <li>
-            <a class="group-link" href={url(`/guide/${g.slug}/`)}>
-              <strong>{g.title}</strong>
-              <span>{g.summary}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
     </div>
   </section>
 
-  <section class="section section--rule" style="padding-block: var(--space-lg)" aria-label="근거 표시 안내">
+  <section class="section section--rule" aria-label="근거 표시 안내">
     <div class="wrap small muted">
       <p>설명 옆 표시는 근거입니다. <Evidence kind="device" /> <Evidence kind="photo" /> <Evidence kind="manual" /> <Evidence kind="doc" /> <Evidence kind="unverified" /> 이 기기에서 확인한 범위와 아직 확인하지 못한 항목은 <a href={url('/device/')}>기기 알아보기</a>와 <a href={url('/update/')}>업데이트</a>에 정리했습니다.</p>
     </div>

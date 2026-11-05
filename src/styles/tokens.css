@@ -1,0 +1,59 @@
+:root {
+  color-scheme: light;
+  --space-3xs: 2px; --space-2xs: 4px; --space-xs: 8px; --space-sm: 12px; --space-md: 16px; --space-lg: 24px; --space-xl: 40px; --space-2xl: 64px; --space-3xl: 96px; --space-4xl: 144px;
+  --text-xs: 0.875rem; --text-sm: 0.9375rem; --text-md: 1.0625rem; --text-lg: 1.25rem; --text-xl: 1.5625rem; --text-2xl: 1.953rem; --text-3xl: 2.441rem;
+  --text-display-s: clamp(2.25rem, 3vw + 1rem, 3.5rem); --text-display: clamp(2.5rem, 3.6vw + 1.1rem, 4.5rem);
+  --text-section: clamp(1.875rem, 1.8vw + 1.1rem, 2.75rem); --text-title: clamp(1.25rem, 0.75vw + 0.875rem, 1.625rem); --text-lead: clamp(1.125rem, 0.35vw + 1rem, 1.3125rem);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1); --ease-in: cubic-bezier(0.7, 0, 0.84, 0); --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms; --dur-short: 220ms; --dur-long: 420ms;
+  --container: 1280px; --measure: 46rem; --gutter: 64px; --gap-columns: 32px; --section-gap-s: 120px; --section-gap: 144px; --section-gap-l: 176px;
+  --z-base: 1; --z-raised: 10; --z-dropdown: 100; --z-sticky: 200; --z-sticky-nav: 300; --z-modal: 400; --z-toast: 500; --z-tooltip: 600;
+  --color-paper: oklch(99.5% 0.003 100); --color-paper-2: oklch(97% 0.004 100); --color-paper-3: oklch(94% 0.006 100);
+  --color-ink: oklch(16% 0 0); --color-ink-2: oklch(28% 0 0); --color-muted: oklch(44% 0 0);
+  --color-rule: oklch(89% 0.004 100); --color-rule-2: oklch(93.5% 0.003 100);
+  --color-accent: oklch(44% 0.1 155); --color-accent-ink: oklch(99.5% 0.003 100); --color-accent-soft: oklch(93% 0.05 155); --color-accent-soft-ink: oklch(28% 0.06 155);
+  --color-focus: oklch(44% 0.1 155);
+  --color-error: oklch(48% 0.17 27); --color-success: oklch(44% 0.1 155);
+  --color-warn: oklch(43% 0.09 65); --color-warn-soft: oklch(95% 0.035 85);
+  --color-band: oklch(16% 0 0); --color-band-ink: oklch(97% 0.003 100); --color-band-muted: oklch(78% 0 0); --color-band-rule: oklch(34% 0 0);
+  --color-screen-bg: oklch(20% 0 0);
+  --color-pin: oklch(16% 0 0); --color-pin-ink: oklch(99.5% 0.003 100);
+  --color-photo-label: oklch(16% 0 0); --color-photo-label-ink: oklch(99.5% 0.003 100);
+  --color-logo-plate: oklch(99.5% 0.003 100);
+  --font-body: "Pretendard Variable", Pretendard, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-display: var(--font-body);
+  --font-outlier: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --radius-card: 12px; --radius-control: 10px; --radius-pill: 999px; --rule-hair: 1px;
+  --shadow-card: 0 20px 40px oklch(20% 0 0 / 0.16);
+  --tracking-display: -0.03em; --display-weight: 700;
+}
+
+/* 다크 토큰은 두 번 선언한다: 선택한 테마, 그리고 스크립트가 없을 때의 시스템 설정. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-paper: oklch(17% 0 0); --color-paper-2: oklch(20.5% 0 0); --color-paper-3: oklch(25% 0 0);
+  --color-ink: oklch(96% 0.003 100); --color-ink-2: oklch(87% 0.003 100); --color-muted: oklch(72% 0 0);
+  --color-rule: oklch(33% 0 0); --color-rule-2: oklch(27% 0 0);
+  --color-accent: oklch(80% 0.13 155); --color-accent-ink: oklch(17% 0 0); --color-accent-soft: oklch(31% 0.05 155); --color-accent-soft-ink: oklch(92% 0.05 155);
+  --color-focus: oklch(80% 0.13 155);
+  --color-error: oklch(76% 0.13 27); --color-success: oklch(80% 0.13 155);
+  --color-warn: oklch(84% 0.1 80); --color-warn-soft: oklch(28% 0.035 75);
+  --color-band: oklch(24% 0 0); --color-band-ink: oklch(96% 0.003 100); --color-band-muted: oklch(76% 0 0); --color-band-rule: oklch(38% 0 0);
+  --color-logo-plate: oklch(96% 0.003 100);
+  --shadow-card: 0 20px 40px oklch(0% 0 0 / 0.5);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --color-paper: oklch(17% 0 0); --color-paper-2: oklch(20.5% 0 0); --color-paper-3: oklch(25% 0 0);
+    --color-ink: oklch(96% 0.003 100); --color-ink-2: oklch(87% 0.003 100); --color-muted: oklch(72% 0 0);
+    --color-rule: oklch(33% 0 0); --color-rule-2: oklch(27% 0 0);
+    --color-accent: oklch(80% 0.13 155); --color-accent-ink: oklch(17% 0 0); --color-accent-soft: oklch(31% 0.05 155); --color-accent-soft-ink: oklch(92% 0.05 155);
+    --color-focus: oklch(80% 0.13 155);
+    --color-error: oklch(76% 0.13 27); --color-success: oklch(80% 0.13 155);
+    --color-warn: oklch(84% 0.1 80); --color-warn-soft: oklch(28% 0.035 75);
+    --color-band: oklch(24% 0 0); --color-band-ink: oklch(96% 0.003 100); --color-band-muted: oklch(76% 0 0); --color-band-rule: oklch(38% 0 0);
+    --color-logo-plate: oklch(96% 0.003 100);
+    --shadow-card: 0 20px 40px oklch(0% 0 0 / 0.5);
+  }
+}

@@ -38,8 +38,8 @@ const labs = [
     <section class="section section--well" style="margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter)" aria-labelledby="h-nfc">
       <div class="split">
         <div>
-          <p class="kicker">현재 사용 가능</p>
           <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
+          <p class="tags" style="margin-top: var(--space-md)"><span class="tag tag--device">현재 사용 가능</span></p>
           <div class="btn-row" style="margin-top: var(--space-lg)">
             <a class="btn" href={url('/lab/nfc/')}>NFC 워크북 시작하기</a>
           </div>
@@ -48,7 +48,7 @@ const labs = [
           <p>실험용 NFC 태그, 자, 고정대, 빈 지갑과 천 가방을 준비해 조건별 인식률을 비교합니다. 입력한 값으로 그래프, CSV, 파이썬 분석, 보고서와 면접 질문까지 이어집니다.</p>
           <p>태그의 공개 식별자와 결제 인증을 구분하고, 가까운 거리에서 읽힌다는 관찰이 무엇을 증명하는지 정리합니다.</p>
           <div class="tags"><Evidence kind="device" /></div>
-          <p class="small muted">이 기기의 부팅·메인·More·NFC 메뉴와 PN532 표시, 구매 태그의 UID·P4–P7 읽기를 확인했습니다. 준비 학습: <a href={url('/learn/nfc/')}>NFC 원리</a>.</p>
+          <p class="small muted">이 기기의 부팅·메인·More·NFC 메뉴와 PN532 표시, 구매 태그의 UID·P4~P7 읽기를 확인했습니다. 준비 학습: <a href={url('/learn/nfc/')}>NFC 원리</a>.</p>
         </div>
       </div>
     </section>
@@ -64,18 +64,18 @@ const labs = [
           <li class="workbook-planned">
             <div class="workbook-card__meta">
               <span class="workbook-card__number">{String(i + 1).padStart(2, '0')}</span>
-              <span class="tag">{['Wi-Fi · 공간', 'Wi-Fi · 식별', 'Wi-Fi · 인증', 'Wi-Fi · 가용성', 'BLE · 개인정보', 'BLE · 페어링', '2.4GHz · 간섭', 'IR · 명령', '433MHz · 코드', 'GPS · 신뢰', '펌웨어 · 공급망', 'CSV · 데이터'][i]}</span>
+              {[['Wi-Fi', '공간'], ['Wi-Fi', '식별'], ['Wi-Fi', '인증'], ['Wi-Fi', '가용성'], ['BLE', '개인정보'], ['BLE', '페어링'], ['2.4GHz', '간섭'], ['IR', '명령'], ['433MHz', '코드'], ['GPS', '신뢰'], ['펌웨어', '공급망'], ['CSV', '데이터']][i].map((t) => <span class="tag">{t}</span>)}
               <span class={`tag ${l.href ? 'tag--device' : 'tag--unverified'} workbook-card__state`}>{l.href ? '웹 워크북 사용 가능' : '추후 개발 예정'}</span>
             </div>
             <WorkbookScene index={i} />
             <h3>{l.title}</h3>
             {l.href && <p class="workbook-card__start"><a class="btn btn--small" href={url(l.href)}>Wi-Fi 워크북 시작하기</a></p>}
             <dl class="workbook-card__facts">
-              <div><dt>01 관찰 장면</dt><dd>{l.observe}</dd></div>
-              <div><dt>02 보안 질문</dt><dd><p class="workbook-card__question">{l.question}</p><p>{l.learn}</p></dd></div>
-              <div><dt>03 예정 산출물</dt><dd>{l.artifact}</dd></div>
+              <div><dt>관찰 장면</dt><dd>{l.observe}</dd></div>
+              <div><dt>보안 질문</dt><dd><p class="workbook-card__question">{l.question}</p><p>{l.learn}</p></dd></div>
+              <div><dt>예정 산출물</dt><dd>{l.artifact}</dd></div>
             </dl>
-            <p class="workbook-card__links small">배경 기술노트: <a href={url(`/learn/projects/#${l.project}`)}>관찰 주제</a> · <a href={url(`/learn/security/#${l.security}`)}>정보보호 원리</a></p>
+            <div class="workbook-card__links small"><p class="muted">배경 기술노트</p><ul><li><a href={url(`/learn/projects/#${l.project}`)}>관찰 주제</a></li><li><a href={url(`/learn/security/#${l.security}`)}>정보보호 원리</a></li></ul></div>
           </li>
         ))}
       </ul>

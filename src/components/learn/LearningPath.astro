@@ -22,9 +22,8 @@ const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
       <ol class="path-list">
         {LEARNING_PATH.map((s) => (
           <li>
-            <a href={url(s.href)} aria-current={s.n === step.n ? 'step' : undefined}>
-              {name(s)}{s.n === step.n && ' (지금 여기)'}
-            </a>
+            <a href={url(s.href)} aria-current={s.n === step.n ? 'step' : undefined}>{name(s)}</a>
+            {s.n === step.n && <span class="small muted">(지금 여기)</span>}
           </li>
         ))}
       </ol>
