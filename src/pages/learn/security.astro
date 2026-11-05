@@ -90,6 +90,7 @@ const wifiRoles = [
   ['TLS (HTTPS)', '브라우저와 서버 사이의 내용', '접속한 곳과 시간 등은 남고, 기기 장악까지 막지 못합니다.'],
   ['SSID 숨김, MAC 필터', '눈에 덜 띄게 하거나 목록으로 거르기', '강한 인증이 아닙니다. 이것만 믿으면 안 됩니다.'],
 ];
+const wifiRoleTerms = ['wpa', 'sae', 'pmf', 'tls', null] as const;
 
 const growth = [
   ['관찰', '화면 값과 기록을 있는 그대로 구분한다.', 'UID, 메모리, RSSI 기록표', '내가 본 것과 추측을 나눠 적었는가?'],
@@ -171,7 +172,7 @@ const csf = [
           <table>
             <caption>기술마다 지키는 구간이 다릅니다. 출처: <a href={SOURCES.wifiSecurity.url} rel="noopener">Wi-Fi Alliance</a>, <a href={SOURCES.arubaPmf.url} rel="noopener">HPE Aruba</a>, <a href={SOURCES.rfcTls.url} rel="noopener">RFC 8446</a></caption>
             <thead><tr><th scope="col">기술</th><th scope="col">하는 일</th><th scope="col">기억할 한계</th></tr></thead>
-            <tbody>{wifiRoles.map(([a, b, c]) => <tr><th scope="row">{a}</th><td>{b}</td><td>{c}</td></tr>)}</tbody>
+            <tbody>{wifiRoles.map(([a, b, c], i) => <tr><th scope="row">{wifiRoleTerms[i] ? <TermLink id={wifiRoleTerms[i]!} label={a} /> : a}</th><td>{b}</td><td>{c}</td></tr>)}</tbody>
           </table>
         </div>
       )}
