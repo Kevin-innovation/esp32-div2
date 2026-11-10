@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkbookScene from '../../components/lab/WorkbookScene.astro';
+import FieldworkLab from '../../components/lab/FieldworkLab';
+import { url } from '../../lib/url';
+---
+<Base title="내 이어폰의 BLE 광고는 어디까지 보일까? | 실험 워크북" description="내 BLE 기기의 공개 광고와 연결 상태를 구분하고 거리별 관찰·RSSI·결측을 기록하는 수동 워크북입니다.">
+  <div class="wrap">
+    <header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>내 이어폰의 BLE 광고는 어디까지 보일까?</h1><p class="lead">광고가 보인다는 관찰과 연결했다는 사실을 나눠 기록합니다.</p><p>웹 수동 기록 사용 가능 · 이 기기의 BLE 실행 미검증 · 교실 파일럿 미검증</p></header>
+    <div class="doc"><div class="doc__main">
+      <section class="lab-section" id="design" aria-labelledby="ble-design"><h2 id="ble-design">질문·가설·준비</h2><WorkbookScene index={4} />
+        <p><strong>질문:</strong> 같은 내 기기의 광고가 거리와 방향에 따라 얼마나 자주 보일까? 가설을 먼저 적고 관찰 결과와 비교합니다.</p>
+        <ul><li><strong>시간:</strong> 50~100분 제안. 설계 10분, 관찰 20분, 분석·방어·보고서 20분부터 시작합니다.</li><li><strong>준비물:</strong> 내 BLE 이어폰·밴드, 사용 허락을 받은 휴대폰의 광고 관찰 도구, 자·거리 기록 도구. 도구가 RSSI를 표시하지 않으면 수치를 입력하지 않습니다.</li><li><strong>선수학습:</strong> <a href={url('/learn/network/')}>네트워크의 탐색과 연결</a>, <a href={url('/learn/projects/#ble-rssi')}>BLE 관찰 기술노트</a>, <a href={url('/learn/security/#ble')}>BLE 개인정보·인증</a>.</li></ul>
+        <div class="callout"><p>기기의 메뉴는 Bluetooth → BLE Scanner이지만 이 기기에서 실행을 확인하지 못했습니다. 도구 설명서에 따라 내 기기의 광고 수신 관찰만 합니다. 주변 사람의 기기를 식별·추적하거나 연결을 시도하지 않습니다. 주소·기기명 원문 대신 BLE-A처럼 별칭만 적습니다.</p></div>
+      </section>
+      <section class="lab-section" aria-labelledby="ble-procedure"><h2 id="ble-procedure">관찰 → 분석 → 방어</h2><ol><li>내 기기 하나를 BLE-A로 정하고 방향·높이·관찰 시간(예: 10초)을 고정합니다. 다른 조건을 바꾸기 전에 거리를 3곳 정합니다.</li><li>거리별로 5회씩 관찰합니다. 광고가 목록에 보이면 관찰됨, 관찰했으나 보이지 않으면 미관찰, 도구가 준비되지 않아 관찰 못 했으면 미측정으로 남깁니다.</li><li>화면에 RSSI가 있을 때만 dBm을 적습니다. 연결 상태는 별도로 내 휴대폰에서 확인한 사실만 선택하고, 확인하지 않았으면 그대로 둡니다. 광고 수신을 연결 성공으로 바꾸지 않습니다.</li><li>표에서 같은 조건끼리 관찰/시도 수와 RSSI를 비교합니다. 주소가 달라졌다는 사실만으로 같은 기기인지, 추적을 막는지 확정하지 않습니다.</li><li>불필요한 검색 가능 상태·앱 권한·광고 노출 시간을 줄이는 방어를 제안하고, 근거와 추정을 구분해 보고서를 씁니다.</li></ol><p><strong>막혔을 때:</strong> 내 기기·관찰 도구·권한 상태를 설명서와 확인합니다. 해결되지 않으면 미측정 이유를 남기고 데모 3행으로 분석을 연습합니다. 도구가 준비되면 설계부터 재개하고 데모를 실제 결과와 섞지 않습니다.</p><p><strong>자기 설명:</strong> “광고는 보였지만 연결되지 않은 상황을 어떻게 설명할까? RSSI 없이도 확인한 사실은 무엇일까?”</p></section>
+      <noscript><section class="callout"><h2>공책으로 완료하기</h2><p>입력·저장·CSV는 자바스크립트가 필요합니다. 기기 별칭·조건·거리(m)·상태·표시된 RSSI(dBm)·별도 연결 확인·메모를 표로 적습니다. 미측정은 시도 수에서, RSSI 빈 값은 평균에서 제외합니다. 질문·가설·자료·해석·방어·한계·1분 설명을 공책 보고서로 제출할 수 있습니다.</p></section></noscript>
+      <FieldworkLab kind="ble-ad" client:load />
+    </div></div>
+  </div>
+</Base>
