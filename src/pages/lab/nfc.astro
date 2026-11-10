@@ -9,6 +9,8 @@ import { SOURCES } from '../../data/sources';
 import { url } from '../../lib/url';
 
 const toc = [
+  ['overview', '이 실습으로 파악하는 것'],
+  ['golden-case', 'NFC 골든 케이스'],
   ['design', '질문, 가설, 설계'],
   ['record', '결과 입력'],
   ['chart', '인식률 그래프'],
@@ -22,6 +24,49 @@ const toc = [
 ];
 
 const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistCsf].map((s) => ({ title: s.title, url: s.url }));
+const colabQuickCode = String.raw`# NFC 실험 CSV의 실제 기록만 분석합니다.
+# 업로드 전 UID·실명·SSID/BSSID·개인 메모는 삭제하거나 가명 처리하세요.
+import io
+import matplotlib.pyplot as plt
+import pandas as pd
+from google.colab import files
+
+uploaded = files.upload()
+name = next((n for n in uploaded if n.endswith('.csv') and 'notes' not in n.lower()), None)
+if name is None:
+    raise ValueError('관찰 CSV(nfc-experiment.csv)를 하나 올려 주세요.')
+
+raw = pd.read_csv(io.BytesIO(uploaded[name]), encoding='utf-8-sig', keep_default_na=False)
+required = {'trial', 'condition', 'contents', 'distance_cm', 'orientation', 'success', 'note', 'data_type'}
+missing_columns = required - set(raw.columns)
+if missing_columns:
+    raise ValueError(f'필수 열이 없습니다: {sorted(missing_columns)}')
+
+# NFC CSV에서 success=1은 정한 시간 안에 새 태그를 읽은 관찰, 0은 읽지 못한 관찰입니다.
+# 빈 값·0/1이 아닌 값은 미측정/잘못된 행으로 따로 세고 성공으로 바꾸지 않습니다.
+raw['success_num'] = pd.to_numeric(raw['success'], errors='coerce')
+missing = raw[raw['success_num'].isna() | ~raw['success_num'].isin([0, 1])]
+data = raw[(raw['data_type'] == 'real') & raw['success_num'].isin([0, 1])].copy()
+if data.empty:
+    raise ValueError('data_type=real인 관찰 행이 없습니다. 데모 행은 실제 분석에서 제외됩니다.')
+
+summary = (data.groupby('condition', sort=False)['success_num']
+    .agg(attempts='size', successes='sum')
+    .assign(failures=lambda t: t['attempts'] - t['successes']))
+summary['rate'] = summary['successes'] / summary['attempts']
+summary = summary.rename(columns={'attempts': '시도', 'successes': '성공', 'failures': '실패', 'rate': '인식률'})
+print(f'실제 관찰 {len(data)}행 · 결측/무효 {len(missing)}행')
+display(summary.assign(인식률=lambda t: (t['인식률'] * 100).round(1).astype(str) + '%'))
+
+ax = summary[['성공', '실패']].plot(kind='bar', stacked=True, color=['#2f6b4f', '#b7b2a7'], figsize=(7, 4))
+ax.set_title('NFC 조건별 성공·실패 횟수')
+ax.set_xlabel('배치 조건')
+ax.set_ylabel('시도 횟수')
+plt.tight_layout()
+plt.show()
+
+# 이 표는 태그를 읽은 비율만 보여 줍니다. 결제 승인·카드 복제·공격 성공률은 계산하지 않습니다.
+display(data[['trial', 'condition', 'distance_cm', 'orientation', 'success_num', 'note']].head(10))`;
 ---
 <Base title="NFC는 지갑·가방 안에서도 인식될까? | 실험 노트" description="실험용 NFC 태그로 단독, 지갑, 가방 조건의 인식률을 비교하고 CSV, 파이썬 분석, 보고서까지 만드는 탐구 프로젝트입니다.">
   <div class="wrap">
@@ -38,6 +83,54 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
         </div>
         <SaveState client:load />
         <noscript><p class="callout callout--warn">기록 입력과 그래프는 자바스크립트가 켜져 있어야 동작합니다. 실험 방법과 보안 설명은 그대로 읽을 수 있습니다.</p></noscript>
+
+        <section class="lab-section" id="overview" aria-labelledby="h-overview" style="margin-top: var(--space-xl)">
+          <h2 id="h-overview">이 실습으로 파악하는 것</h2>
+          <p class="lead">이 페이지는 ‘카드를 복제하는 법’이 아니라, <strong>실험용 태그가 어떤 조건에서 읽히고 그 관찰을 어디까지 보안 주장으로 연결할 수 있는지</strong>를 배우는 흐름입니다.</p>
+          <ol>
+            <li><strong>생활 질문:</strong> 교통카드·출입 배지처럼 가까이 대는 장면을 떠올리고, “지갑이나 가방이 사이에 있으면 읽힘이 달라질까?”를 한 문장으로 씁니다. <span class="small muted">산출물: 탐구 질문·가설</span> → <a href="#design">설계로 이동</a></li>
+            <li><strong>태그·리더 준비:</strong> 실험용 태그와 Card Reader만 준비하고, 실제 결제 카드·타인 태그·출입장치는 사용하지 않습니다. <span class="small muted">산출물: 준비 체크·허가 범위</span> → <a href={url('/start/#first-scan')}>기기 준비</a></li>
+            <li><strong>골든 케이스 직접 읽기:</strong> 대기 화면에서 태그를 새로 읽고 Info의 UID 길이·ATQA/SAK·P4~P7 표시를 확인합니다. <span class="small muted">산출물: 첫 읽기 관찰</span> → <a href="#golden-case">골든 케이스</a></li>
+            <li><strong>조건별 반복:</strong> 같은 태그·리더·5초 기준으로 단독·빈 지갑·천 가방을 각각 5회 기록합니다. <span class="small muted">산출물: 실제/미관찰/미측정 원자료</span> → <a href="#record">결과 입력</a></li>
+            <li><strong>브라우저 분석:</strong> 이 페이지의 표·그래프로 조건별 성공/시도와 인식률을 비교합니다. Python·Colab은 선택이며 실제 CSV의 <code>data_type=real</code>만 분석합니다. <span class="small muted">산출물: 표·그래프·결측 설명</span> → <a href="#chart">그래프</a> / <a href="#python">선택 코드</a></li>
+            <li><strong>방어·보고서·1분 설명:</strong> ‘읽힘’과 ‘결제 승인·복제 가능’의 차이를 설명하고, 근거·한계·방어·다음 질문을 보고서와 자기소개서 문장으로 정리합니다. <span class="small muted">산출물: 보고서·1분 설명</span> → <a href="#security">보안 평가</a> / <a href="#report">보고서</a></li>
+          </ol>
+          <div class="callout">
+            <p><strong>막히면 순서를 되돌립니다.</strong> 태그가 안 읽히면 골든 케이스의 대기 화면으로 돌아가 한 번만 위치를 바꾸고, 그래도 안 되면 ‘미관찰’로 남깁니다. 브라우저 입력이 막히면 공책 표와 계산으로 같은 순서를 완성하고, 실제 관찰과 데모를 섞지 않습니다.</p>
+          </div>
+          <details>
+            <summary>자바스크립트 없이 공책으로 완주하기</summary>
+            <ol>
+              <li>질문·가설·허가 범위와 고정 조건을 적습니다.</li>
+              <li>골든 케이스의 화면 순서와 확인한 표시를 그립니다.</li>
+              <li>단독·지갑·가방 행을 각각 5개 만들고 성공은 1, 실패는 0, 시작하지 못한 시도는 미측정으로 구분합니다.</li>
+              <li>조건별 성공÷시도×100을 계산하되, 결측을 0회 성공으로 바꾸지 않습니다.</li>
+              <li>읽힘의 범위·결제와의 차이·방어·한계·다음 실험을 한 문단과 1분 설명으로 씁니다.</li>
+            </ol>
+          </details>
+        </section>
+
+        <section class="lab-section" id="golden-case" aria-labelledby="h-golden-case">
+          <h2 id="h-golden-case">NFC 골든 케이스: 먼저 이 한 번을 통과</h2>
+          <p>반복 실험 전에 ‘새 태그를 읽고 화면 값을 확인하는 기본 경로’를 한 번 완주합니다. 사용자가 제공한 화면에서는 <strong>PN532 리더, 7바이트 UID, ATQA 0044, SAK 00, MIFARE Ultralight-compatible 표시와 P4~P7 사용자 메모리 샘플</strong>을 확인했습니다. 이 값은 실험용 태그 화면의 관찰 범위이며, 실제 신용카드의 결제 인증·암호 키·복제 가능성을 뜻하지 않습니다.</p>
+          <div class="callout callout--warn">
+            <p><strong>안전 경계:</strong> 결제 카드·교통카드·출입 배지·타인 태그를 읽지 않습니다. 카드 정보를 복제하거나 결제를 시도하지 않습니다. 실험용 태그와 교사 승인 사례만 사용합니다.</p>
+          </div>
+          <div class="table-wrap" tabindex="0" role="region" aria-label="NFC 골든 케이스 순서">
+            <table>
+              <caption>새 읽기 화면을 확인하는 순서</caption>
+              <thead><tr><th scope="col">순서</th><th scope="col">화면·행동</th><th scope="col">기록할 사실</th><th scope="col">완료/대체</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><code>Waiting for tag...</code></td><td>Card Reader가 새 대기 상태인지</td><td>이전 OK/Info 화면이면 Back·Exit·Cancel로 다시 대기</td></tr>
+                <tr><td>2</td><td>태그를 가까이 대기 → <code>Tag detected</code></td><td>새 UID가 예상 태그와 맞는지, 5초 안인지</td><td>맞으면 성공 후보, 안 보이면 미관찰로 기록</td></tr>
+                <tr><td>3</td><td>Info에서 UID 길이·타입·ATQA·SAK 확인</td><td>이번 읽기의 표시만 공책에 요약</td><td>이전 화면을 새 성공으로 세지 않음</td></tr>
+                <tr><td>4</td><td>Next에서 P4~P7 표시 확인</td><td>사용자 메모리 샘플과 화면 페이지</td><td>페이지가 안 열리면 ‘읽기 성공’과 ‘메모리 확인’을 분리</td></tr>
+                <tr><td>5</td><td>대기 화면으로 돌아와 CSV/표에 기록</td><td>조건·거리·방향·성공 1/실패 0·메모</td><td>시작하지 못한 시도는 미측정, 수치를 꾸미지 않음</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>예상 결과:</strong> 같은 태그를 같은 위치에 두면 UID와 태그 유형이 반복되고, 단독 조건이 지갑·가방보다 쉽게 읽힐 수 있습니다. <strong>예상 밖 결과 질문:</strong> 지갑에서 더 잘 읽혔다면 위치·거리·손의 움직임·주변 금속 같은 다른 원인은 무엇인가요? UID는 같지만 P4~P7을 못 읽었다면 ‘태그 감지’와 ‘메모리 접근’의 차이를 어떻게 설명할까요?</p>
+        </section>
 
         <section class="lab-section" id="design" aria-labelledby="h-design" style="margin-top: var(--space-xl)">
           <h2 id="h-design"><span class="lab-section__n">1</span> 탐구 질문, 가설, 실험 설계</h2>
@@ -160,6 +253,11 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
             <li>첫 코드 셀을 실행해 <code>nfc-experiment.csv</code>를 올린 뒤 Runtime → Run all을 실행합니다.</li>
             <li>그림마다 성공/시도 수와 축을 확인하고, 마지막 셀에서 내려받은 <code>nfc-analysis-results.zip</code>을 보관합니다.</li>
           </ol>
+          <details open>
+            <summary>Colab에 바로 붙여 넣는 최소 분석 코드</summary>
+            <p>사이트가 내보내는 관찰 CSV 머리글(<code>trial, condition, contents, distance_cm, orientation, success, note, data_type</code>)과 맞춘 코드입니다. <code>success=1</code>은 정한 시간 안에 새 태그를 읽은 관찰, <code>success=0</code>은 읽지 못한 관찰입니다. 미측정·잘못된 행은 결측으로 따로 세고 0으로 바꾸지 않습니다.</p>
+            <pre class="code" tabindex="0" aria-label="Colab 최소 분석 코드"><code>{colabQuickCode}</code></pre>
+          </details>
           <PythonPanel client:load />
           <h3>코드가 하는 일과 읽는 법</h3>
           <ul>
