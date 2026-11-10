@@ -95,8 +95,8 @@ try {
   }
   const context = await browser.newContext(); const page = await context.newPage(); attach(page);
   await page.goto(`${origin}/lab/`, { waitUntil: 'networkidle' });
-  assert.equal(await page.locator('#available .workbook-planned').count(), 9); assert.equal(await page.locator('#planned .workbook-planned').count(), 3);
-  assert.ok((await page.locator('.workbook-intro').textContent()).includes('NFC 포함 10개'));
+  assert.equal(await page.locator('#available .workbook-planned').count(), 12); assert.equal(await page.locator('#planned .workbook-planned').count(), 0);
+  assert.ok((await page.locator('.workbook-intro').textContent()).includes('NFC 포함 13개'));
   for (const kind of kinds) assert.equal(await page.locator(`#available a[href="/lab/${kind}/"]`).count(), 1);
   await page.evaluate(() => localStorage.setItem('esp32div.lab.ssid-map.v1', '{broken'));
   await page.goto(`${origin}/lab/ssid-map/`, { waitUntil: 'networkidle' });
@@ -107,6 +107,6 @@ try {
   const blockedPage = await blocked.newPage(); attach(blockedPage); await blockedPage.goto(`${origin}/lab/firmware/`, { waitUntil: 'networkidle' });
   await blockedPage.waitForFunction(() => document.querySelector('[role=status]').textContent.includes('CSV를 내려받으세요'));
   await blocked.close(); assert.deepEqual(errors, []);
-  const result = process.argv.includes('--storage-only') ? 'PASS broken/blocked storage, catalog9+3, console0 (storage-only follow-up)' : `PASS ${renders} renders (320/375/768/1280 × light/dark × JS on/off), ${flows} input/invalid/CSV/report/reload/delete flows, real/demo separation, local-only SHA-256 abc vector, broken/blocked storage, catalog9+3, overflow0, console0`;
+  const result = process.argv.includes('--storage-only') ? 'PASS broken/blocked storage, catalog12+0, console0 (storage-only follow-up)' : `PASS ${renders} renders (320/375/768/1280 × light/dark × JS on/off), ${flows} input/invalid/CSV/report/reload/delete flows, real/demo separation, local-only SHA-256 abc vector, broken/blocked storage, catalog12+0, overflow0, console0`;
   await writeFile(`${dir}/result.txt`, result); console.log(result);
 } finally { await browser.close(); }

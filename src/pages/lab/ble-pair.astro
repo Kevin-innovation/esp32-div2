@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkbookScene from '../../components/lab/WorkbookScene.astro';
+import FieldworkLab from '../../components/lab/FieldworkLab';
+import { url } from '../../lib/url';
+---
+<Base title="BLE 연결이 성공하면 상대를 믿을 수 있을까? | 실험 워크북" description="페어링 방식·연결 상태·앱 권한은 서로 다른 확인 항목입니다.">
+  <div class="wrap"><header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>BLE 연결이 성공하면 상대를 믿을 수 있을까?</h1><p class="lead">페어링 방식·연결 상태·앱 권한은 서로 다른 확인 항목입니다.</p><p>웹 수동 기록 사용 가능 · 이 기기의 해당 기능 실행 미검증 · 교실 파일럿 미검증</p><p class="small">질문 → 준비 → 관찰 → 기록 → 분석 → 방어 → 보고서</p></header>
+    <div class="doc"><div class="doc__main">
+      <section class="lab-section" id="design" aria-labelledby="ble-pair-design"><h2 id="ble-pair-design">질문·가설·준비</h2><WorkbookScene index={5} /><p><strong>질문:</strong> 연결 완료 표시가 상대 인증까지 증명할까? 확인한 페어링 절차와 필요한 앱 권한을 따로 설명하는 가설을 세웁니다.</p><ul><li><strong>시간:</strong> 50분 제안. 질문·준비 10분, 관찰·문서 기록 20분, 분석·방어·보고서 20분.</li><li><strong>준비물:</strong> 내 BLE 기기·내 휴대폰, 제조사 페어링 안내·앱 권한 설명. 원래 기기 주소·개인 계정·PIN/패스키의 실제 숫자는 기록하지 않습니다.</li><li><strong>선수학습:</strong> <a href={url('/lab/ble-ad/')}>BLE 광고 관찰 워크북</a>.</li></ul><div class="callout"><p>이 기기의 BLE 연결 실행은 미검증입니다. 내 BLE 기기와 내 휴대폰의 정상 설정·문서만 확인합니다. 타인 기기 연결, 인증 우회, HID 키 입력 주입은 하지 않습니다. 연결이나 권한 변경을 하지 않고 문서 대조만으로도 완료할 수 있습니다.</p></div></section>
+      <section class="lab-section" aria-labelledby="ble-pair-procedure"><h2 id="ble-pair-procedure">페어링 방식 → 연결 → 권한·해제 대조</h2><ol><li>내 기기를 BLE-A로 정하고 조건란에 휴대폰 화면인지 제조사 문서인지 구분합니다. 공개 문서의 관찰과 가상 데모는 다르며, 가상 예시는 데모 보기에서만 기록합니다.</li><li>Just Works·Passkey 입력·Numeric Comparison 숫자 비교 중 실제 절차와 문서가 확인되는 방식을 고릅니다. 단순 연결 완료 표시만 있으면 방식은 미확인입니다. 실제 숫자·주소는 입력하지 않습니다.</li><li>내 휴대폰에서 연결·해제·미확인 상태를 별도로 읽습니다. 장비가 없으면 미측정, 시도했지만 확인하지 못하면 미관찰로 남기고 방식·연결·재연결은 미확인으로 둡니다.</li><li>앱 권한 화면에서 확인한 항목이나 미확인 이유와 출처를 적습니다. 기능에 필요한 목적을 문서와 대조하고 불필요한 권한을 줄이는 제안을 적습니다. 무조건 권한을 허용하지 않습니다.</li><li>원하는 경우에만 내 기기의 정상 연결 해제·재연결을 확인하고 결과를 구분합니다. 시도하지 않아도 됩니다. 해제만 확인, 재연결 성공, 실패, 미확인을 원자료로 기록합니다.</li><li>연결 성공과 상대 인증을 구분하고, 페어링 절차·권한 목적·해제 계획의 근거와 한계를 분석합니다. 권한 최소화 방어와 아직 모르는 점을 보고서·1분 설명으로 만듭니다.</li></ol><p><strong>막혔을 때:</strong> 권한·연결을 확인하지 못하면 임의로 바꾸지 않고 미확인 이유를 남깁니다. 제조사 안내나 데모로 방식·권한 역할을 비교하고 실제 내 기기 결과와 구분합니다.</p><p><strong>완료 기준:</strong> 페어링 방식·연결·앱 권한·해제/재연결 결과와 근거를 구분한 표, 권한 최소화 제안·방어·한계 보고서. <strong>자기 설명:</strong> “연결 성공 화면만으로 어떤 상대 인증 절차를 거쳤다고 말할 수 있나?”</p></section>
+      <noscript><section class="callout"><h2>공책으로 이어가기</h2><p>입력·저장·CSV는 자바스크립트가 필요합니다. 기기 별칭/조건/관찰 상태/페어링 방식/연결 상태/앱 권한/권한 최소화 제안/해제·재연결 결과/근거를 적습니다. 가상 예시: Just Works 문서, 연결 완료, 근처 기기 권한 확인, 다른 권한 미확인. 연결 성공을 상대 인증으로 바꾸지 말고 방어·한계·1분 설명을 작성합니다. 실제와 데모를 나눠 질문·가설·분석·방어·한계 보고서를 완성하세요.</p></section></noscript>
+      <FieldworkLab kind="ble-pair" client:load />
+    </div></div>
+  </div>
+</Base>

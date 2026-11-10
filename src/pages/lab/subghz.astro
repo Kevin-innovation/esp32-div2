@@ -1,0 +1,16 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkbookScene from '../../components/lab/WorkbookScene.astro';
+import FieldworkLab from '../../components/lab/FieldworkLab';
+import { url } from '../../lib/url';
+---
+<Base title="433MHz 리모컨은 화면 패턴만으로 구분할 수 있을까? | 실험 워크북" description="수신 관찰과 설명서의 코드 방식 근거를 분리합니다.">
+  <div class="wrap"><header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>433MHz 리모컨은 화면 패턴만으로 구분할 수 있을까?</h1><p class="lead">수신 관찰과 설명서의 코드 방식 근거를 분리합니다.</p><p>웹 수동 기록 사용 가능 · 이 기기의 해당 기능 실행 미검증 · 교실 파일럿 미검증</p><p class="small">질문 → 준비 → 관찰 → 기록 → 분석 → 방어 → 보고서</p></header>
+    <div class="doc"><div class="doc__main">
+      <section class="lab-section" id="design" aria-labelledby="subghz-design"><h2 id="subghz-design">질문·가설·준비</h2><WorkbookScene index={8} /><p><strong>질문:</strong> 화면에서 반복되는 모양이 보이면 고정 코드라고 확정할 수 있을까? 코드 방식에는 별도 설명서 근거가 필요하다는 가설을 세웁니다.</p><ul><li><strong>시간:</strong> 50분 제안. 질문·준비 10분, 관찰·문서 기록 20분, 분석·방어·보고서 20분.</li><li><strong>준비물:</strong> 별도의 내 433MHz 실험 송수신기와 해당 설명서, 허가된 실험 공간. 장비가 없으면 공개 제조사 문서나 데모를 사용합니다. 출입·차량 장비는 대체품으로 쓰지 않습니다.</li><li><strong>선수학습:</strong> <a href={url('/learn/security/#remote')}>리모컨 보안 배경 노트</a>.</li></ul><div class="callout"><p>관련 Sub-GHz 수신 메뉴의 이 기기 실행은 미검증입니다. 별도 내 실험 장비의 수신 화면·설명서만 검토합니다. 출입/차량 장비, 신호 재전송·재밍·브루트포스는 금지합니다. 이 웹 도구는 RF를 송수신하지 않습니다. 지역 규정을 확인하지 못하면 송신을 보류하고 문서 활동으로 진행합니다.</p></div></section>
+      <section class="lab-section" aria-labelledby="subghz-procedure"><h2 id="subghz-procedure">수신 상태 → 문서 근거 → 보관·접근 방어</h2><ol><li>별도 실험 장비를 Radio-A, 설명서의 주파수를 Freq-A처럼 별칭으로 정하고 수신 조건을 적습니다. 실제 코드·파형·접근 자격정보는 워크북에 옮기지 않습니다.</li><li>사용 지역의 공적 안내·장비 설명서에서 적용 조건을 확인한 출처와 확인 여부를 적습니다. 이 활동은 특정 주파수 사용을 허가하지 않습니다. 규정·허가가 불명확하면 송신하지 않습니다.</li><li>허가된 내 실험 장비의 수신 화면을 읽을 수 있을 때만 관찰됨으로 적습니다. 시도했지만 못 읽음은 미관찰, 장비·허가가 없어 시작하지 못함은 미측정입니다. 수신 성공을 만들어 적지 않습니다.</li><li>설명서가 고정 코드 또는 롤링 코드를 명시할 때만 해당 방식을 고르고 문서 출처·항목을 적습니다. 문서를 읽었어도 방식이 불명확하면 문서상 미확정, 자료가 없으면 미확인입니다. 화면 패턴만으로 방식은 확정할 수 없습니다.</li><li>수신 관찰 건수와 문서 확인 건수를 따로 비교합니다. 문서의 설명은 실제 인증 강도·재전송 대응을 검증한 결과가 아닙니다. 정상 코드의 반복·변화만으로 안전을 판정하지 않습니다.</li><li>장비 잠금 보관, 접근자 제한, 분실 시 담당자 확인 등 방어를 제안합니다. 지역 규정 미확인·수신 실패·문서 한계를 포함한 보고서와 1분 자기 설명을 작성합니다.</li></ol><p><strong>막혔을 때:</strong> 별도 실험 장비나 규정 확인이 없으면 멈추고 미측정으로 기록합니다. 공개 설명서·가상 데모로 고정/롤링 코드의 문서 비교와 보관 방어를 완성합니다.</p><p><strong>완료 기준:</strong> 주파수·조건 별칭, 수신 관찰 상태, 코드 방식 문서 근거, 보관·접근 방어와 지역 규정 확인 여부를 구분한 보고서. <strong>자기 설명:</strong> “화면 패턴 외에 코드 방식을 확인할 근거는 무엇이며, 그 근거로도 아직 증명할 수 없는 것은 무엇인가?”</p></section>
+      <noscript><section class="callout"><h2>공책으로 이어가기</h2><p>입력·저장·CSV는 자바스크립트가 필요합니다. 장비/주파수/조건 별칭/수신 관찰 상태/문서상 코드 방식/문서 출처·항목/보관·접근 방어/지역 규정 확인 여부/근거를 적습니다. 가상 예시: 수신 화면 미확인, 설명서에 고정 코드 명시, 규정 미확인으로 송신 보류. 문서 확인과 실제 수신을 구분해 방어·한계·1분 설명을 작성합니다. 실제와 데모를 나눠 질문·가설·분석·방어·한계 보고서를 완성하세요.</p></section></noscript>
+      <FieldworkLab kind="subghz" client:load />
+    </div></div>
+  </div>
+</Base>

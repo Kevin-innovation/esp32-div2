@@ -72,8 +72,8 @@ try {
     await context.close();
   }
   const page = await browser.newPage(); await page.goto(origin + '/lab/', { waitUntil: 'networkidle' });
-  assert.equal(await page.locator('#available .workbook-planned').count(), 9); assert.equal(await page.locator('#planned .workbook-planned').count(), 3);
+  assert.equal(await page.locator('#available .workbook-planned').count(), 12); assert.equal(await page.locator('#planned .workbook-planned').count(), 0);
   for (const slug of ['interference', 'gps']) assert.equal(await page.locator(`#available a[href="/lab/${slug}/"]`).count(), 1);
-  const result = `PASS ${renders} renders (320/375/768/1280 × light/dark × JS on/off); ${interactions} full input/invalid/CSV roundtrip/error/reload/delete flows; demo separation/reload; unclipped overflow0; catalog9+3; console${errors.length}`;
+  const result = `PASS ${renders} renders (320/375/768/1280 × light/dark × JS on/off); ${interactions} full input/invalid/CSV roundtrip/error/reload/delete flows; demo separation/reload; unclipped overflow0; catalog12+0; console${errors.length}`;
   assert.deepEqual(errors, []); await writeFile(dir + '/result.txt', result); console.log(result);
 } finally { await browser.close(); }

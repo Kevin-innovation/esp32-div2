@@ -11,30 +11,29 @@ const labs = [
   { href: '/lab/wifi-rssi/', question: '연결이 불안정할 때 침입과 신호 음영을 어떻게 구분할까?', title: '방마다 Wi-Fi가 끊기는 이유는?', observe: '내 공유기나 휴대폰에서 확인한 RSSI와 채널을 방별로 직접 기록합니다. 이 기기의 Wi-Fi 스캔 실행은 아직 확인하지 못했습니다.', learn: '음영 지역과 침입 징후를 구분하고, 게스트망·IoT 망 분리로 접근 범위를 줄이는 방법을 배웁니다.', artifact: '방별 신호 지도와 IoT 망 분리 설계도', project: 'wifi-rssi', security: 'wifi' },
   { question: '익숙한 이름이 뜨면 바로 연결해도 될까?', title: '이름이 같은 Wi-Fi는 같은 공유기일까?', observe: '내 AP의 SSID·BSSID 별칭을 관리자 목록·관찰 근거와 대조해 기록합니다. 내 공유기와 관리자 화면이 필요합니다.', learn: '같은 SSID만으로 신뢰할 수 없는 이유와 가짜 AP 위험을 이해하고, BSSID 대조의 한계와 자동 연결 설정을 점검합니다. 가짜 AP를 만드는 활동은 없습니다.', artifact: '내 AP 목록과 연결 확인 체크리스트', project: 'ssid-map', security: 'wifi' },
   { question: '비밀번호와 관리 프레임 보호는 같은 역할일까?', title: '공유기의 WPA2·WPA3·PMF 설정은 무엇을 지킬까?', observe: '내 AP나 제조사 문서에서 WPA2·WPA3 지원과 현재 설정·PMF 표시를 구분해 기록합니다. 해당 설정을 지원하는 내 공유기와 휴대폰이 필요합니다.', learn: '암호 추측과 관리 프레임 위조 위험에 대해 WPA2·WPA3·PMF가 맡는 역할을 구분합니다. 스캔 화면만으로 보안 수준을 확정하지 않습니다.', artifact: '설정별 보호 범위 비교표', project: 'ssid-map', security: 'wifi' },
-  { question: '끊김에 대비할 다른 연결 경로가 있을까?', title: '저녁마다 느린 인터넷, 혼잡 때문일까?', observe: 'Wi-Fi 스캐너의 채널별 AP 수와 RSSI를 시간대별로 비교할 계획입니다. 내 공유기, 속도를 비교할 PC와 별도 연결 경로가 필요합니다.', learn: 'AP 수만으로 혼잡을 단정하지 않고 가용성 문제를 나눠 봅니다. 채널 선택과 유선·모바일 백업 경로를 설계합니다.', artifact: '시간대별 관찰표와 통신 복구 순서도', project: 'channel-busy', security: 'wifi' },
+  { question: '끊김에 대비할 다른 연결 경로가 있을까?', title: '저녁마다 느린 인터넷, 혼잡 때문일까?', observe: '도구에 실제 표시된 채널별 AP 수·RSSI와 관찰 시각을 기록합니다. AP 수를 점유율·속도로 환산하지 않습니다. 내 공유기, 속도를 비교할 PC와 별도 연결 경로가 필요합니다.', learn: 'AP 수만으로 혼잡을 단정하지 않고 가용성 문제를 나눠 봅니다. 채널 선택과 유선·모바일 백업 경로를 설계합니다.', artifact: '시간대별 관찰표와 통신 복구 순서도', project: 'channel-busy', security: 'wifi' },
   { question: '기기 주소가 바뀌면 추적 가능성도 사라질까?', title: '내 이어폰의 BLE 광고는 어디까지 보일까?', observe: 'BLE 스캐너의 광고와 RSSI를 거리별로 관찰할 계획입니다. 내 BLE 기기와 휴대폰이 필요합니다.', learn: '공개 광고와 연결된 데이터의 차이, 위치 추적 위험을 이해합니다. 무작위 주소가 모든 추적을 막지는 않는다는 한계를 정리합니다.', artifact: '거리별 관찰 노트와 개인정보 점검표', project: 'ble-rssi', security: 'ble' },
-  { question: '연결 성공만으로 상대를 믿을 수 있을까?', title: 'BLE 연결 버튼을 누르면 안전하게 연결될까?', observe: 'BLE 스캐너에서 보이는 정보와 휴대폰의 페어링·권한 화면을 비교할 계획입니다. 내 BLE 기기와 휴대폰이 필요합니다. 이 기기의 연결 기능은 실행 미확인입니다.', learn: 'Just Works의 상대 인증 한계와 불필요한 권한 위험을 구분하고, 화면 확인·권한 최소화·연결 해제로 대응합니다.', artifact: '페어링 방식과 앱 권한 비교표', project: 'ble-rssi', security: 'ble' },
+  { question: '연결 성공만으로 상대를 믿을 수 있을까?', title: 'BLE 연결 버튼을 누르면 안전하게 연결될까?', observe: '내 기기와 휴대폰의 페어링 방식·연결 상태·앱 권한·해제 결과를 구분해 기록합니다. 내 BLE 기기와 휴대폰이 필요합니다. 이 기기의 연결 기능은 실행 미확인입니다.', learn: 'Just Works의 상대 인증 한계와 불필요한 권한 위험을 구분하고, 화면 확인·권한 최소화·연결 해제로 대응합니다.', artifact: '페어링 방식과 앱 권한 비교표', project: 'ble-rssi', security: 'ble' },
   { question: '세기가 높은 신호만으로 공격을 증명할 수 있을까?', title: '2.4GHz 신호가 높으면 공격받는 걸까?', observe: '2.4GHz 에너지 화면과 Wi-Fi 스캐너 목록을 같은 위치에서 비교할 계획입니다. 내 공유기와 정상 작동 중인 생활 기기가 필요합니다.', learn: '일상 간섭과 공격 추정의 차이를 배우고, 에너지 수치만으로 송신자나 의도를 식별할 수 없음을 정리합니다. 위치·시간 비교로 오판을 줄입니다.', artifact: '관찰 증거와 가능한 원인 대조표', project: 'energy-list', security: 'energy' },
   { question: '같은 명령을 다시 받으면 기기는 구별할까?', title: '내 리모컨의 같은 버튼은 같은 명령일까?', observe: 'IR 기록 메뉴에서 내 리모컨의 고정 명령을 반복 관찰할 계획입니다. 내 리모컨과 가전제품이 필요합니다.', learn: '고정 명령을 다시 보내는 재전송 개념과 인증의 차이를 이해하고, 방향·가림·물리적 도달 범위를 방어 조건으로 비교합니다.', artifact: '버튼별 신호 비교표와 도달 범위 그림', project: 'ir-remote', security: 'remote' },
-  { question: '코드가 매번 바뀌면 무엇을 막을 수 있을까?', title: '433MHz 리모컨은 모두 같은 방식일까?', observe: 'Sub-GHz 수신 메뉴로 내 실험 송신기의 신호를 관찰할 계획입니다. 별도 433MHz 실험 송신기와 설명서가 필요합니다.', learn: '고정 코드와 롤링 코드의 재전송 대응 차이를 문서와 비교합니다. 실제 코드 분석이나 재전송 공격 절차 없이 인증·물리 접근 관리의 역할을 정리합니다.', artifact: '코드 방식 비교표와 장비 보관 계획', project: 'subghz-receive', security: 'remote' },
+  { question: '코드가 매번 바뀌면 무엇을 막을 수 있을까?', title: '433MHz 리모컨은 모두 같은 방식일까?', observe: '별도 내 실험 장비의 수신 상태와 코드 방식 설명서·지역 규정 확인 여부를 기록합니다. 화면 패턴만으로 코드 방식을 확정하지 않습니다. 별도 433MHz 실험 송신기와 설명서가 필요합니다.', learn: '고정 코드와 롤링 코드의 재전송 대응 차이를 문서와 비교합니다. 실제 코드 분석이나 재전송 공격 절차 없이 인증·물리 접근 관리의 역할을 정리합니다.', artifact: '코드 방식 비교표와 장비 보관 계획', project: 'subghz-receive', security: 'remote' },
   { question: 'GPS 한 가지 근거만 믿어도 될까?', title: 'GPS 위치가 틀리면 위조 신호 때문일까?', observe: '위성 스캐너의 위성 수와 위치 고정 상태를 실내외에서 비교할 계획입니다. 내 기기와 위치를 대조할 휴대폰·지도가 필요합니다.', learn: '수신 불량과 위치 위조 가능성을 구분하고, GPS 값 하나로 공격을 단정하지 않습니다. 지도·시간·다른 위치 정보로 교차 확인합니다.', artifact: '위치 조건별 관찰표와 교차 확인 순서도', project: 'gps-first-fix', security: 'gps' },
   { question: '파일이 같다는 확인과 만든 사람의 확인은 어떻게 다를까?', title: '업데이트 파일은 어디서 왔고 바뀌지 않았을까?', observe: '공식 배포 출처·해시·서명 근거·복구 준비를 기록합니다. PC와 공식 안내가 필요하며 파일 해시 계산은 선택입니다. 파일 설치는 하지 않습니다. 기기의 서명 검증 지원 여부는 미확인입니다.', learn: '변조·공급망 위험을 이해하고 해시의 무결성 확인과 서명의 출처 인증을 구분합니다. 신뢰할 배포 경로와 복구 준비를 정합니다.', artifact: '파일 출처·검증 근거 목록과 업데이트 체크리스트', project: 'tech-note', security: 'device' },
   { question: '식별자를 가려도 나를 알아볼 단서가 남을까?', title: '관찰 CSV를 공유해도 내 기기가 드러나지 않을까?', observe: 'NFC Card Reader의 UID와 Wi-Fi 스캐너의 BSSID를 다룬 예시 CSV를 PC에서 검토할 계획입니다. PC와 직접 준비한 CSV가 필요하며 기기의 CSV 내보내기는 미확인입니다.', learn: '식별자 노출과 재식별 위험을 이해하고 UID·BSSID를 가명 처리합니다. 원본 분리 보관, 백업·복구 확인으로 정보 손실을 줄입니다.', artifact: '가명 처리한 예시 CSV와 백업 복구 점검표', project: 'csv-offline', security: 'device' },
  ];
-const readyMissions: Record<string, string> = { 'ssid-map': '/lab/ssid-map/', 'wpa-pmf': '/lab/wpa-pmf/', firmware: '/lab/firmware/', 'ble-ad': '/lab/ble-ad/', ir: '/lab/ir/', csv: '/lab/csv/', interference: '/lab/interference/', gps: '/lab/gps/' };
+const readyMissions: Record<string, string> = { channel:'/lab/channel/', 'ble-pair':'/lab/ble-pair/', subghz:'/lab/subghz/', 'ssid-map': '/lab/ssid-map/', 'wpa-pmf': '/lab/wpa-pmf/', firmware: '/lab/firmware/', 'ble-ad': '/lab/ble-ad/', ir: '/lab/ir/', csv: '/lab/csv/', interference: '/lab/interference/', gps: '/lab/gps/' };
 const missions = labs.map((lab, index) => ({ ...lab, ...MISSION_DETAILS[index], index, href: readyMissions[MISSION_DETAILS[index].id] ?? ('href' in lab ? lab.href : undefined) }));
 const sections = [
   { id: 'available', heading: 'h-more', title: '지금 선택할 수 있는 미션', intro: '기본 NFC를 마친 뒤 Wi-Fi·BLE·IR·간섭·GPS 수동 관찰, SSID/BSSID·WPA/PMF·펌웨어 출처 확인과 CSV 가명처리로 이어 갑니다. 해당 기기 기능 실행과 교실 파일럿은 미검증입니다.', items: missions.filter(mission => mission.href) },
-  { id: 'planned', heading: 'h-planned', title: '개발 예정인 선택 심화 3개', intro: '아래 링크는 배경 기술노트입니다. 전용 입력·분석·보고서 워크북을 시작하는 링크가 아닙니다. 시간과 대체 활동은 수업 준비 제안입니다.', items: missions.filter(mission => !mission.href) },
 ];
 ---
-<Base title="실험 워크북 | ESP32-DIV V2.1 실험 노트" description="NFC 기본 수업과 Wi-Fi·BLE·IR·간섭·GPS·CSV 웹 워크북, 개발 예정인 선택 심화를 안내합니다.">
+<Base title="실험 워크북 | ESP32-DIV V2.1 실험 노트" description="NFC 기본 수업과 Wi-Fi·BLE·IR·간섭·GPS·CSV 웹 워크북, 13개 웹 워크북과 기기·교실 준비도를 안내합니다.">
   <div class="wrap">
     <header class="page-head workbook-intro">
       <div>
       <h1>실험 워크북</h1>
       <p class="lead">생활 속 문제를 관찰하고, 해킹 위험과 방어 방법을 함께 배우는 학생용 탐구 목록입니다.</p>
-      <p>기본은 0~6단계의 NFC 수업입니다. 그 뒤 Wi-Fi RSSI·BLE 광고·IR 수신·간섭 관찰·GPS 교차확인·SSID/BSSID·WPA/PMF·펌웨어 출처 확인·CSV 가명처리를 선택할 수 있습니다. 현재 웹 워크북은 NFC 포함 10개, 심화 3개는 <strong>추후 개발 예정</strong>입니다. <a href={url('/learn/#classes')}>차시 제안과 기본 수업 보기</a>.</p>
+      <p>기본은 0~6단계의 NFC 수업입니다. 그 뒤 Wi-Fi RSSI·BLE 광고·IR 수신·간섭 관찰·GPS 교차확인·SSID/BSSID·WPA/PMF·펌웨어 출처 확인·시간대별 채널·BLE 페어링·433MHz 문서 비교·CSV 가명처리를 선택할 수 있습니다. 현재 웹 워크북은 NFC 포함 <strong>13개 모두 사용 가능</strong>하며 개발 예정 항목은 0개입니다. 웹 사용 가능은 기기 실행·교실 파일럿 검증을 뜻하지 않습니다. <a href={url('/learn/#classes')}>차시 제안과 기본 수업 보기</a>.</p>
       </div>
       <figure class="workbook-desk">
         <Image src={workbookDesk} alt="관찰 기기, 공유기, 이어폰과 태그를 놓고 무선 신호를 기록하는 실험 책상 장면" widths={[600, 1200]} sizes="(min-width: 768px) 50vw, 100vw" loading="eager" decoding="async" />
@@ -76,7 +75,7 @@ const sections = [
             <div class="workbook-card__meta">
               <span class="workbook-card__number">{String(l.index + 1).padStart(2, '0')}</span>
               {[['Wi-Fi', '공간'], ['Wi-Fi', '식별'], ['Wi-Fi', '인증'], ['Wi-Fi', '가용성'], ['BLE', '개인정보'], ['BLE', '페어링'], ['2.4GHz', '간섭'], ['IR', '명령'], ['433MHz', '코드'], ['GPS', '신뢰'], ['펌웨어', '공급망'], ['CSV', '데이터']][l.index].map((t) => <span class="tag">{t}</span>)}
-              <span class={`tag ${l.href ? 'tag--device' : 'tag--unverified'} workbook-card__state`}>{l.href ? '웹 워크북 사용 가능' : '추후 개발 예정'}</span>
+              <span class={`tag ${l.href ? 'tag--device' : 'tag--unverified'} workbook-card__state`}>웹 워크북 사용 가능</span>
             </div>
             <WorkbookScene index={l.index} />
             <h3>{l.title}</h3>
@@ -85,12 +84,12 @@ const sections = [
             <dl class="workbook-card__facts">
               <div><dt>관찰 장면</dt><dd>{l.observe}</dd></div>
               <div><dt>보안 질문</dt><dd><p class="workbook-card__question">{l.question}</p><p>{l.learn}</p></dd></div>
-              <div><dt>{l.href ? '학습 산출물' : '예정 산출물'}</dt><dd>{l.artifact}</dd></div>
+              <div><dt>학습 산출물</dt><dd>{l.artifact}</dd></div>
             </dl>
             <ul class="mission-readiness" aria-label={`${l.title} 준비도`}>
-              <li><strong>웹:</strong> {l.href ? l.id === 'csv' ? '가명처리 사용 가능' : l.id === 'firmware' ? '출처 기록·선택 해시 계산 사용 가능' : '수동 기록 사용 가능' : READINESS.planned.web}</li>
-              <li><strong>기기:</strong> {l.id === 'wifi-rssi' ? READINESS.wifi.device : READINESS.planned.device}</li>
-              <li><strong>교실:</strong> {READINESS.planned.pilot}</li>
+              <li><strong>웹:</strong> {l.href ? l.id === 'csv' ? '가명처리 사용 가능' : l.id === 'firmware' ? '출처 기록·선택 해시 계산 사용 가능' : '수동 기록 사용 가능' : READINESS.fieldwork.web}</li>
+              <li><strong>기기:</strong> {l.id === 'wifi-rssi' ? READINESS.wifi.device : READINESS.fieldwork.device}</li>
+              <li><strong>교실:</strong> {READINESS.fieldwork.pilot}</li>
             </ul>
             <details class="mission-details">
               <summary>선수학습과 대체 활동</summary>
