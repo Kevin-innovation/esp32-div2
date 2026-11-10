@@ -13,7 +13,7 @@ const toc = [
   ['record', '결과 입력'],
   ['chart', '인식률 그래프'],
   ['data', 'CSV 백업과 이동'],
-  ['python', 'Colab 분석'],
+  ['python', '선택: Python·Colab'],
   ['security', '보안 평가와 방어'],
   ['interpret', '해석과 결론'],
   ['unexpected', '예상과 다른 결과'],
@@ -43,8 +43,20 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
           <h2 id="h-design"><span class="lab-section__n">1</span> 탐구 질문, 가설, 실험 설계</h2>
           <p>원리가 낯설면 <a href={url('/learn/nfc/')}>3단계</a>를, 화면 문구가 낯설면 <a href={url('/learn/device/#reader')}>2단계</a>를, 낯선 말은 <a href={url('/learn/glossary/')}>용어 사전</a>을 봅니다.</p>
           <div class="callout">
-            <p><strong>이 워크북은 네 단계를 끝내는 탐구입니다.</strong> 기기와 태그 준비·예비 실험 → 기본 15회 측정 → CSV와 Colab 시각화 → 보안 위협·방어 보고서 순서로 진행합니다. 거리·방향 확장은 기본 결과를 해석한 다음에 합니다.</p>
+            <p><strong>준비 → 관찰 → 기록 → 분석 → 방어 → 보고서</strong> 순서로 진행합니다. 분석은 이 페이지의 그래프가 기본이며, Python·Colab은 선택 심화입니다. 거리·방향 확장은 기본 결과를 해석한 다음에 합니다.</p>
           </div>
+          <details>
+            <summary>A~E차시: 오늘의 완료 기준과 막혔을 때 돌아갈 곳</summary>
+            <p>각 차시는 50분 제안입니다. 시간이 부족하면 마지막으로 마친 단계와 다음 할 일을 공책에 적고 이어갑니다.</p>
+            <ol>
+              <li><strong>A · 준비와 첫 관찰:</strong> <a href={url('/start/#first-scan')}>준비 확인</a>과 <a href={url('/learn/device/#reader')}>첫 태그 읽기</a>를 마치고 대기·감지 화면의 차이를 설명합니다. 기기가 없거나 읽히지 않으면 화면 안내로 경로를 정리하고 직접 확인하지 못했다고 남깁니다. 질문: “새로 읽었다는 근거는 무엇인가?”</li>
+              <li><strong>B · 원리와 설계:</strong> <a href={url('/learn/nfc/')}>NFC 원리</a>와 <a href={url('/learn/security/')}>위협·방어</a>를 읽고 질문·가설·고정 조건·성공 기준을 아래에 적습니다. 예비 읽기가 안 되면 <a href="#pre">예비 실험</a>으로 돌아가고, 해결되지 않으면 실행하지 않은 설계안으로 제출합니다. 질문: “조건 외에 함께 바뀌는 것은 없는가?”</li>
+              <li><strong>C · 관찰과 기록:</strong> 기본 세 조건을 각각 5회 시도하고 <a href="#record">결과</a>와 <a href="#data">CSV</a>를 남깁니다. 정상 대기에서 시도한 읽기 실패는 결과이고, 시작조차 못 한 시도는 실패 횟수로 꾸미지 않습니다. <a href="#procedure">재시작 절차</a>로 복구하고 못 한 횟수·이유는 메모합니다. 입력 기능이 안 되면 같은 항목을 공책에 적습니다. 질문: “다른 사람이 이 기록으로 시도를 재현할 수 있나?”</li>
+              <li><strong>D · 분석과 방어:</strong> <a href="#chart">브라우저 그래프</a>의 성공/전체 횟수를 원자료와 대조하고 <a href="#interpret">결론·한계</a>와 <a href="#security">방어 제안</a>을 적습니다. 그래프가 비면 실제/데모 구분과 입력을 확인하고, 기능이 안 되면 공책에서 성공÷시도×100으로 계산합니다. 질문: “이 결과로 말할 수 없는 보안 주장은 무엇인가?”</li>
+              <li><strong>E · 보고서와 자기 설명:</strong> <a href="#report">보고서</a>에 질문·방법·자료·해석·방어·한계를 연결하고 <a href="#interview">면접 질문</a>에 답합니다. 비어 있는 부분은 해당 기록으로 돌아가 보완하고, 재측정이 불가능하면 미완료와 후속 계획을 명시합니다. 질문: “가장 중요한 근거 한 가지와 다음 실험은 무엇인가?”</li>
+            </ol>
+            <p>자료가 사라졌다면 <a href="#data">CSV 가져오기</a>를 사용합니다. 백업이 없으면 관찰 사실을 공책에서 옮기고, 기억으로 수치를 채우지 않습니다. 자바스크립트를 쓸 수 없으면 공책의 표·계산·서술로 같은 보고서 순서를 완성합니다.</p>
+          </details>
           <h3>준비물</h3>
           <ul>
             <li>이 기기. 리더는 More → RFID/NFC → Card Reader입니다. <Evidence kind="device" /></li>
@@ -126,6 +138,7 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
 
         <section class="lab-section" id="chart" aria-labelledby="h-chart">
           <h2 id="h-chart"><span class="lab-section__n">3</span> 조건별 인식률 그래프</h2>
+          <p><strong>D차시 기본 분석:</strong> 아래 그래프와 입력 표로 조건별 성공 횟수·시도 수·인식률을 비교합니다. 외부 계정이나 Python 없이 해석과 방어 보고서까지 마칠 수 있습니다.</p>
           <Chart client:load />
         </section>
 
@@ -137,7 +150,8 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
         </section>
 
         <section class="lab-section" id="python" aria-labelledby="h-python">
-          <h2 id="h-python"><span class="lab-section__n">5</span> Colab에서 코드 읽고 시각화하기</h2>
+          <h2 id="h-python"><span class="lab-section__n">5</span> 선택 심화: Python·Colab에서 코드 읽고 시각화하기</h2>
+          <p>코드로 같은 계산을 확인하고 싶을 때 진행합니다. 계정·설치·업로드가 어렵다면 <a href="#chart">브라우저 분석</a>을 사용하고 <a href="#security">보안 방어 활동</a>으로 이어갑니다. 성공 기준은 코드 실행 자체가 아니라 원자료와 계산 결과가 맞는지 설명하는 것입니다.</p>
           <p>기기와 이 웹사이트는 자동 연결되지 않습니다. 기록 <TermLink id="csv" label="CSV" />를 <TermLink id="colab" label="Colab" />에 옮겨 분석합니다. 실제 기록(<code>data_type=real</code>)만 쓰며, <TermLink id="uid" label="UID" />·실명·실제 <TermLink id="ssid" label="SSID" />/<TermLink id="bssid" label="BSSID" />·개인 메모는 업로드하지 마세요. Colab은 Google 계정으로 사용하는 외부 서비스입니다.</p>
           <h3>Colab 실행 순서</h3>
           <ol>
