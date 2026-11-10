@@ -3,6 +3,7 @@ import LearnLayout from '../../layouts/LearnLayout.astro';
 import Evidence from '../../components/Evidence.astro';
 import ScreenShot from '../../components/learn/ScreenShot.astro';
 import { LEARNING_PATH, REFERENCE_LINKS } from '../../data/learn';
+import { BASIC_CLASSES, READINESS } from '../../data/classroom';
 import { url } from '../../lib/url';
 ---
 <LearnLayout
@@ -33,6 +34,24 @@ import { url } from '../../lib/url';
     </ol>
   </section>
 
+  <section id="classes" aria-labelledby="h-classes">
+    <h2 id="h-classes">기본 A~E와 선택 차시</h2>
+    <p>기본은 위 0~6단계를 따라 NFC 실험을 마치는 수업입니다. 단계 번호는 학습 순서이고 A~E는 시간을 나누는 차시 제안입니다. 각 50분, 총 5차시는 제안이며 실제 교실 소요 시간은 아직 검증하지 않았습니다.</p>
+    <ol class="class-list">
+      {BASIC_CLASSES.map((lesson, index) => <li>
+        <h3>기본 {lesson.id} · {lesson.title}</h3>
+        <p class="small muted">50분 제안 · 선수학습: {index === 0 ? '처음 시작해도 됩니다.' : `기본 ${BASIC_CLASSES[index - 1].id}의 결과물`}</p>
+        <p>학습 위치: {lesson.steps.map((n, i) => <>{i > 0 && ' · '}<a href={url(LEARNING_PATH[n].href)}>{n}단계 {LEARNING_PATH[n].title}</a></>)}</p>
+        <p>남길 것: {lesson.output}</p>
+      </li>)}
+    </ol>
+    <h3>기본 수업을 마쳤다면 선택 W</h3>
+    <p><a href={url('/lab/wifi-rssi/')}>Wi-Fi RSSI 수동 기록</a>은 1~2차시(50~100분 제안)입니다. 4단계 네트워크·5단계 보안을 복습하고 방별 신호 표·분석·방어 보고서를 남깁니다. 이 기기의 {READINESS.wifi.device}, {READINESS.wifi.pilot} 상태이며 사용 허락을 받은 휴대폰·PC로 관찰할 수 있습니다.</p>
+    <h3>그다음의 선택 심화</h3>
+    <p>BLE·IR·2.4GHz·GPS와 CSV를 우선 준비하고 다른 심화로 넓힙니다. 주제별 1~2차시는 제안이며 전용 웹 워크북 11개는 아직 개발 예정입니다. <a href={url('/lab/#planned')}>준비물·선수학습·대체 활동 비교</a>에서 다음 주제를 고르세요. 기술노트 링크는 배경 자료이며 새 실습 시작 버튼이 아닙니다.</p>
+    <p class="callout">장비나 수신이 막히면 실패·미측정을 기록합니다. 명시된 대체 도구/사례 자료를 쓰되 실제와 데모를 섞지 않습니다. 핵심 보고서는 브라우저 표·그래프만으로 완성할 수 있으며 Python/Colab은 선택 분석입니다.</p>
+  </section>
+
   <section id="goal" aria-labelledby="h-goal">
     <h2 id="h-goal">학습 목표</h2>
     <ul>
@@ -54,7 +73,8 @@ import { url } from '../../lib/url';
   </section>
 
   <section id="ready" aria-labelledby="h-ready">
-    <h2 id="h-ready">지금 준비된 것</h2>
+    <h2 id="h-ready">웹·기기·교실 준비도를 따로 봅니다</h2>
+    <p>NFC와 Wi-Fi RSSI 웹 기록은 사용할 수 있습니다. 기기 실행은 NFC 읽기 범위만 확인했고 교실 파일럿은 두 주제 모두 미검증입니다. 메뉴 8개 묶음·42개 항목의 설명은 실행 검증과 다릅니다.</p>
     <h3>이 기기에서 확인한 것 <Evidence kind="device" /></h3>
     <ul>
       <li>전원을 켜면 부팅되고 메인 메뉴 8개가 표시됩니다.</li>

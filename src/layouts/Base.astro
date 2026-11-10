@@ -2,6 +2,7 @@
 import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import '../styles/global.css';
 import LearningPath from '../components/learn/LearningPath.astro';
+import { REFERENCE_LINKS } from '../data/learn';
 import { CHECKED } from '../data/sources';
 
 interface Props {
@@ -10,22 +11,13 @@ interface Props {
 }
 const { title, description } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
-const links = [
-  ['/learn/', '학습 안내'],
-  ['/learn/glossary/', '용어 사전'],
-  ['/lab/', '실험 워크북'],
-  ['/device/', '기기 알아보기'],
-  ['/guide/', '기능 가이드'],
-  ['/update/', '업데이트·문제 해결'],
-];
+const references = REFERENCE_LINKS;
 const path = (Astro.url.pathname.replace(base, '') || '/').replace(/\/?$/, '/');
+const inReference = references.some(([href]) => path.startsWith(href));
+const inLearning = !inReference && (path.startsWith('/learn/') || path === '/start/');
 // 학습 흐름은 학습 순서 페이지와 참고 자료 모두에 붙는다. 홈, 학습 안내, 404만 뺀다.
 const showPath = path !== '/' && path !== '/learn/' && path !== '/learn/glossary/' && !path.startsWith('/404');
-const current = (href: string) => {
-  if (path === href) return 'page';
-  const inSection = href === '/learn/' ? (path.startsWith('/learn/') && path !== '/learn/glossary/') || path === '/start/' : path.startsWith(href);
-  return inSection ? 'true' : undefined;
-};
+const current = (href: string) => path === href ? 'page' : path.startsWith(href) ? 'true' : undefined;
 ---
 <!doctype html>
 <html lang="ko">
@@ -53,9 +45,14 @@ const current = (href: string) => {
       <div class="wrap site-head__row">
         <a class="wordmark" href={`${base}/`} aria-label="ESP32-DIV 실험 노트 홈">ESP32-DIV 실험 노트</a>
         <nav class="nav" aria-label="주요 메뉴">
-          {links.map(([href, label]) => (
-            <a href={`${base}${href}`} aria-current={current(href)}>{label}</a>
-          ))}
+          <a href={`${base}/learn/`} aria-current={inLearning ? (path === '/learn/' ? 'page' : 'true') : undefined}>수업 시작</a>
+          <a href={`${base}/lab/`} aria-current={current('/lab/')}>실습 미션</a>
+          <details class="nav-reference" id="reference-nav">
+            <summary aria-current={inReference ? 'true' : undefined}>참고 자료</summary>
+            <ul aria-label="참고 자료 목록">
+              {references.map(([href, label]) => <li><a href={`${base}${href}`} aria-current={current(href)}>{label}</a></li>)}
+            </ul>
+          </details>
         </nav>
         <button class="switch" type="button" role="switch" aria-checked="false" id="theme-switch">
           <span>다크 모드</span>
@@ -81,6 +78,13 @@ const current = (href: string) => {
     <script is:inline>
       (function () {
         var d = document.documentElement, b = document.getElementById('theme-switch');
+        var references = document.getElementById('reference-nav');
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape' && references.open) { references.open = false; references.querySelector('summary').focus(); }
+        });
+        document.addEventListener('click', function (event) {
+          if (references.open && !references.contains(event.target)) references.open = false;
+        });
         var sync = function () { b.setAttribute('aria-checked', String(d.dataset.theme === 'dark')); };
         var chosen = function () { try { return localStorage.getItem('esp32div.theme'); } catch (e) { return null; } };
         sync();

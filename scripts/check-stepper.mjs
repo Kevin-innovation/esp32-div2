@@ -116,7 +116,7 @@ try {
         for (const a of await card.locator('.workbook-card__links a').all()) assert.match(await a.getAttribute('href'), /^\/learn\/(projects|security)\/#/);
       }
       assert.equal(await page.getByRole('link', { name: 'NFC 워크북 시작하기' }).getAttribute('href'), '/lab/nfc/');
-      assert.equal(await page.locator('.nav').getByRole('link', { name: '실험 워크북' }).getAttribute('href'), '/lab/');
+      assert.equal(await page.locator('.nav').getByRole('link', { name: '실습 미션' }).getAttribute('href'), '/lab/');
       await layout(page);
       if ([375,1280].includes(width)) await page.screenshot({ path: `${shots}/catalog-${width}-${theme}.png`, fullPage: true });
     }
@@ -130,8 +130,8 @@ try {
   await exercise(page);
   assert.ok(await page.locator('.scene__dot').first().evaluate(e => parseFloat(getComputedStyle(e).animationDuration) <= .001));
   await page.goto(origin + '/lab/nfc/', { waitUntil: 'networkidle' });
-  assert.equal(await page.locator('.nav').getByRole('link', { name: '실험 워크북' }).getAttribute('aria-current'), 'true');
-  assert.equal(await page.locator('.path-top__all a[aria-current=step]').getAttribute('href'), '/lab/nfc/');
+  assert.equal(await page.locator('.nav').getByRole('link', { name: '실습 미션' }).getAttribute('aria-current'), 'true');
+  assert.equal(await page.locator('.path-top a[aria-current=step]').getAttribute('href'), '/lab/nfc/');
   assert.equal(await page.locator('#report').count(), 1); assert.equal(await page.locator('#interview').count(), 1);
   // Verify background note anchors without following external references.
   await page.goto(origin + '/lab/');

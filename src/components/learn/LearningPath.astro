@@ -12,6 +12,8 @@ const step = LEARNING_PATH[index];
 const prev = LEARNING_PATH[index - 1];
 const next = LEARNING_PATH[index + 1];
 const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
+const mission = path.startsWith('/lab/');
+const catalog = path === '/lab/';
 const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', '보안', '실험·보고서'];
 ---
 {where === 'top' && (step ? (
@@ -29,8 +31,8 @@ const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', 
   </nav>
 ) : (
   <nav class="path-top wrap" aria-label="학습 순서">
-    <p class="path-top__now"><strong>참고 자료</strong></p>
-    <p class="small"><a href={url('/learn/')}>학습 전체 순서로 돌아가기</a></p>
+    <p class="path-top__now"><strong>{catalog ? '실습 미션 목록' : mission ? '선택 미션' : '참고 자료'}</strong></p>
+    <p class="small">{mission && '기본은 0~6단계의 NFC 수업입니다. 기본 수업을 마쳤다면 관심 있는 주제를 선택하세요. '}<a href={url('/learn/#route')}>기본 수업 0~6으로 돌아가기</a></p>
   </nav>
 ))}
 
@@ -58,7 +60,7 @@ const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', 
         <div class="path-link path-link--end">
           <small>마지막 단계입니다</small>
           <span><a href="#report">보고서 쓰기</a>, <a href="#interview">자소서와 면접 준비</a></span>
-          <span class="small">다음 탐구는 <a href={url('/learn/projects/')}>기술노트</a>에서 고릅니다.</span>
+          <span class="small">다음 탐구는 <a href={url('/lab/')}>선택 실습 미션</a>에서 고릅니다. <a href={url('/learn/projects/')}>배경 기술노트</a>도 참고하세요.</span>
         </div>
       </div>
     )}
@@ -66,8 +68,8 @@ const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', 
 ) : (
   <nav class="path-next wrap" aria-label="학습 순서로 돌아가기">
     <a class="path-link" href={url('/learn/')}>
-      <small>참고 자료를 다 봤다면</small>
-      <span>학습 전체 순서로 돌아가기</span>
+      <small>{mission ? '선택 미션에서 기본 수업으로' : '참고 자료를 다 봤다면'}</small>
+      <span>기본 수업 0~6으로 돌아가기</span>
     </a>
   </nav>
 ))}

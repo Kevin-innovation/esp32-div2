@@ -329,10 +329,9 @@ export const LEARNING_PATH: PathStep[] = [
 ];
 
 export const REFERENCE_LINKS: [string, string, string][] = [
-  ['/learn/glossary/', '용어 사전', '낯선 말을 찾을 때'],
-  ['/learn/projects/', '기술노트', 'NFC 실험 다음에 해 볼 주제를 고를 때'],
   ['/device/', '기기 알아보기', '부품과 표기를 원본 사진으로 볼 때'],
   ['/guide/', '기능 가이드', '메뉴의 기능을 찾아볼 때'],
-  ['/lab/', '실험 워크북 목록', '현재 가능한 NFC 실험과 추후 개발 예정 주제를 볼 때'],
+  ['/learn/glossary/', '용어 사전', '낯선 말을 찾을 때'],
+  ['/learn/projects/', '기술노트', '관심 있는 주제의 배경과 탐구 질문을 읽을 때'],
   ['/update/', '업데이트·문제 해결', '문제가 생겼거나 펌웨어가 궁금할 때'],
 ];
