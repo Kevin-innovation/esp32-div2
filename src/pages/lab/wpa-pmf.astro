@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkbookScene from '../../components/lab/WorkbookScene.astro';
+import FieldworkLab from '../../components/lab/FieldworkLab';
+import { url } from '../../lib/url';
+---
+<Base title="WPA2·WPA3·PMF는 무엇을 지킬까? | 실험 워크북" description="내 AP나 문서 사례에서 WPA 지원·설정·PMF 표시를 구분하고 비밀번호와 관리 프레임 보호의 역할을 비교합니다.">
+  <div class="wrap"><header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>공유기의 WPA2·WPA3·PMF 설정은 무엇을 지킬까?</h1><p class="lead">지원한다는 문구와 지금 적용된 설정을 나눠 읽습니다.</p><p>웹 수동 기록 사용 가능 · 이 기기의 Wi-Fi 실행 미검증 · 교실 파일럿 미검증</p></header>
+    <div class="doc"><div class="doc__main"><section class="lab-section" id="design" aria-labelledby="wpa-design"><h2 id="wpa-design">질문·가설·준비</h2><WorkbookScene index={2} /><p><strong>질문:</strong> 비밀번호가 있으면 관리 프레임도 모두 보호될까? 인증·접속 권한과 PMF의 보호 대상을 별도로 설명하는 가설을 세웁니다.</p><ul><li><strong>시간:</strong> 50분 제안. 배경 10분, 설정·문서 읽기 20분, 비교·방어·보고서 20분.</li><li><strong>준비물:</strong> 내 AP의 읽기 권한이 있는 관리자 화면·제품 설명서 또는 공개된 제조사 문서 사례. 계정·비밀번호 내용은 입력·수집하지 않습니다.</li><li><strong>선수학습:</strong> <a href={url('/learn/projects/#ssid-map')}>내 AP 목록 기술노트</a>, <a href={url('/learn/security/#wifi')}>Wi-Fi 인증·관리 프레임 보호</a>, <a href={url('/lab/ssid-map/')}>SSID·BSSID 비교</a>.</li></ul><div class="callout"><p>Wi-Fi → WiFi Scanner의 표시를 참고할 수 있지만 이 기기의 실행은 미검증입니다. 스캔 표시만으로 AP의 모든 보안 설정을 확정하지 않습니다. 설정을 임의 변경하거나 비밀번호를 수집하지 않으며 읽기·문서 비교만 합니다.</p></div></section>
+      <section class="lab-section" aria-labelledby="wpa-procedure"><h2 id="wpa-procedure">지원 → 현재 설정 → 보호 역할 비교</h2><ol><li>AP-A처럼 장비 별칭을 정하고 조건란에 실제 관리자 화면인지, 제품 문서 사례인지 구분합니다. 가상 예시는 데모 보기에서만 기록합니다.</li><li>제품 문서에서 WPA2·WPA3 지원 여부를 각각 확인합니다. 지원하지 않는다는 근거가 없으면 ‘지원 안 함’이 아니라 ‘확인 안 함’입니다.</li><li>읽기 권한이 있는 화면에서 현재 WPA2·WPA3·혼합 설정과 PMF 필수·가능/선택·사용 안 함·미확인 표시를 구분합니다. 문서 사례는 실제 내 AP 설정 확인을 뜻하지 않습니다. 표시 의미가 모호하면 미확인으로 둡니다.</li><li>지원 여부·설정·PMF마다 어떤 화면·문서의 어느 항목을 읽었는지 근거를 적습니다. 관찰 시도 중 못 찾음과 측정 자체를 못 함은 상태로 구분합니다.</li><li>비밀번호·인증 방식이 접속 권한을 다루는 역할과 PMF가 적용 대상 관리 프레임을 보호하는 역할을 보고서에서 나눠 설명합니다. 제품·클라이언트 지원과 실제 적용 여부가 다를 수 있다는 한계를 남깁니다.</li></ol><p><strong>막혔을 때:</strong> 권한·설정을 확인하지 못하면 바꾸지 말고 미확인으로 기록합니다. 제조사 문서를 읽는 대체 활동이나 가상 데모로 역할 비교를 완성할 수 있습니다. 문서의 출처를 남기고 실제 설정 관찰과 구분합니다.</p><p><strong>완료 기준:</strong> 지원·설정·PMF·근거를 분리한 표, 인증과 관리 프레임 보호의 역할 비교, 방어·한계 보고서. <strong>자기 설명:</strong> “PMF가 필수라는 사실만으로 모든 끊김을 공격에서 보호한다고 말할 수 있나?”</p></section>
+      <noscript><section class="callout"><h2>공책으로 이어가기</h2><p>입력·저장·CSV는 자바스크립트가 필요합니다. AP 별칭/출처 조건/관찰 상태/WPA2 지원/WPA3 지원/현재 설정/PMF/근거를 적습니다. 가상 사례 ‘WPA2·WPA3 지원, 혼합 설정, PMF 가능’을 실제와 구분해 인증·접속 권한과 관리 프레임 보호의 역할·한계를 설명하는 보고서를 만들 수 있습니다.</p></section></noscript>
+      <FieldworkLab kind="wpa-pmf" client:load />
+    </div></div>
+  </div>
+</Base>

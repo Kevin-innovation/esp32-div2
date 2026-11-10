@@ -1,12 +1,14 @@
 import { csvCell, MAX_BYTES, newId, parseCsv, uncsvText } from './nfc.ts';
+import { CHECKLIST_FIELDS, fieldMaxLength, isChecklist, validateChecklist, type ChecklistKind } from './checklist.ts';
 
-export type Kind = 'ble-ad' | 'ir' | 'interference' | 'gps';
+export type Kind = 'ble-ad' | 'ir' | 'interference' | 'gps' | ChecklistKind;
 export type Mode = 'real' | 'demo';
 export type Row = Record<string, string>;
 export const NOTE_LABELS = { question: '탐구 질문', hypothesis: '가설과 고정 조건·반복 계획', conclusion: '자료 해석과 결론', defense: '실생활 위험과 방어 제안', limits: '한계·예상 밖 결과·추가 관찰', explain: '1분 자기 설명: 근거와 아직 모르는 것' };
 export type Notes = Record<keyof typeof NOTE_LABELS, string>;
 export const emptyNotes = (): Notes => ({ question: '', hypothesis: '', conclusion: '', defense: '', limits: '', explain: '' });
 export const FIELDS = {
+  ...CHECKLIST_FIELDS,
   'ble-ad': ['alias', 'condition', 'distance_m', 'observation_status', 'rssi_dbm', 'connection', 'note'],
   ir: ['alias', 'button', 'condition', 'distance_m', 'observation_status', 'protocol', 'command_alias', 'note'],
   interference: ['alias', 'condition', 'observed_at', 'channel', 'observation_status', 'display_text', 'energy_value', 'energy_unit', 'note'],
@@ -16,9 +18,10 @@ export function validateRow(kind: Kind, row: Row): string | null {
   if (!/^[A-Za-z0-9_-]{1,80}$/.test(row.id ?? '')) return '기록 ID 형식이 맞지 않습니다.';
   if (!['real', 'demo'].includes(row.data_type)) return '실제·데모 구분을 확인하세요.';
   if (!['observed', 'not-observed', 'unchecked'].includes(row.observation_status)) return '관찰 상태를 골라 주세요.';
-  for (const key of FIELDS[kind]) if (typeof row[key] !== 'string' || row[key].length > (key === 'note' ? 500 : 80)) return '입력 항목 누락 또는 글자 수 초과입니다.';
+  for (const key of FIELDS[kind]) if (typeof row[key] !== 'string' || row[key].length > fieldMaxLength(key)) return '입력 항목 누락 또는 글자 수 초과입니다.';
   if (!/^[A-Za-z][A-Za-z0-9_-]{0,19}$/.test(row.alias)) return '기기 별칭은 BLE-A, IR-A, GPS-A처럼 영문으로 시작하는 20자 이내로 적습니다. 원래 주소는 넣지 않습니다.';
   if (!row.condition.trim()) return '관찰 조건을 적어 주세요.';
+  if (isChecklist(kind)) return validateChecklist(kind, row);
   if (kind === 'interference' || kind === 'gps') {
     const parts = row.observed_at.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/), date = new Date(row.observed_at);
     if (!parts || Number.isNaN(date.getTime()) || [date.getFullYear(),date.getMonth()+1,date.getDate(),date.getHours(),date.getMinutes()].some((v,i)=>v!==Number(parts[i+1]))) return '실제 존재하는 관찰 날짜와 시간을 골라 주세요.';

@@ -64,7 +64,7 @@ try{
     assert.deepEqual(await p.locator('#route .path-map a').evaluateAll(as=>as.map(a=>a.getAttribute('href'))),routes);checks++;
    }else{
     assert.ok((await p.locator('.path-top').textContent()).includes('실습 미션 목록'));assert.ok(!(await p.locator('.path-top').textContent()).includes('참고 자료'));checks+=2;
-    assert.equal(await p.locator('#planned .workbook-planned').count(),6);assert.equal(await p.locator('#available .workbook-planned').count(),6);checks+=2;
+    assert.equal(await p.locator('#planned .workbook-planned').count(),3);assert.equal(await p.locator('#available .workbook-planned').count(),9);checks+=2;
     assert.equal(await p.locator('#planned .workbook-card__start a').count(),0);assert.equal(await p.locator('.workbook-scene img').count(),12);checks+=2;
     assert.equal(await p.getByRole('link',{name:'NFC 워크북 시작하기'}).getAttribute('href'),'/lab/nfc/');assert.equal(await p.locator('#available .workbook-card__start a').first().getAttribute('href'),'/lab/wifi-rssi/');checks+=2;
     for(const card of await p.locator('.workbook-planned').all()){
