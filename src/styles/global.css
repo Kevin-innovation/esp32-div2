@@ -227,6 +227,25 @@ td:last-child, th:last-child { padding-right: 0; }
 .workbook-scene { margin: 0; }
 .workbook-scene img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-card); box-shadow: 0 0 0 var(--rule-hair) var(--color-rule); }
 .workbook-scene figcaption { margin-top: var(--space-sm); color: var(--color-ink-2); font-size: var(--text-sm); }
+.fieldwork-guide-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-sm); margin-top: var(--space-md); }
+.fieldwork-guide-grid > div, .fieldwork-golden { padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-2); }
+.fieldwork-guide-grid strong { font-size: var(--text-sm); }
+.fieldwork-guide-grid p { margin-top: var(--space-xs); }
+.fieldwork-flow { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-2xs); margin: var(--space-md) 0 0; padding: 0; list-style: none; }
+.fieldwork-flow li { display: grid; justify-items: center; gap: var(--space-2xs); padding: var(--space-xs); color: var(--color-muted); font-size: var(--text-xs); text-align: center; }
+.fieldwork-flow a { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; max-width: 100%; }
+.fieldwork-flow li span { display: grid; place-items: center; width: 28px; height: 28px; border: var(--rule-hair) solid var(--color-rule); border-radius: 50%; font-variant-numeric: tabular-nums; }
+.fieldwork-flow li.is-current { color: var(--color-accent); font-weight: 700; }
+.fieldwork-flow li.is-current span { border-color: var(--color-accent); background: var(--color-accent-soft); }
+.fieldwork-flow li.is-done span { background: var(--color-rule); color: var(--color-ink); }
+.fieldwork-golden { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-sm); margin-top: var(--space-md); }
+.fieldwork-golden .btn { min-width: 0; max-width: 100%; white-space: normal; padding-block: var(--space-sm); }
+.fieldwork-golden ol { grid-column: 1 / -1; margin: 0; padding-left: 1.25rem; }
+.fieldwork-golden li + li { margin-top: var(--space-xs); }
+.fieldwork-analysis-checklist { margin: var(--space-md) 0; padding: var(--space-md) var(--space-md) var(--space-md) 1.5rem; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
+.fieldwork-analysis-checklist li + li { margin-top: var(--space-2xs); }
+.fieldwork-conclusion { margin-top: var(--space-md); padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
+.fieldwork-conclusion p { margin-top: var(--space-sm); }
 .workbook-planned h3 { margin-top: var(--space-xl); font-size: var(--text-title); line-height: 1.35; }
 .workbook-card__start { margin-top: var(--space-2xs); }
 .workbook-card__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-lg); margin: 0; }
@@ -510,6 +529,9 @@ a.path-link:active { background: var(--color-paper-3); }
   .workbook-planned, .workbook-planned:first-child { grid-template-columns: minmax(0, 1fr); }
   .workbook-planned > *, .workbook-planned > .workbook-scene { grid-column: 1; grid-row: auto; }
   .workbook-scene { max-width: 320px; }
+  .fieldwork-guide-grid, .fieldwork-golden { grid-template-columns: minmax(0, 1fr); }
+  .fieldwork-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--space-xs); }
+  .fieldwork-golden ol { grid-column: auto; }
   .art-front { --art-h: 360px; --stage-pad: var(--space-lg); }
   .pin { width: 24px; height: 24px; font-size: 0.75rem; border-width: 1px; }
   .chart th { width: 4.5rem; }
