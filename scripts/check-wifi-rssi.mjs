@@ -110,8 +110,8 @@ try {
     await page.evaluate(() => window.scrollTo(0, 0));
     await page.screenshot({ path: path.join(shots, `wifi-${width}-${theme}.png`), fullPage: true });
     await page.goto(origin + '/lab/', { waitUntil: 'networkidle' });
-    assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 11);
-    assert.equal(await page.getByRole('link', { name: 'Wi-Fi 워크북 시작하기' }).getAttribute('href'), '/lab/wifi-rssi/'); checks += 2;
+    assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 6);
+    assert.equal(await page.locator('#available .workbook-planned').first().getByRole('link', { name: '워크북 시작하기', exact: true }).getAttribute('href'), '/lab/wifi-rssi/'); checks += 2;
     await context.close();
     console.log(`PASS layout/init/demo/catalog ${width} ${theme}`);
   }

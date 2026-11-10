@@ -25,5 +25,5 @@ export const MISSION_DETAILS = [
   { id: 'subghz', time: '선택 심화 · 1~2차시(50~100분 제안)', prep: '별도의 내 433MHz 실험 송수신기·설명서', prerequisite: '/learn/security/#remote', prerequisiteLabel: '고정 명령과 리모컨 보안 노트', alternative: '별도 장비가 없으면 고정/롤링 코드 문서 비교로 준비합니다. 실제 출입·차량 장비를 대체품으로 쓰지 않습니다.' },
   { id: 'gps', time: '우선 심화 · 1~2차시(50~100분 제안)', prep: '내 위치 기기·휴대폰·지도·시계, 허가된 관찰 장소', prerequisite: '/learn/security/#gps', prerequisiteLabel: '기본 NFC 이후 위치 신뢰 노트', alternative: '수업의 대기 상한 안에 수신하지 못하면 미수신으로 남기고 다른 내 도구나 위치 사례를 교차 확인합니다.' },
   { id: 'firmware', time: '선택 심화 · 1차시(50분 제안)', prep: 'PC·공식 배포 파일·출처와 검증 정보', prerequisite: '/update/', prerequisiteLabel: '업데이트 주의·5단계 기기 보안', alternative: '신뢰할 검증 정보가 없으면 미확인으로 남기고 준비된 파일 사례를 비교합니다. 실제 플래싱은 필수가 아닙니다.' },
-  { id: 'csv', time: '우선 심화 · 1차시(50분 제안)', prep: 'PC와 직접 준비한 익명 예시 CSV 또는 내 백업', prerequisite: '/lab/nfc/#data', prerequisiteLabel: 'NFC 또는 Wi-Fi의 CSV 백업 경험', alternative: '민감한 실제 파일 없이 예시로 규칙을 정합니다. 전용 가명 처리 웹 도구는 아직 개발 예정입니다.' },
+  { id: 'csv', time: '우선 심화 · 1차시(50분 제안)', prep: 'PC와 직접 준비한 익명 예시 CSV 또는 내 백업', prerequisite: '/lab/nfc/#data', prerequisiteLabel: 'NFC 또는 Wi-Fi의 CSV 백업 경험', alternative: '민감한 실제 파일 없이 웹 워크북의 가상 샘플로 가명 처리·원본 분리 보관을 연습할 수 있습니다. 자바스크립트를 쓸 수 없으면 공책에서 원본 표와 가명 표를 나눠 비교합니다.' },
 ];

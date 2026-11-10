@@ -102,8 +102,8 @@ try {
       }
       await page.goto(origin + '/lab/', { waitUntil: 'networkidle' }); await page.evaluate(() => document.fonts.ready);
       const cards = page.locator('.workbook-planned'); assert.equal(await cards.count(), 12);
-      assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 11);
-      assert.equal(await cards.first().getByRole('link', { name: 'Wi-Fi 워크북 시작하기' }).getAttribute('href'), '/lab/wifi-rssi/');
+      assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 6);
+      assert.equal(await cards.first().getByRole('link', { name: '워크북 시작하기' }).getAttribute('href'), '/lab/wifi-rssi/');
       assert.equal(await page.locator('.workbook-scene svg').count(), 0);
       assert.equal(await page.locator('.workbook-scene img').count(), 12);
       for (const card of await cards.all()) {

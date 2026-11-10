@@ -10,7 +10,7 @@ export const STATUS_LABEL: Record<ProjectStatus, string> = {
 
 export const STATUS_HELP: Record<ProjectStatus, string> = {
   web: '이 기기에서 NFC 읽기를 확인했고, 기록과 그래프는 이 사이트에서 바로 씁니다.',
-  docs: '메뉴 이름과 절차는 공식 위키 기준입니다. 이 기기에서 실행을 확인하지 못했으니 동작부터 봅니다. Wi-Fi RSSI는 수동 입력용 웹 워크북을 제공하며, 나머지 주제는 공책이나 표에 기록합니다.',
+  docs: '메뉴 이름과 절차는 공식 위키 기준입니다. 이 기기에서 실행을 확인하지 못했으니 동작부터 봅니다. Wi-Fi RSSI·BLE 광고·IR 수신·2.4GHz 간섭·GPS는 수동 기록 웹 워크북, CSV는 가명 처리 웹 도구를 제공합니다. 아직 워크북이 없는 주제는 공책이나 표에 기록합니다.',
   extra: '기기와 사이트만으로는 끝나지 않습니다. 필요한 것을 먼저 준비합니다.',
 };
 
