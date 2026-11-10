@@ -4,8 +4,20 @@ import Evidence from '../../components/Evidence.astro';
 import ScreenShot from '../../components/learn/ScreenShot.astro';
 import Think from '../../components/learn/Think.astro';
 import { DeviceExplorer } from '../../components/learn/DeviceExplorer';
-import { MAIN_MENU } from '../../data/learn';
+import { GROUPS } from '../../data/guide';
+import { MAIN_MENU, DEVICE_MENU_MAP } from '../../data/learn';
 import { BASE, url } from '../../lib/url';
+
+const menuEntries = new Map<string, { name: string; ko: string; href: string; kind: string }>(GROUPS.flatMap(group => [
+  [group.slug, { name: group.en, ko: group.title, href: `/guide/${group.slug}/`, kind: 'group' }],
+  ...group.features.map(feature => [feature.id, { name: feature.en, ko: feature.ko, href: `/guide/${group.slug}/#${feature.id}`, kind: feature.kind }] as const),
+] as const));
+menuEntries.set('nrf-tuning', { name: 'NRF Tuning', ko: 'NRF 조정 메뉴', href: '#nrf-tuning', kind: 'unknown' });
+const menuMap = DEVICE_MENU_MAP.map(menu => ({ ...menu, pages: menu.pages.map(page => ({ ...page, entries: page.items.map(id => {
+  const entry = menuEntries.get(id);
+  if (!entry) throw new Error(`메뉴 가이드 연결이 없습니다: ${id}`);
+  return entry;
+}) })) }));
 
 const functions = [
   ['Card Reader', '읽기', '태그의 UID와 정보를 읽습니다. 이 실험에서 쓰는 유일한 메뉴입니다.', '내 실험용 태그'],
@@ -23,7 +35,7 @@ const functions = [
   heading="메뉴부터 태그 읽기까지 따라 하기"
   lead="기기를 손에 들고 한 화면씩 넘어갑니다. 각 단계에 누를 것, 화면 변화, 확인할 것을 적었습니다."
   description="ESP32-DIV V2.1의 메인 메뉴, About, More, RFID/NFC, Card Reader, Info 화면을 한글로 풀어 따라 합니다."
-  toc={[['menu', '메인 메뉴 8개'], ['status-bar', '위쪽 상태 표시'], ['about', 'About 읽기'], ['more', 'More'], ['nfc-menu', 'RFID/NFC 목록'], ['reader', '태그 읽기'], ['info', 'Info 화면'], ['again', '다시 읽기'], ['functions', 'NFC 메뉴 차이'], ['think', '생각해 보기']]}
+  toc={[['menu', '메인 메뉴 8개'], ['menu-map', '하위 메뉴 지도'], ['status-bar', '위쪽 상태 표시'], ['about', 'About 읽기'], ['more', 'More'], ['nfc-menu', 'RFID/NFC 목록'], ['reader', '태그 읽기'], ['info', 'Info 화면'], ['again', '다시 읽기'], ['functions', 'NFC 메뉴 차이'], ['think', '생각해 보기']]}
   sources={['deviceScreens', 'navigation', 'codeMenu', 'nfcOverview', 'nfcReader', 'pn532']}
 >
   <p class="small muted">메뉴가 왜 이렇게 나뉘었는지는 <a href={url('/learn/why/')}>0단계</a>에 있습니다.</p>
@@ -32,6 +44,36 @@ const functions = [
     <ScreenShot name="main-menu" />
     <p>아래 버튼은 화면과 같은 배치입니다. 고르면 역할과 다음 화면, 어디까지 확인했는지 보여 줍니다.</p>
     <DeviceExplorer client:load items={MAIN_MENU} base={BASE} />
+  </section>
+
+  <section id="menu-map" aria-labelledby="h-menu-map">
+    <h2 id="h-menu-map">메뉴 이름에서 기능 설명으로</h2>
+    <p>1. 메인 묶음을 고릅니다. 2. 아래 제목을 펼쳐 화면에 나온 순서를 확인합니다. 3. 기능 이름을 눌러 한글 가이드로 이동합니다. 이 지도는 설명을 읽는 길이며 기기를 조작하지 않습니다.</p>
+    <p class="small muted">메뉴 표시를 확인한 것과 기능을 실행해 검증한 것은 다릅니다. 새로 제공된 9장에서는 하위 목록까지 확인했고, 실제 실행 확인 범위는 여전히 NFC 태그 읽기까지입니다.</p>
+    {menuMap.map(menu => (
+      <details class="menu-map" id={`menu-${menu.id}`}>
+        <summary>{menu.name} <span class="feature__en">{menu.ko}</span></summary>
+        <dl class="facts">
+          <div><dt>관찰·학습</dt><dd>{menu.learn}</dd></div>
+          <div><dt>실제 위험</dt><dd>{menu.risk}</dd></div>
+          <div><dt>허가·안전 범위</dt><dd>{menu.permit}</dd></div>
+          <div><dt>이 기기 확인</dt><dd>{menu.checked}</dd></div>
+        </dl>
+        {menu.pages.map(page => (
+          <div class="menu-map__page">
+            <h3>{page.title}</h3>
+            <ul>
+              {page.entries.map(entry => <li><a href={entry.href.startsWith('#') ? entry.href : url(entry.href)}>{entry.name}</a> <span class="muted">{entry.ko}</span>{entry.kind === 'lab' && <span class="tag tag--unverified">원리·위험만 안내</span>}</li>)}
+            </ul>
+          </div>
+        ))}
+        {menu.id === 'wifi' && <p class="small">화면 아래 Main Menu는 상위 메뉴로, Next Page와 Prev Page는 목록의 다음·이전 면으로 돌아갑니다. 스캔 목록과 AP 접속은 다른 동작입니다.</p>}
+        {menu.id === 'bluetooth' && <p class="small">Skimmer Detect의 경고는 범죄 장치가 있다는 확정 판정이 아닙니다. 기능 설명은 기존 BLE 가이드로 연결합니다.</p>}
+        {menu.id === 'tools' && <div id="nrf-tuning" class="callout"><h3>NRF Tuning: 어디까지 알 수 있을까?</h3><p>Tools에 이 메뉴 이름이 표시되는 것만 확인했습니다. 세부 조정값·효과·송신 여부·복구 방법은 확인하지 못했으므로, 화면에 없는 보정 절차나 설정값은 제시하지 않습니다. 무선 모듈 설정이 관찰 조건에 영향을 줄 수 있다는 점을 배우고 현재 상태를 기록하는 데서 시작합니다.</p></div>}
+        {menu.id === 'more' && <p><a href="#more">More 화면 읽기</a> → <a href="#reader">Card Reader 따라 하기</a></p>}
+        {menu.id === 'about' && <p><a href="#about">이 기기의 About 표시 값 읽기</a></p>}
+      </details>
+    ))}
   </section>
 
   <section id="status-bar" aria-labelledby="h-status">
@@ -55,7 +97,7 @@ const functions = [
         <tbody>
           <tr><td><code>DIV V2.1</code>, <code>Board: ESP32 DIV V2.1 by MK</code></td><td>하드웨어(보드) 판</td></tr>
           <tr><td><code>Build: V1.2 Stable by MK SIGNAL</code></td><td>판매자가 붙인 빌드 이름</td></tr>
-          <tr><td><code>1.7.2 stable by MK_SIGNAL_V1</code></td><td>펌웨어 표시. 원본 프로젝트 최신 번호도 v1.7.2입니다.</td></tr>
+          <tr><td><code>1.7.2 stable by MK_SIGNAL_V1</code></td><td>기기에 표시된 펌웨어 이름과 버전입니다. 판매자 문자열도 함께 붙습니다.</td></tr>
         </tbody>
       </table>
     </div>
@@ -150,3 +192,14 @@ const functions = [
     </Think>
   </section>
 </LearnLayout>
+
+<style>
+  .menu-map { margin-top: var(--space-lg); padding: var(--space-md); border: 1px solid var(--color-rule); border-radius: var(--radius-control); }
+  .menu-map > summary { font-size: var(--text-lg); }
+  .menu-map > summary .feature__en { margin-left: var(--space-xs); }
+  .menu-map__page, .menu-map > p, .menu-map > .callout { margin-top: var(--space-lg); }
+  .menu-map__page h3 { font-size: var(--text-md); }
+  .menu-map__page li { margin-top: var(--space-xs); }
+  .menu-map__page a { display: inline-block; min-height: 44px; padding-block: var(--space-xs); }
+  .menu-map__page .tag { margin-left: var(--space-xs); }
+</style>

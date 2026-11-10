@@ -127,14 +127,91 @@ export interface MenuItem {
 
 // 화면과 같은 배치: 왼쪽 줄, 오른쪽 줄 순서로 번갈아 놓는다.
 export const MAIN_MENU: MenuItem[] = [
-  { id: 'wifi', name: 'WiFi', ko: '와이파이', role: '주변 공유기와 채널을 살펴보는 도구 모음입니다.', next: 'WiFi를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/wifi/', linkLabel: 'Wi-Fi 기능 가이드' },
-  { id: 'bluetooth', name: 'Bluetooth', ko: '블루투스', role: '주변 BLE 기기가 보내는 신호를 관찰하는 도구 모음입니다.', next: 'Bluetooth를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/ble/', linkLabel: 'BLE 기능 가이드' },
-  { id: '24ghz', name: '2.4GHz', ko: '2.4GHz 대역', role: '2.4GHz 대역의 신호 에너지를 살펴보는 도구 모음입니다.', next: '2.4GHz를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/24ghz/', linkLabel: '2.4GHz 기능 가이드' },
-  { id: 'subghz', name: 'SubGHz', ko: '1GHz 아래 대역', role: '리모컨 등이 쓰는 낮은 주파수를 다루는 도구 모음입니다.', next: 'SubGHz를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/subghz/', linkLabel: 'Sub-GHz 기능 가이드' },
+  { id: 'wifi', name: 'WiFi', ko: '와이파이', role: '주변 공유기와 채널을 살펴보는 도구 모음입니다.', next: 'WiFi를 고르면 기능 목록이 나옵니다.', checked: '하위 메뉴 표시 확인. 기능 실행은 미확인.', href: '#menu-wifi', linkLabel: 'Wi-Fi 메뉴 지도' },
+  { id: 'bluetooth', name: 'Bluetooth', ko: '블루투스', role: '주변 BLE 기기가 보내는 신호를 관찰하는 도구 모음입니다.', next: 'Bluetooth를 고르면 기능 목록이 나옵니다.', checked: '하위 메뉴 표시 확인. 기능 실행은 미확인.', href: '#menu-bluetooth', linkLabel: 'BLE 메뉴 지도' },
+  { id: '24ghz', name: '2.4GHz', ko: '2.4GHz 대역', role: '2.4GHz 대역의 신호 에너지를 살펴보는 도구 모음입니다.', next: '2.4GHz를 고르면 기능 목록이 나옵니다.', checked: '하위 메뉴 표시 확인. 기능 실행은 미확인.', href: '#menu-24ghz', linkLabel: '2.4GHz 메뉴 지도' },
+  { id: 'subghz', name: 'SubGHz', ko: '1GHz 아래 대역', role: '리모컨 등이 쓰는 낮은 주파수를 다루는 도구 모음입니다.', next: 'SubGHz를 고르면 기능 목록이 나옵니다.', checked: '하위 메뉴 표시 확인. 기능 실행은 미확인.', href: '#menu-subghz', linkLabel: 'Sub-GHz 메뉴 지도' },
   { id: 'more', name: 'More', ko: '더보기', role: 'IR Remote, RFID/NFC, GPS, Games를 모아 둔 메뉴입니다.', next: 'NFC 실험은 More → RFID/NFC → Card Reader 순서로 갑니다.', checked: '하위 메뉴까지 확인. NFC 읽기만 실행 확인.', href: '#more', linkLabel: 'More 화면 보기' },
-  { id: 'tools', name: 'Tools', ko: '도구', role: '시리얼 모니터, 펌웨어 업데이트, 터치 보정, SD 파일 관리 같은 관리 도구입니다.', next: 'Tools를 고르면 기능 목록이 나옵니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/system/', linkLabel: '시스템 기능 가이드' },
-  { id: 'settings', name: 'Settings', ko: '설정', role: '밝기, 화면 테마, 표시등, 자동 스캔을 바꿉니다.', next: 'Settings를 고르면 설정 화면이 바로 열립니다.', checked: '상위 분류 표시 확인. 하위 경로는 공식 문서 기준, 실행은 미확인.', href: '/guide/system/#settings', linkLabel: '설정 가이드' },
+  { id: 'tools', name: 'Tools', ko: '도구', role: '시리얼 모니터, 펌웨어 업데이트, 터치 보정, SD 파일 관리 같은 관리 도구입니다.', next: 'Tools를 고르면 기능 목록이 나옵니다.', checked: '하위 메뉴 표시 확인. 기능 실행은 미확인.', href: '#menu-tools', linkLabel: 'Tools 메뉴 지도' },
+  { id: 'settings', name: 'Settings', ko: '설정', role: '공식 문서는 밝기, 화면 테마, 표시등, 자동 스캔 설정을 설명합니다.', next: '공식 문서에서는 설정 화면으로 이어집니다. 이 기기의 내부 화면은 미확인입니다.', checked: '메인 항목만 확인. 내부 설정 화면과 저장 동작은 미확인.', href: '/guide/system/#settings', linkLabel: '설정 가이드' },
   { id: 'about', name: 'About', ko: '기기 정보', role: '기기 이름, 펌웨어, 보드, 빌드 이름을 보여 줍니다.', next: 'About을 고르면 정보 화면이 열립니다.', checked: '화면 내용까지 확인.', href: '#about', linkLabel: 'About 화면 보기' },
+];
+
+/** 사용자 메뉴 화면의 순서. 항목 설명은 guide.ts의 기존 id로 연결한다.
+ * IMG_5988: 메인, 5989/5990: Wi-Fi, 5991/5992: BLE, 5993: 2.4GHz,
+ * 5994: SubGHz, 5995: More, 5996: Tools. JPG는 확인용이며 웹 자산이 아니다.
+ */
+export const DEVICE_MENU_MAP = [
+  {
+    id: 'wifi', name: 'WiFi', ko: '와이파이',
+    learn: 'SSID·BSSID·RSSI와 채널, 탐색과 접속의 차이를 배웁니다. 먼저 내 공유기의 목록과 신호를 읽는 기능부터 봅니다.',
+    risk: '위장 AP·로그인 화면은 자동 연결이나 개인정보 입력을 유도할 수 있고, 대량 송신·연결 해제는 주변 통신을 방해할 수 있습니다.',
+    permit: '관찰은 허가받은 내 네트워크에 한정하고 주변 주소를 공유하지 않습니다. 송신·위장 기능은 격리된 시험 환경의 원리 설명만 다룹니다.',
+    checked: '첫 목록 8개와 Next Page의 3개 표시를 확인했습니다. 스캔·접속·송신 등 기능 실행은 미확인입니다.',
+    pages: [
+      { title: '첫 목록', items: ['packet-monitor', 'beacon-spammer', 'wifi-deauther', 'probe-flood', 'deauth-detector', 'wifi-scanner', 'captive-portal', 'hidden-ssid'] },
+      { title: 'Next Page → 다음 목록', items: ['wps-scanner', 'arp-scanner', 'karma'] },
+    ],
+  },
+  {
+    id: 'bluetooth', name: 'Bluetooth', ko: '블루투스·BLE',
+    learn: '광고 신호·스캔·연결·키보드 역할을 구분합니다. 기기 이름이나 감지 경고를 상대의 신원·안전성 증명으로 받아들이지 않습니다.',
+    risk: '위장 광고·추적기 흉내는 알림과 위치 판단을 혼란스럽게 하고, 방해·키 입력 자동화는 다른 사람의 기기 동작에 영향을 줄 수 있습니다.',
+    permit: '내 BLE 기기만 관찰하고 주소·이동 기록을 공개하지 않습니다. 위장·방해·입력 기능의 실행법은 제공하지 않습니다.',
+    checked: '첫 목록 8개와 Skimmer Detect 단독 목록 표시를 확인했습니다. 촬영 순서와 기존 기능 분류에 따라 BLE 다음 목록으로 연결하며, 이 단독 화면에는 상위 메뉴 이름이 없습니다. 실행은 미확인입니다.',
+    pages: [
+      { title: '첫 목록', items: ['ble-jammer', 'ble-spoofer', 'sour-apple', 'airtag-spoofer', 'airtag-sniffer', 'ble-sniffer', 'ble-scanner', 'rubber-ducky'] },
+      { title: 'Next Page → 다음 목록', items: ['skimmer-detect'] },
+    ],
+  },
+  {
+    id: '24ghz', name: '2.4GHz', ko: '2.4GHz 대역',
+    learn: '대역의 신호 에너지 관찰과 ESB 같은 특정 통신 규칙의 수신을 구분합니다. 에너지가 보인다고 내용이나 송신자를 해독한 것은 아닙니다.',
+    risk: '대역 방해는 여러 무선 기기에 영향을 줄 수 있습니다. 패킷 재전송·키 입력 주입은 수신 기기의 동작을 바꿀 수 있습니다.',
+    permit: '관찰은 내 시험 장비를 대상으로 합니다. 타인 입력 수집·재밍·주입 절차는 싣지 않고 보호 방식과 한계만 설명합니다.',
+    checked: '아래 6개 메뉴 표시를 확인했습니다. 수신·탐지·송신 효과는 이 기기에서 실행해 확인하지 못했습니다.',
+    pages: [{ title: '기능 목록', items: ['24-scanner', 'proto-kill', 'esb-sniffer', 'esb-replay', 'mousejack-scan', 'mousejack-inject'] }],
+  },
+  {
+    id: 'subghz', name: 'SubGHz', ko: '1GHz 아래 대역',
+    learn: '리모컨의 고정 코드와 바뀌는 코드, 수신·저장·재전송·방해 감지의 차이를 배웁니다.',
+    risk: '신호 재전송·코드 전수 시도는 출입·경보 장치를 오작동시킬 수 있고, 방해는 정상 수신을 막을 수 있습니다. 감지 경고만으로 공격을 확정하지 않습니다.',
+    permit: '내 실험용 송수신기와 문서만 비교합니다. 실제 출입·차량 장치에 대한 재전송·재밍·코드 시도 방법은 제공하지 않습니다.',
+    checked: '아래 5개 메뉴가 같은 SubGHz 화면에 표시됩니다. Saved Profile도 이 묶음에 있습니다. Skimmer Detect는 이 목록이 아니라 위 BLE 다음 목록에 연결했습니다. 기능 실행은 미확인입니다.',
+    pages: [{ title: '기능 목록', items: ['replay-attack', 'subghz-jammer', 'de-bruijn', 'jamming-detector', 'subghz-saved'] }],
+  },
+  {
+    id: 'more', name: 'More', ko: '더보기',
+    learn: 'IR 리모컨, 가까운 태그, 위성 위치처럼 서로 다른 통신 방식의 쓰임을 비교합니다. NFC 학습은 RFID/NFC 안의 Card Reader로 이어집니다.',
+    risk: '리모컨 명령·태그 쓰기는 실제 장치나 데이터를 바꿀 수 있고, 위치와 식별자 기록은 개인정보를 드러낼 수 있습니다.',
+    permit: '직접 산 실험 태그·내 리모컨·내 위치만 다룹니다. 이 수업에서 실행을 안내하는 NFC 기능은 Card Reader 읽기입니다.',
+    checked: 'IR Remote·RFID/NFC·GPS·Games와 Main Menu 복귀 항목 표시를 확인했습니다. NFC 태그의 UID와 P4~P7 읽기만 실행 확인했고, IR·GPS·Games 실행은 미확인입니다.',
+    pages: [{ title: '하위 묶음', items: ['ir', 'nfc', 'gps', 'games'] }],
+  },
+  {
+    id: 'tools', name: 'Tools', ko: '관리 도구',
+    learn: '로그·업데이트·터치 보정·파일 관리·무선 모듈 조정이 각각 무엇을 바꾸는 관리 작업인지 구분합니다.',
+    risk: '잘못된 업데이트나 파일 삭제는 기기를 쓰지 못하게 하거나 기록을 지울 수 있습니다. 조정값 변경은 이후 관찰의 비교 조건을 바꿀 수 있습니다.',
+    permit: '내 기기의 버전과 백업부터 확인합니다. 업데이트·삭제·조정은 복구 방법과 적용 범위를 확인하기 전에는 실행하지 않습니다.',
+    checked: '아래 5개 메뉴 이름이 같은 Tools 목록에 표시됩니다. 내부 화면·설정 변경·업데이트 실행은 미확인입니다.',
+    pages: [{ title: '기능 목록', items: ['serial-monitor', 'update-firmware', 'touch-calibrate', 'sd-file-manager', 'nrf-tuning'] }],
+  },
+  {
+    id: 'settings', name: 'Settings', ko: '설정',
+    learn: '문서에 나온 밝기·테마·표시등·자동 스캔과 저장 설정을 구분합니다. 설정을 바꾸는 일과 값을 관찰하는 일은 다릅니다.',
+    risk: '자동 스캔 같은 설정은 동작과 전력 사용을 바꿀 수 있고, 저장 여부에 따라 다음 부팅의 조건이 달라질 수 있습니다.',
+    permit: '내 기기의 현재 값을 먼저 기록하고 필요한 항목만 비교합니다. 아래 가이드는 공식 문서 기준이며 실제 화면에서 항목을 다시 확인합니다.',
+    checked: '메인 메뉴의 Settings 항목만 확인했습니다. 이번 9장에는 설정 내부 화면이나 저장 결과가 없습니다.',
+    pages: [{ title: '문서 기준 상세 설명', items: ['settings'] }],
+  },
+  {
+    id: 'about', name: 'About', ko: '기기 정보',
+    learn: '보드 판·판매자 빌드 이름·펌웨어 버전을 나누어 적고 공식 자료와 비교하는 방법을 배웁니다.',
+    risk: '같은 버전 번호만 보고 다른 기기의 업데이트 파일을 적용하면 복구가 필요할 수 있습니다.',
+    permit: '정보를 읽고 기록하는 데서 시작합니다. 파일 적용은 별도의 업데이트 안내에서 조건을 확인합니다.',
+    checked: '메인 항목과 앞서 제공된 About 화면의 표시 값까지 확인했습니다. 같은 번호가 공식 펌웨어와 같은 내용이라는 뜻은 아닙니다.',
+    pages: [{ title: '표시 값 읽기', items: ['about'] }],
+  },
 ];
 
 export interface VisualStep {
