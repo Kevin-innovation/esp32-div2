@@ -242,6 +242,17 @@ td:last-child, th:last-child { padding-right: 0; }
 .fieldwork-golden .btn { min-width: 0; max-width: 100%; white-space: normal; padding-block: var(--space-sm); }
 .fieldwork-golden ol { grid-column: 1 / -1; margin: 0; padding-left: 1.25rem; }
 .fieldwork-golden li + li { margin-top: var(--space-xs); }
+.fieldwork-detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); margin-top: var(--space-md); }
+.fieldwork-detail-grid > section { min-width: 0; padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-2); }
+.fieldwork-detail-grid h3 { margin-bottom: var(--space-sm); font-size: var(--text-lg); }
+.fieldwork-detail-grid ol { margin: 0; padding-left: 1.25rem; }
+.fieldwork-detail-grid li + li { margin-top: var(--space-xs); }
+.fieldwork-detail-grid dl { margin: 0; }
+.fieldwork-detail-grid dl > div + div { margin-top: var(--space-xs); }
+.fieldwork-detail-grid dt { font-weight: 700; }
+.fieldwork-detail-grid dd { margin: var(--space-2xs) 0 0; }
+.fieldwork-wide { grid-column: 1 / -1; }
+.fieldwork-detail-grid table { margin: 0; }
 .fieldwork-analysis-checklist { margin: var(--space-md) 0; padding: var(--space-md) var(--space-md) var(--space-md) 1.5rem; border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
 .fieldwork-analysis-checklist li + li { margin-top: var(--space-2xs); }
 .fieldwork-conclusion { margin-top: var(--space-md); padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); }
@@ -530,6 +541,8 @@ a.path-link:active { background: var(--color-paper-3); }
   .workbook-planned > *, .workbook-planned > .workbook-scene { grid-column: 1; grid-row: auto; }
   .workbook-scene { max-width: 320px; }
   .fieldwork-guide-grid, .fieldwork-golden { grid-template-columns: minmax(0, 1fr); }
+  .fieldwork-detail-grid { grid-template-columns: minmax(0, 1fr); }
+  .fieldwork-wide { grid-column: auto; }
   .fieldwork-flow { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--space-xs); }
   .fieldwork-golden ol { grid-column: auto; }
   .art-front { --art-h: 360px; --stage-pad: var(--space-lg); }
