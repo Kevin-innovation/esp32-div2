@@ -41,20 +41,21 @@ const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', 
     <p class="path-next__done"><strong>다음으로 넘어가도 좋을 때:</strong> {step.done}</p>
     {next ? (
       <div class="path-next__links">
-        <a class="path-link" href={url(prev ? prev.href : '/learn/')}>
-          <small>이전</small>
+        <a class="path-link path-link--prev" href={url(prev ? prev.href : '/learn/')}>
+          <small><svg class="path-link__arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M20 12H5M11 6l-6 6 6 6" /></svg>이전</small>
           <span>{prev ? name(prev) : '학습 안내'}</span>
         </a>
         <a class="path-link path-link--next" href={url(next.href)}>
-          <small>다음</small>
+          <small>다음 단계</small>
           <span>{name(next)}</span>
           <span class="small">{next.does}</span>
+          <span class="path-link__cta">{next.n}단계 시작하기<svg class="path-link__arrow" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" /></svg></span>
         </a>
       </div>
     ) : (
       <div class="path-next__links">
-        <a class="path-link" href={url(prev.href)}>
-          <small>이전</small>
+        <a class="path-link path-link--prev" href={url(prev.href)}>
+          <small><svg class="path-link__arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M20 12H5M11 6l-6 6 6 6" /></svg>이전</small>
           <span>{name(prev)}</span>
         </a>
         <div class="path-link path-link--end">
@@ -73,3 +74,19 @@ const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', 
     </a>
   </nav>
 ))}
+
+{where === 'bottom' && step && next && (
+  <script is:inline>
+    // 다음 카드가 화면에 들어오면 한 번만 짧게 강조한다(3회 후 멈춤). 지원하지 않으면 정적 강조만 남는다.
+    (() => {
+      const el = document.querySelector('.path-link--next');
+      if (!el || !('IntersectionObserver' in window)) return;
+      const io = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        el.classList.add('is-cued');
+        io.disconnect();
+      }, { threshold: 0.6 });
+      io.observe(el);
+    })();
+  </script>
+)}

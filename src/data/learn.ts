@@ -238,6 +238,8 @@ export interface VisualStep {
   newRow?: number;
   /** 작은 관찰 질문과 답 */
   ask?: [string, string];
+  /** 무선 구간이 아니라 기기 안(리더 칩 → 프로세서 → 화면)에서 일어나는 단계 */
+  inside?: boolean;
 }
 
 export interface StepScenario {
@@ -260,7 +262,7 @@ export const NFC_STEPS: VisualStep[] = [
   { title: '충돌 방지와 UID 확인', field: true, powered: true, from: 0, signal: '충돌 방지', returns: 'UID', body: '여러 태그가 함께 답해도 하나씩 가려낼 수 있도록 리더가 UID를 단계적으로 확인합니다. 화면의 UID(고유 식별값) 530105D0430001이 여기서 얻은 값입니다.' },
   { title: '선택', field: true, powered: true, from: 0, signal: 'SELECT', returns: 'SAK', body: '리더가 찾은 UID의 태그를 고릅니다. 태그는 SAK(선택 응답)로 답합니다. 화면의 SAK 00이 그 값입니다.' },
   { title: '메모리 읽기', field: true, powered: true, from: 0, signal: 'READ', returns: '데이터 16바이트', body: '리더가 페이지를 지정해 읽기를 요청하면 태그가 그 페이지부터 16바이트를 돌려줍니다. UID를 읽은 것만으로 메모리까지 읽은 것은 아니며, 이 단계가 따로 있어야 P4~P7 값을 볼 수 있습니다.', ask: ['이 단계에서 인터넷을 거치나요?', '아닙니다. 리더와 태그 사이의 ISO14443A 프레임입니다.'] },
-  { title: '화면에 표시', field: true, powered: true, state: '기기 안에서 처리', body: 'PN532 칩이 받은 값을 ESP32-S3로 넘기고 화면에 그립니다. 이 과정에 Wi-Fi 접속이나 인터넷 전송은 필요하지 않습니다.' },
+  { title: '화면에 표시', field: true, powered: true, inside: true, state: '기기 안에서 처리', body: 'PN532 칩이 받은 값을 ESP32-S3로 넘기고 화면에 그립니다. 이 과정에 Wi-Fi 접속이나 인터넷 전송은 필요하지 않습니다.' },
 ];
 
 const LIST_DONE = '받은 값을 모아 목록을 보여 줍니다. 아래 “스캔 목록 읽기”의 표가 이 목록입니다. 목록이 보인다고 AP에 연결된 것은 아니며, 연결은 그 다음의 별도 과정입니다.';

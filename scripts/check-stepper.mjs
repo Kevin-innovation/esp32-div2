@@ -17,7 +17,6 @@ const ready = async (page) => { await page.evaluate(() => document.fonts.ready);
 const metric = (s) => s.evaluate((e) => ({
   height: e.querySelector('.stepper__step.is-current .stepper__picture').getBoundingClientRect().height,
   controls: e.querySelector('.stepper__controls').getBoundingClientRect().top + scrollY,
-  bottom: e.getBoundingClientRect().bottom + scrollY,
 }));
 async function exercise(page) {
   for (const s of await page.locator('.stepper').all()) {
@@ -47,7 +46,7 @@ async function exercise(page) {
       await measure();
       const next = s.getByRole('button', { name: '다음', exact: true });
       while (true) {
-        const question = s.locator('.stepper__step.is-current details:not(.stepper__reserve)');
+        const question = s.locator('.stepper__ask');
         if (await question.count()) { await question.locator('summary').click(); await measure(); await question.locator('summary').click(); }
         const replay = s.getByRole('button', { name: '이 단계 다시 보기', exact: true });
         if (await replay.isVisible()) { await replay.click(); await measure(); }

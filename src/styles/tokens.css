@@ -16,7 +16,7 @@
   --color-error: oklch(48% 0.17 27); --color-success: oklch(44% 0.1 155);
   --color-warn: oklch(43% 0.09 65); --color-warn-soft: oklch(95% 0.035 85);
   --color-band: oklch(16% 0 0); --color-band-ink: oklch(97% 0.003 100); --color-band-muted: oklch(78% 0 0); --color-band-rule: oklch(34% 0 0);
-  --color-screen-bg: oklch(20% 0 0);
+  --color-screen-bg: oklch(20% 0 0); --color-screen-ink: oklch(94% 0.02 155);
   --color-pin: oklch(16% 0 0); --color-pin-ink: oklch(99.5% 0.003 100);
   --color-photo-label: oklch(16% 0 0); --color-photo-label-ink: oklch(99.5% 0.003 100);
   --color-logo-plate: oklch(99.5% 0.003 100);
