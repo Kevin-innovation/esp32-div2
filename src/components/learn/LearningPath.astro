@@ -1,5 +1,7 @@
 ---
 import { LEARNING_PATH } from '../../data/learn';
+import { COURSE } from '../../data/pythonCourseMap';
+import CourseBar from './CourseBar.astro';
 import { url } from '../../lib/url';
 
 interface Props {
@@ -15,9 +17,12 @@ const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
 const mission = path.startsWith('/lab/');
 const catalog = path === '/lab/';
 const prereq = path.startsWith('/learn/python-colab/') || path === '/learn/mission-code/';
+/** Python 과정 차시는 학습 흐름 바 자리에 과정 진행바를 둔다 */
+const course = COURSE.some((c) => c.href === path);
 const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', '보안', '실험·보고서'];
 ---
-{where === 'top' && (step ? (
+{where === 'top' && course && <CourseBar path={path} />}
+{where === 'top' && !course && (step ? (
   <nav class="path-top wrap" aria-label="수업 단계 내비게이션">
     <ol class="path-steps">
       {LEARNING_PATH.map((s) => (
@@ -37,7 +42,7 @@ const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', 
   </nav>
 ))}
 
-{where === 'bottom' && (step ? (
+{where === 'bottom' && !course && (step ? (
   <nav class="path-next wrap" aria-label="이전과 다음 단계">
     <p class="path-next__done"><strong>다음으로 넘어가도 좋을 때:</strong> {step.done}</p>
     {next ? (

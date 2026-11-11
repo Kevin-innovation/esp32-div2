@@ -30,12 +30,10 @@ const writes = lesson.steps.filter((s) => s.write).length;
   heading={`${lesson.n}차시 ${lesson.title}`}
   lead={lesson.goal}
   description={`Python·pandas·Colab 과정 ${lesson.n}차시: ${lesson.short}. 미션 9장 코드와 연결한 예제, 빈칸, 직접 작성 과제와 확인 셀.`}
-  toc={[['plan', '이 차시'], ...lesson.steps.map((s, i) => [`step-${s.id}`, lesson.chain ? s.title : `${i + 1}. ${s.title.split(':')[0]}`] as [string, string]), ['files', '학생용·교사용 파일'], ['h-course-end', '마쳤다면']]}
+  toc={[['plan', '이 차시'], ...lesson.steps.map((s, i) => [`step-${s.id}`, lesson.chain ? s.title : `${i + 1}. ${s.title.split(':')[0]}`] as [string, string]), ['files', '학생용·교사용 파일'], ['h-course-end', '차시 마무리']]}
   sourcesChecked="2026-11-11"
   sources={SOURCES[lesson.slug]}
 >
-  <CourseNav n={lesson.n} where="top" />
-
   <section id="plan" aria-labelledby="h-plan">
     <h2 id="h-plan">이 차시</h2>
     <dl class="facts">
@@ -66,5 +64,5 @@ const writes = lesson.steps.filter((s) => s.write).length;
     </details>
   </section>
 
-  <CourseNav n={lesson.n} where="bottom" />
+  <CourseNav n={lesson.n} />
 </LearnLayout>

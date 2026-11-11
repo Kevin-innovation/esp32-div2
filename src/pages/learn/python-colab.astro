@@ -22,8 +22,6 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
   sourcesChecked="2026-11-11"
   sources={['colabFaq', 'colabFiles', 'pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'mplBar']}
 >
-  <CourseNav n={1} where="top" />
-
   <section id="when" aria-labelledby="h-when">
     <h2 id="h-when">언제 보나</h2>
     <div class="callout">
@@ -165,5 +163,5 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
     <p>셀 1~8은 따라 하기였습니다. 2차시부터는 같은 문법을 하나씩 떼어 빈칸을 채우고 빈 셀에 직접 씁니다. 미션 코드를 바로 읽어 보고 싶다면 <a href={url('/learn/mission-code/')}>7차시 미션 코드 읽기</a>를 먼저 봐도 됩니다.</p>
   </section>
 
-  <CourseNav n={1} where="bottom" />
+  <CourseNav n={1} />
 </LearnLayout>

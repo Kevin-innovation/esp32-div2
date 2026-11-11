@@ -1,7 +1,7 @@
 // Python 과정 1~8차시 페이지 검사(headless test-chromium만). 미리보기 서버(127.0.0.1:4329)가 떠 있어야 한다.
 // - 원문 발췌(‘원문 a~b줄’)가 실제 미션 코드(또는 NFC 노트북)의 같은 줄과 글자까지 같은지
 // - 코드 블록 복사 = 화면, 학생용·교사용·예상 출력·통합 파일 내려받기 = 화면
-// - 차시 내비게이션 순서와 현재 표시, 과정 페이지와 13개 미션 9장의 #링크가 실제 id를 가리키는지
+// - 진행바 차시 목록과 현재 표시, 아래 이전/다음 차시, 과정 페이지와 13개 미션 9장의 #링크가 실제 id를 가리키는지
 // - 접힌 해설을 키보드로 열고 닫기, 375 dark·1280 light에서 가로 넘침 0, console 0
 // 실행: node scripts/check-course.mjs
 import { createRequire } from 'node:module';
@@ -44,7 +44,7 @@ for (const [w, scheme] of [[1280, 'light'], [375, 'dark']]) {
     await p.goto(BASE + route, { waitUntil: 'networkidle' });
     const tag = `${route} ${w} ${scheme}`;
     // 차시 내비게이션
-    const nav = await p.locator('.course-nav a').evaluateAll((as) => as.map((a) => [a.getAttribute('href'), a.getAttribute('aria-current')]));
+    const nav = await p.locator('.course-bar__lessons a').evaluateAll((as) => as.map((a) => [a.getAttribute('href'), a.getAttribute('aria-current')]));
     if (nav.length !== 8) fails.push(`${tag}: 차시 링크 ${nav.length}개`);
     const cur = nav.filter(([, a]) => a === 'page').map(([h]) => h);
     if (cur.length !== 1 || !cur[0].endsWith(route)) fails.push(`${tag}: 현재 차시 표시 ${cur}`);

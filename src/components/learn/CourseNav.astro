@@ -1,32 +1,15 @@
 ---
-// Python·pandas·Colab 과정 1~8차시의 위치(위)와 완료 조건·이전/다음(아래). 메뉴, 미션 9장과 같은 순서다.
+// Python·pandas·Colab 과정 차시의 끝: 완료 조건과 이전/다음 차시. 스크롤 중 위치와 차시 이동은 CourseBar(진행바)가 맡는다.
 import { COURSE } from '../../data/pythonCourseMap';
 import { url } from '../../lib/url';
 
-interface Props { n: number; where: 'top' | 'bottom' }
-const { n, where } = Astro.props;
+interface Props { n: number }
+const { n } = Astro.props;
 const now = COURSE.find((c) => c.n === n)!;
 const prev = COURSE.find((c) => c.n === n - 1);
 const next = COURSE.find((c) => c.n === n + 1);
-const STAGES = ['기초', '직접 작성', '미션별 응용'] as const;
 ---
-{where === 'top' ? (
-  <nav class="course-nav" aria-label="Python·pandas·Colab 과정 차시">
-    <p class="course-nav__head"><strong>Python·pandas·Colab 과정 {n}/8차시</strong> <span class="small muted">· {now.stage} · 약 {now.minutes}분</span></p>
-    <ol class="course-nav__list">
-      {STAGES.map((st) => (
-        <li class="course-nav__stage">
-          <span class="course-nav__label">{st}</span>
-          <ol>
-            {COURSE.filter((c) => c.stage === st).map((c) => (
-              <li><a href={url(c.href)} aria-current={c.n === n ? 'page' : undefined}><span class="course-nav__n">{c.n}</span>{c.title}</a></li>
-            ))}
-          </ol>
-        </li>
-      ))}
-    </ol>
-  </nav>
-) : (
+
   <section class="course-end" aria-labelledby="h-course-end">
     <h2 id="h-course-end">{n}차시를 마쳤다면</h2>
     <p><strong>산출물:</strong> {now.product}</p>
@@ -56,4 +39,3 @@ const STAGES = ['기초', '직접 작성', '미션별 응용'] as const;
       )}
     </div>
   </section>
-)}

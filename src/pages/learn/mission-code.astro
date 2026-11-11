@@ -24,8 +24,6 @@ const BLOCK_NAME: Record<string, string> = Object.fromEntries(BLOCK_GROUPS.flatM
   sourcesChecked="2026-11-11"
   sources={['pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'pandasCrosstab', 'pythonTutorial', 'mplBar']}
 >
-  <CourseNav n={7} where="top" />
-
   <section id="goal" aria-labelledby="h-goal">
     <h2 id="h-goal">목표와 순서</h2>
     <div class="callout">
@@ -133,5 +131,5 @@ const BLOCK_NAME: Record<string, string> = Object.fromEntries(BLOCK_GROUPS.flatM
     <details><summary>해설 보기</summary><p>원문 {nfcCode.split('\n').findIndex((l) => l.includes("rs = data[data['condition'] == c]")) + 1}번째 줄입니다. 조건(단독·지갑·가방)별로 행을 고르는 줄이라, 거리 d로 바꾸면 거리별 성공/시도를 세게 됩니다. 원문은 바로 아래 두 번째 반복문에서 거리별 값을 따로 셉니다. 두 변수가 함께 바뀐 기록이면 한쪽 결과만으로 그 변수의 효과라고 쓰지 않습니다.</p></details>
   </section>
 
-  <CourseNav n={7} where="bottom" />
+  <CourseNav n={7} />
 </LearnLayout>
