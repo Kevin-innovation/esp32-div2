@@ -63,7 +63,7 @@ const specs = [
     <section class="section" style="padding-top: 0" aria-labelledby="h-menus">
       <h2 id="h-menus">겉모습 다음에는 메뉴를 읽습니다</h2>
       <p style="margin-top: var(--space-md)">새로 확인한 하위 목록은 <a href={url('/learn/device/#menu-map')}>메뉴 지도</a>에서 화면 순서대로 펼쳐 볼 수 있습니다. 각 기능의 관찰 목표·위험·허가 범위와 실행 확인 여부를 나누었습니다.</p>
-      <nav class="btn-row" aria-label="메인 메뉴별 설명" style="margin-top: var(--space-lg)">
+      <nav class="btn-row btn-row--grid" aria-label="메인 메뉴별 설명" style="margin-top: var(--space-lg)">
         {MAIN_MENU.map(menu => <a class="btn btn--quiet btn--small" href={url(`/learn/device/#menu-${menu.id}`)}>{menu.name}</a>)}
       </nav>
       <p class="small muted" style="margin-top: var(--space-md)">아래 사진은 외관 근거입니다. 메뉴 이름이 보이는 것만으로 해당 기능이나 내부 부품의 동작이 검증된 것은 아닙니다. NFC 태그 읽기 외 기능 실행은 미확인입니다.</p>

@@ -50,9 +50,9 @@ const deviceState = (id: string) => id === 'nfc' ? READINESS.nfc.device : id ===
           <li class="workbook-planned">
             <div class="workbook-card__meta">
               <span class="workbook-card__number" aria-label={`실습 ${l.index + 1}번`}>{String(l.index + 1).padStart(2, '0')}</span>
-              <span class="tag">{l.index === 0 ? '기본 실습' : '선택 미션'}</span>
-              {TOPICS[l.index].map((t) => <span class="tag">{t}</span>)}
-              <span class="tag tag--device workbook-card__state">웹 워크북 사용 가능</span>
+              <span class="workbook-card__kind">{l.index === 0 ? '기본 실습' : '선택 미션'}</span>
+              <span class="workbook-card__topics">{TOPICS[l.index].map((t) => <span>{t}</span>)}</span>
+              <span class="workbook-card__state">웹 워크북 사용 가능</span>
             </div>
             <WorkbookScene index={l.index} />
             <h3>{l.title}</h3>

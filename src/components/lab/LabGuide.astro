@@ -42,15 +42,18 @@ const has = (name: string) => Astro.slots.has(name);
 <Base title={`${g.title} | 실험 워크북`} description={g.lead}>
   <div class="wrap wb">
     <header class="wb-hero">
+      <p class="page-back wb-hero__crumb"><a href={url('/lab/')}>실험 워크북 목록</a> <span class="wb-hero__order">{order}</span> <span class="wb-hero__kind">{scene === 0 ? '기본 실습' : '선택 미션'}</span></p>
       <div class="wb-hero__text">
-        <p class="page-back"><a href={url('/lab/')}>실험 워크북 목록</a> <span class="wb-hero__order">{order}</span> <span class="tag">{scene === 0 ? '기본 실습' : '선택 미션'}</span></p>
         <h1>{g.title}</h1>
         <p class="lead">{g.lead}</p>
-        <div class="btn-row">
+        <div class="btn-row btn-row--pair">
           <a class="btn" href="#ch-1">1장부터 시작하기</a>
           <a class="btn btn--quiet" href="#ch-6">바로 기록하기</a>
         </div>
-        <p class="wb-hero__status"><span class="tag tag--device">{g.status.web}</span> <span class={`tag ${g.status.verified ? 'tag--device' : 'tag--unverified'}`}>{g.status.device}</span></p>
+        <dl class="wb-hero__status">
+          <div><dt>브라우저</dt><dd>{g.status.web}</dd></div>
+          <div><dt>기기</dt><dd class={g.status.verified ? 'is-verified' : 'is-unverified'}>{g.status.device}</dd></div>
+        </dl>
       </div>
       <WorkbookScene index={scene} />
     </header>
