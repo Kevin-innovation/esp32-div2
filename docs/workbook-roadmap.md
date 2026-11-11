@@ -270,5 +270,17 @@ NFC 전용 headless 16렌더 통과는 통합 담당자에게 보고된 검사 �
 ### 남은 한계
 
 - 모든 골든 데이터는 가상 사례이며, NFC를 뺀 기기 기능 실행과 교실 파일럿은 미검증 상태 그대로다.
-- NFC 워크북은 기존 상세 내용과 저장 형식을 유지했고 새 13장 틀로 옮기지 않았다.
 - 이전 화면 구조를 검사하던 브라우저 스크립트(`check-checklist.mjs`, `check-final3.mjs`, `check-signal.mjs` 등)는 새 구조와 맞지 않아 다시 쓰지 않는 한 실행하지 않는다.
+
+## 8. 01 NFC 13장 이전과 실습 13개 단일 목록(2026-11-11)
+
+| 태스크 | 인수 조건 | 결과 |
+|---|---|---|
+| NFC를 LabGuide 13장으로 이전 | 첫 화면, 미션 요약, 장 목차, 큰 번호, 설명, 예시, 수행, 확인. 기존 내용(실측 골든 케이스 PN532, UID, ATQA, SAK, P4~P7, 예비 실험, 거리 기준, A~E 차시, 공책 완주, CIA 표, EMV 비교, 분석 노트북, 예시 그림, 면접) 유지 | `src/lib/workbooks/nfc.ts` 본문 + `LabGuide` 선택 슬롯(`mission-do`, `device-example`, `design-explain`, `design-example`, `colab-example`, `trouble-do`, `threats-example`). 빈 슬롯은 그리지 않아 다른 12개는 그대로 |
+| 저장과 CSV 호환 | 저장 키 `esp32div.nfc.v1`, 관찰 CSV 열, 서술 키 유지. 이전 기록과 서술이 그대로 열림 | 서술 키는 `application`, `explain`만 뒤에 추가. 이전 앵커(`#design`, `#record`, `#chart`, `#data`, `#python`, `#security`, `#report`, `#interview` 등) 유지 |
+| 작성 예시와 보고서 | 서술 28칸 모두 작성 예시 보기, 넣기, 덮어쓰기 확인. 보고서가 모든 서술과 계산 결과를 담고 빈 칸은 (미작성) | 보고서에 계산 요약, 현업 응용, 1분 설명, 면접 답변 메모 절 추가 |
+| 골든 데이터와 Colab | 가상 30행(데모 버튼과 같음), 예상 분석값, sample과 file 실행이 브라우저 계산과 일치 | `nfcSummaryRows`, `nfcColab`. 단독 9/10, 지갑 6/10, 가방 5/10, 1cm 13/15, 3cm 7/15 |
+| 현업 응용 | 프로젝트 2개(IPO, 부품, MVP, 확인, 한계) | 리더 설치 위치 검증, 번호만 쓰는 물품 태그 |
+| 목록 단일화 | 01 NFC, 02 Wi-Fi RSSI, 03 SSID/BSSID … 13 CSV. 같은 카드 규칙, 기본과 선택은 작은 라벨로 구분 | NFC 배너와 첫 카드 확대 CSS 제거. NFC 그림은 생성 학습 이미지 `nfc-tag-structure.webp`. 워크북 첫 화면에 `실습 NN`과 기본/선택 라벨 |
+
+검사: `check-workbooks.ts`(13개, NFC 서술 28칸 예시와 보고서, Colab sample과 file 일치), `check-nfc.ts`, typecheck 오류 0, build 완료, headless `check-classroom.mjs` 1585개와 `check-stepper.mjs` 통과(13개 목록으로 기대값 갱신), NFC와 목록 전용 headless 86개(375, 1280 양 테마 넘침, 콘솔, 이전 저장 자료 호환, 예시 넣기와 덮어쓰기 확인, 기록 추가, 데모 계산, 보고서 반영, CSV 내려받기, 목차, 13개 카드 같은 템플릿) 통과.

@@ -85,7 +85,7 @@ const md = reportToMarkdown(buildReport({ trials: tricky, notes: { hypothesis: '
 assert.ok(!md.includes('<script>') && !md.includes('<img'), '보고서에 생 HTML이 없어야 한다');
 assert.ok(md.includes('&lt;script&gt;'));
 const demoMd = reportToMarkdown(buildReport({ trials: demo, notes: {}, dataType: 'demo', date: '2026-11-04', sources: [] }));
-assert.ok(demoMd.includes('데모 자료') && demoMd.includes('아직 작성하지 않음'));
+assert.ok(demoMd.includes('데모 자료') && demoMd.includes('(미작성)'));
 
 const securityNotes = { securityAsset: '실험용 태그의 공개 데이터', threatModel: '허가된 근거리 판독만', securityFinding: '시험 조건별 4/5회 판독', defensePlan: '민감정보를 저장하지 않고 인증 사용', residualRisk: '암호 인증은 시험하지 않음' };
 const securityCsv = importCsv(notesToCsv(securityNotes), NOTE_KEYS);

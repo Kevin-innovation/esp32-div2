@@ -219,8 +219,6 @@ td:last-child, th:last-child { padding-right: 0; }
 .workbook-planned { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: var(--space-sm) var(--space-2xl); align-items: start; min-width: 0; margin: 0; padding-block: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); }
 .workbook-planned > * { grid-column: 2; min-width: 0; }
 .workbook-planned > .workbook-scene { grid-column: 1; grid-row: 1 / span 5; }
-.workbook-planned:first-child { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); padding-block: var(--space-2xl); }
-.workbook-planned:first-child h3 { font-size: var(--text-section); line-height: 1.2; }
 .workbook-card__meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); }
 .workbook-card__number { color: var(--color-ink); font-size: var(--text-lg); font-weight: 700; font-variant-numeric: tabular-nums; }
 .workbook-card__state { margin-left: auto; }
@@ -508,7 +506,7 @@ a.path-link:active { background: var(--color-paper-3); }
   .ledger > li { grid-template-columns: minmax(0, 1fr); padding-block: var(--space-md); }
   .ledger > li > p { grid-column: auto; }
   .num-steps--grid { grid-template-columns: minmax(0, 1fr); }
-  .workbook-planned, .workbook-planned:first-child { grid-template-columns: minmax(0, 1fr); }
+  .workbook-planned { grid-template-columns: minmax(0, 1fr); }
   .workbook-planned > *, .workbook-planned > .workbook-scene { grid-column: 1; grid-row: auto; }
   .workbook-scene { max-width: 320px; }
   .art-front { --art-h: 360px; --stage-pad: var(--space-lg); }
@@ -563,6 +561,7 @@ a.path-link:active { background: var(--color-paper-3); }
 .wb-hero h1 { font-size: var(--text-display-s); max-width: 20ch; min-width: 0; overflow-wrap: break-word; }
 .wb-hero .workbook-scene { justify-self: end; width: 100%; max-width: 420px; }
 .wb-hero__status { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
+.wb-hero__order { margin-left: var(--space-sm); color: var(--color-ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 .wb-brief { padding-block: var(--space-lg); border-block: var(--rule-hair) solid var(--color-rule); border-top: 2px solid var(--color-ink); }
 .wb-brief__list { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: var(--space-lg) var(--space-xl); margin: 0; }
 .wb-brief__list > div { grid-column: span 2; min-width: 0; }

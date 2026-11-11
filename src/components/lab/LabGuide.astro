@@ -1,14 +1,16 @@
 ---
 // 실습 워크북 한 권의 틀. 열세 장의 순서와 '설명, 예시, 수행, 확인' 구성을 모든 주제에 똑같이 적용하고,
 // 내용은 주제마다 쓴 Guide 데이터와 입력 도구(슬롯)로 채운다.
+// 주제에만 있는 내용은 선택 슬롯(장-부분 이름)에 넣는다. 비어 있으면 아무것도 그리지 않는다.
+// scene은 실습 목록 위치(0이 01 NFC 기본 실습)이며 첫 화면 그림과 번호를 함께 정한다.
 import Base from '../../layouts/Base.astro';
 import WorkbookScene from './WorkbookScene.astro';
 import { url } from '../../lib/url';
-import type { Guide } from '../../lib/workbooks/types';
+import type { GuideBody } from '../../lib/workbooks/types';
 import type { Table } from '../../lib/workbooks/render';
 
 interface Props {
-  guide: Guide;
+  guide: GuideBody;
   scene: number;
   golden: Table;
   expected: [string, string][];
@@ -34,19 +36,21 @@ const chapters = [
 ] as const;
 const n = (id: string) => chapters.findIndex(([c]) => c === id) + 1;
 const pad = (i: number) => String(i).padStart(2, '0');
+const order = `실습 ${pad(scene + 1)}`;
+const has = (name: string) => Astro.slots.has(name);
 ---
 <Base title={`${g.title} | 실험 워크북`} description={g.lead}>
   <div class="wrap wb">
     <header class="wb-hero">
       <div class="wb-hero__text">
-        <p class="page-back"><a href={url('/lab/')}>실험 워크북 목록</a></p>
+        <p class="page-back"><a href={url('/lab/')}>실험 워크북 목록</a> <span class="wb-hero__order">{order}</span> <span class="tag">{scene === 0 ? '기본 실습' : '선택 미션'}</span></p>
         <h1>{g.title}</h1>
         <p class="lead">{g.lead}</p>
         <div class="btn-row">
           <a class="btn" href="#ch-1">1장부터 시작하기</a>
           <a class="btn btn--quiet" href="#ch-6">바로 기록하기</a>
         </div>
-        <p class="wb-hero__status"><span class="tag tag--device">{g.status.web}</span> <span class="tag tag--unverified">{g.status.device}</span></p>
+        <p class="wb-hero__status"><span class="tag tag--device">{g.status.web}</span> <span class={`tag ${g.status.verified ? 'tag--device' : 'tag--unverified'}`}>{g.status.device}</span></p>
       </div>
       <WorkbookScene index={scene} />
     </header>
@@ -75,7 +79,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
           <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('mission'))}</span><div><h2 id="h-mission"><span class="sr">{n('mission')}장. </span>{chapters[0][1]}</h2><p class="wb-ch__aim">{chapters[0][2]}</p></div></header>
           <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.scene.map((p) => <p>{p}</p>)}</div></div>
           <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body"><p>이 장면에서 세울 수 있는 탐구 질문입니다.</p><ul>{g.questions.map((q) => <li>{q}</li>)}</ul></div></div>
-          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><p>학습 목표를 읽고, 내가 가장 궁금한 질문 하나를 <a href={`#ch-${n('design')}`}>5장 탐구 질문 칸</a>에 씁니다.</p><ol>{g.goals.map((x) => <li>{x}</li>)}</ol></div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><p>학습 목표를 읽고, 내가 가장 궁금한 질문 하나를 <a href={`#ch-${n('design')}`}>5장 탐구 질문 칸</a>에 씁니다.</p><ol>{g.goals.map((x) => <li>{x}</li>)}</ol><slot name="mission-do" /></div></div>
           <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.mission.map((c) => <li>{c}</li>)}</ul></div></div>
         </section>
 
@@ -87,6 +91,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
           </div></div>
           <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
             <div class="table-wrap" tabindex="0" role="region" aria-label="외부 도구로 할 일"><table><caption>다른 도구로 확인할 것</caption><thead><tr><th scope="col">도구</th><th scope="col">이 도구로 하는 일</th></tr></thead><tbody>{g.device.external.map(([a, b]) => <tr><th scope="row">{a}</th><td>{b}</td></tr>)}</tbody></table></div>
+            <slot name="device-example" />
           </div></div>
           <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
             <p>준비물을 하나씩 확인합니다.</p>
@@ -129,9 +134,11 @@ const pad = (i: number) => String(i).padStart(2, '0');
               <div><dt>판정 기준</dt><dd>{g.design.success}</dd></div>
               <div><dt>순서</dt><dd>{g.design.order}</dd></div>
             </dl>
+            <slot name="design-explain" />
           </div></div>
+          {has('design-example') && <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body"><slot name="design-example" /></div></div>}
           <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
-            <p>아래 세 칸은 보고서의 1~3절이 됩니다. 각 칸의 작성 예시를 열어 보고 내 말로 씁니다.</p>
+            <p>아래 칸은 보고서의 앞부분(질문, 가설, 설계)이 됩니다. 각 칸의 작성 예시를 열어 보고 내 말로 씁니다.</p>
             <slot name="design" />
           </div></div>
           <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.design.map((c) => <li>{c}</li>)}</ul></div></div>
@@ -141,7 +148,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
           <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('procedure'))}</span><div><h2 id="h-procedure"><span class="sr">{n('procedure')}장. </span>{chapters[5][1]}</h2><p class="wb-ch__aim">{chapters[5][2]}</p></div></header>
           <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.procedureNote.map((p) => <p>{p}</p>)}</div></div>
           <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
-            <h4>한 번의 측정</h4>
+            <h4 id="procedure">한 번의 측정</h4>
             <ol class="wb-steps">{g.procedure.map((x) => <li>{x}</li>)}</ol>
             <h4>기록하기</h4>
             <slot name="record" />
@@ -191,6 +198,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
             <h4>sample로 실행했을 때의 예상 출력</h4>
             <pre class="code code--output" tabindex="0" aria-label="예상 출력"><code>{output}</code></pre>
             <p class="field__help">그림은 출력 사이에 표시됩니다. 그림의 G1, G2 같은 이름은 바로 위에 출력된 뜻을 가리킵니다.</p>
+            <slot name="colab-example" />
           </div></div>
           <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><ol>{g.colab.change.map((x) => <li>{x}</li>)}</ol></div></div>
           <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.colab.map((c) => <li>{c}</li>)}</ul></div></div>
@@ -201,6 +209,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
           <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body"><p>원인 후보는 결론이 아닙니다. 한 번에 하나만 바꿔 확인하고, 그래도 모르면 모른다고 기록합니다.</p>
             <dl class="wb-trouble">{g.trouble.map(([s, c, d]) => <div><dt>{s}</dt><dd><p><strong>원인 후보:</strong> {c}</p><p><strong>할 일:</strong> {d}</p></dd></div>)}</dl>
           </div></div>
+          {has('trouble-do') && <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><slot name="trouble-do" /></div></div>}
           <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.trouble.map((c) => <li>{c}</li>)}</ul></div></div>
         </section>
 
@@ -210,6 +219,7 @@ const pad = (i: number) => String(i).padStart(2, '0');
           <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
             {g.threats.rows.map(([t, c, d, e]) => <article class="wb-threat"><h4>{t}</h4><dl class="facts facts--stack"><div><dt>성립 조건과 영향</dt><dd>{c}</dd></div><div><dt>방어</dt><dd>{d}</dd></div><div><dt>검증 근거와 한계</dt><dd>{e}</dd></div></dl></article>)}
             <div class="callout"><ul>{g.threats.boundary.map((b) => <li>{b}</li>)}</ul></div>
+            <slot name="threats-example" />
           </div></div>
           <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><slot name="defense" /></div></div>
           <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.threats.map((c) => <li>{c}</li>)}</ul></div></div>

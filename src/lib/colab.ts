@@ -1,7 +1,7 @@
 // 워크북별 Colab 코드. 골든 데이터로 만든 CSV를 코드 안에 넣어 'sample'로 바로 실행되고,
 // 'upload'나 'file'로 바꾸면 사이트에서 내려받은 실제 CSV를 같은 방식으로 분석한다.
 // 출력 마지막 줄의 JSON은 브라우저 요약(summaryRows 등)과 같은 항목이며 scripts/check-workbooks.ts가 대조한다.
-import { csvCell } from './nfc.ts';
+import { csvCell, CSV_COLUMNS, CSV_FILENAME, trialsToCsv, type Trial } from './nfc.ts';
 import { FIELDS, rowsCsv, type Kind, type Row } from './fieldwork.ts';
 import { CHECKLIST_OPTIONS } from './checklist.ts';
 import { wifiObservationsToCsv, WIFI_CSV_COLUMNS, type WifiObservation } from './workbook.ts';
@@ -426,5 +426,76 @@ leak = [c for c in removed if c in pseu.columns]
 print('2. 제거한 열이 가명본에 남았나:', '남음 ' + str(leak) if leak else '없음')
 counts = [len(kept), len(aliased), len(removed)]
 plt.figure(figsize=(6, 3.2)); plt.bar(['kept', 'alias', 'removed'], counts, color='#2f6b4f'); plt.title('Columns by action'); plt.ylabel('columns'); plt.tight_layout(); plt.show()
+${SHOW}`;
+}
+
+export function nfcColab(golden: Trial[]): string {
+  const bad = [1, '단독', '없음', 1, '평행', '2', 'BAD-1 결과 칸에 2를 잘못 적음', 'demo'].map(csvCell).join(',') + '\n';
+  return `${HEAD(CSV_FILENAME)}import math\n\nSAMPLE_CSV = """${embed(trialsToCsv(golden)) + bad}"""\n${LOAD}` + String.raw`
+table = pd.read_csv(io.StringIO(read_text().lstrip('﻿')), dtype=str, keep_default_na=False)
+NEED = ${JSON.stringify([...CSV_COLUMNS])}
+lost = [c for c in NEED if c not in table.columns]
+if lost:
+    raise ValueError(f'NFC 관찰 CSV(${CSV_FILENAME})가 아닙니다. 탐구 서술 CSV를 올렸는지 확인하세요. 없는 열: {lost}')
+table = table.apply(lambda col: col.map(unguard))
+table['condition'] = table['condition'].str.strip()
+data = table[table['data_type'] == MODE].copy()
+print(f'1. 불러오기: {MODE} 관찰 {len(data)}행, 다른 구분 {len(table) - len(data)}행 제외')
+
+def problem(r):
+    # success=1은 정한 시간 안에 새 태그를 읽은 관찰, 0은 읽지 못한 관찰입니다.
+    # 빈 값이나 다른 값은 미측정 또는 잘못 적은 행이라 0(실패)으로 바꾸지 않고 뺍니다.
+    if r['success'] not in ('0', '1'): return 'success는 1(읽힘) 또는 0(안 읽힘)만 씁니다'
+    if not r['condition']: return '조건이 비었습니다'
+    try:
+        d = float(r['distance_cm'])
+    except ValueError:
+        return '거리가 숫자가 아닙니다'
+    if not 0 <= d <= 100: return '거리는 0~100cm입니다'
+    return ''
+
+reasons = data.apply(problem, axis=1) if len(data) else pd.Series(dtype=str)
+for i in data.index[reasons != '']:
+    print('   제외한 행:', data.at[i, 'condition'], data.at[i, 'trial'] + '회차', data.at[i, 'note'], '-', reasons[i])
+data = data[reasons == ''] if len(data) else data
+print(f'2. 검사: 분석에 쓰는 행 {len(data)}, 잘못된 행 {int((reasons != "").sum())}')
+if data.empty:
+    raise SystemExit('분석할 행이 없습니다. SOURCE와 data_type, 입력 기록을 확인하세요.')
+
+def pct(s, a):
+    # 브라우저와 같은 반올림(0.5는 올림)입니다.
+    return f'{math.floor(s / a * 100 + 0.5)}%'
+
+data['ok'] = (data['success'] == '1').astype(int)
+data['d'] = data['distance_cm'].astype(float)
+summary = {'기록 행': str(len(data)), '성공': str(int(data['ok'].sum())), '실패': str(int((1 - data['ok']).sum()))}
+RANK = {'단독': 0, '지갑': 1, '가방': 2}
+conds = sorted(data['condition'].unique(), key=lambda c: (RANK.get(c, 3), c))
+oks, fails = [], []
+for c in conds:
+    rs = data[data['condition'] == c]
+    s, a = int(rs['ok'].sum()), len(rs)
+    summary[f'{c} 성공/시도'] = f'{s}/{a}'
+    summary[f'{c} 인식률'] = pct(s, a)
+    oks.append(s); fails.append(a - s)
+for d in sorted(data['d'].unique()):
+    rs = data[data['d'] == d]
+    s, a = int(rs['ok'].sum()), len(rs)
+    summary[f'거리 {fmt(d)}cm 성공/시도'] = f'{s}/{a}'
+    summary[f'거리 {fmt(d)}cm 인식률'] = pct(s, a)
+
+# Colab 기본 글꼴에는 한글이 없어 그림에는 G1, G2 같은 짧은 이름을 쓰고, 뜻은 위에 출력합니다.
+codes = [f'G{i + 1}' for i in range(len(conds))]
+for code, c in zip(codes, conds):
+    print(f'  그림 {code} = {c}')
+plt.figure(figsize=(7, 3.6))
+plt.bar(codes, oks, color='#2f6b4f', label='read')
+plt.bar(codes, fails, bottom=oks, color='#b7b2a7', label='not read')
+plt.title('NFC reads per placement (stacked: read + not read = attempts)')
+plt.ylabel('attempts')
+plt.legend()
+plt.tight_layout()
+plt.show()
+# 이 표는 태그를 읽은 비율만 보여 줍니다. 결제 승인, 카드 복제, 공격 성공률은 계산하지 않습니다.
 ${SHOW}`;
 }

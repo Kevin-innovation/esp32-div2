@@ -20,7 +20,7 @@ export interface Guide {
   time: string;
   prep: string;
   outputs: string[];
-  status: { web: string; device: string };
+  status: { web: string; device: string; /** 기기 실행을 직접 확인했으면 true */ verified?: boolean };
   /** 1장 미션과 생활 사례 */
   scene: string[];
   questions: string[];
@@ -64,3 +64,6 @@ export interface Guide {
   checks: Record<'mission' | 'device' | 'terms' | 'flow' | 'design' | 'procedure' | 'golden' | 'analysis' | 'colab' | 'trouble' | 'threats' | 'industry' | 'report', string[]>;
   refs: Ref[];
 }
+
+/** 장 본문만. 서술 칸이 표준 9개와 다른 워크북(NFC)도 같은 틀을 쓴다. */
+export type GuideBody = Omit<Guide, 'notes'>;

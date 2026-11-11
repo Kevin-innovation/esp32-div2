@@ -64,9 +64,9 @@ try{
     assert.deepEqual(await p.locator('#route .path-map a').evaluateAll(as=>as.map(a=>a.getAttribute('href'))),routes);checks++;
    }else{
     assert.ok((await p.locator('.path-top').textContent()).includes('실습 미션 목록'));assert.ok(!(await p.locator('.path-top').textContent()).includes('참고 자료'));checks+=2;
-    assert.equal(await p.locator('#planned .workbook-planned').count(),0);assert.equal(await p.locator('#available .workbook-planned').count(),12);checks+=2;
-    assert.equal(await p.locator('#planned .workbook-card__start a').count(),0);assert.equal(await p.locator('.workbook-scene img').count(),12);checks+=2;
-    assert.equal(await p.getByRole('link',{name:'NFC 워크북 시작하기'}).getAttribute('href'),'/lab/nfc/');assert.equal(await p.locator('#available .workbook-card__start a').first().getAttribute('href'),'/lab/wifi-rssi/');checks+=2;
+    assert.equal(await p.locator('#planned .workbook-planned').count(),0);assert.equal(await p.locator('#available .workbook-planned').count(),13);checks+=2;
+    assert.equal(await p.locator('#planned .workbook-card__start a').count(),0);assert.equal(await p.locator('.workbook-scene img').count(),13);checks+=2;
+    assert.equal(await p.locator('#available .workbook-card__start a').first().getAttribute('href'),'/lab/nfc/');assert.equal(await p.locator('#available .workbook-card__start a').nth(1).getAttribute('href'),'/lab/wifi-rssi/');checks+=2;
     for(const card of await p.locator('.workbook-planned').all()){
      assert.equal(await card.locator('.mission-readiness li').count(),3);assert.ok((await card.textContent()).includes('제안 시간:'));assert.ok((await card.textContent()).includes('준비물:'));
      const details=card.locator('.mission-details');await details.locator('summary').click();assert.ok(await details.getAttribute('open')!==null);assert.equal(await details.locator('a').count(),1);checks+=5;
@@ -74,7 +74,7 @@ try{
     await bounds(p);
     if(js&&[375,1280].includes(width)){
      await p.evaluate(()=>window.scrollTo(0,0));await p.screenshot({path:`${shots}/lab-${width}-${theme}.png`,fullPage:true});
-     await p.locator('#available .workbook-planned').first().screenshot({path:`${shots}/wifi-${width}-${theme}.png`,style:'.site-head,.path-top{visibility:hidden!important;}'});
+     await p.locator('#available .workbook-planned').first().screenshot({path:`${shots}/nfc-card-${width}-${theme}.png`,style:'.site-head,.path-top{visibility:hidden!important;}'});
     }
    }
    await bounds(p);
@@ -95,6 +95,6 @@ try{
  await p.goto(origin+'/lab/wifi-rssi/',{waitUntil:'networkidle'});assert.ok((await p.locator('.path-top').textContent()).includes('선택 미션'));checks++;
  assert.deepEqual(await p.evaluate(()=>[localStorage.getItem('esp32div.nfc.v1'),localStorage.getItem('esp32div.lab.wifi-rssi.v1')]),[nfc,wifi]);checks++;
  await c.close();assert.deepEqual(errors,[]);
- const result=`PASS classroom ${checks} checks; 320/375/768/1280 × light/dark × JS on/off; native references/keyboard/Escape/outside/theme/current area; unclipped bounds, 0–6 routes, 6 planned/12 images, mission metadata, storage unchanged; console0. Screenshots ${shots}`;
+ const result=`PASS classroom ${checks} checks; 320/375/768/1280 × light/dark × JS on/off; native references/keyboard/Escape/outside/theme/current area; unclipped bounds, 0–6 routes, 13 workbooks/13 images, mission metadata, storage unchanged; console0. Screenshots ${shots}`;
  console.log(result);await writeFile(`${shots}/result.txt`,result+'\n'+evidence.join('\n'));
 }finally{await browser.close();}

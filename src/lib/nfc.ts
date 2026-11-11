@@ -36,7 +36,7 @@ export const NOTE_KEYS = [
   'question', 'motivation', 'hypothesis', 'independent', 'controlled', 'plan', 'tag', 'reader',
   'interpretation', 'conclusion', 'unexpected', 'causes', 'followup', 'security', 'limits',
   'nextQuestions', 'securityAsset', 'threatModel', 'securityFinding', 'defensePlan', 'residualRisk',
-  'q_curiosity', 'q_design', 'q_unexpected', 'q_verify', 'q_limit',
+  'q_curiosity', 'q_design', 'q_unexpected', 'q_verify', 'q_limit', 'application', 'explain',
 ] as const;
 
 export const MAX_ROWS = 5000;
@@ -298,6 +298,17 @@ export function crossTab(trials: Trial[]): CrossTab | null {
 export const percent = (rate: number) => `${Math.round(rate * 100)}%`;
 export const fraction = (g: { successes: number; attempts: number }) => `${g.successes}/${g.attempts}`;
 
+/** 화면 요약, 보고서, Colab 검증용 JSON이 함께 쓰는 계산 결과. */
+export function nfcSummaryRows(trials: Trial[]): [string, string][] {
+  const ok = trials.filter((t) => t.success).length;
+  const out: [string, string][] = [['기록 행', String(trials.length)], ['성공', String(ok)], ['실패', String(trials.length - ok)]];
+  for (const g of aggregate(trials, 'condition')) out.push([`${g.key} 성공/시도`, fraction(g)], [`${g.key} 인식률`, percent(g.rate)]);
+  for (const g of aggregate(trials, 'distanceCm')) out.push([`거리 ${g.key}cm 성공/시도`, fraction(g)], [`거리 ${g.key}cm 인식률`, percent(g.rate)]);
+  return out;
+}
+
+export const INTERVIEW_LABELS = [['q_curiosity', '궁금한 점'], ['q_design', '설계 이유'], ['q_unexpected', '예상 밖 결과'], ['q_verify', '검증'], ['q_limit', '한계']] as const;
+
 /** 해석을 흐리는 설계 문제를 찾아 문장으로 알려 준다. 결과를 대신 판단하지는 않는다. */
 export function designWarnings(trials: Trial[], minRepeats = 5): string[] {
   if (!trials.length) return [];
@@ -347,7 +358,7 @@ export type Block =
   | { type: 'list'; items: string[] }
   | { type: 'table'; head: string[]; rows: string[][] };
 
-export const EMPTY_NOTE = '(아직 작성하지 않음)';
+export const EMPTY_NOTE = '(미작성)';
 const noteOr = (notes: Notes, key: string) => notes[key]?.trim() || EMPTY_NOTE;
 
 export interface ReportInput {
@@ -387,6 +398,7 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
       head: [label, '성공/시도', '인식률'],
       rows: aggregate(trials, by).map((g) => [by === 'distanceCm' ? `${g.key} cm` : g.key, fraction(g), percent(g.rate)]),
     });
+    blocks.push({ type: 'list', items: nfcSummaryRows(trials).map(([k, v]) => `${k}: ${v}`) });
     blocks.push(groupTable('condition', '조건'), groupTable('distanceCm', '거리'), groupTable('orientation', '방향'));
     const warnings = designWarnings(trials);
     if (warnings.length) blocks.push({ type: 'list', items: warnings.map((w) => `주의: ${w}`) });
@@ -419,6 +431,12 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
   blocks.push({ type: 'p', text: noteOr(notes, 'limits') });
   blocks.push({ type: 'h2', text: '9. 후속 질문' });
   blocks.push({ type: 'p', text: noteOr(notes, 'nextQuestions') });
+  blocks.push({ type: 'h2', text: '10. 현업 응용과 확장 아이디어' });
+  blocks.push({ type: 'p', text: noteOr(notes, 'application') });
+  blocks.push({ type: 'h2', text: '11. 1분 설명' });
+  blocks.push({ type: 'p', text: noteOr(notes, 'explain') });
+  blocks.push({ type: 'h2', text: '12. 면접 답변 메모' });
+  blocks.push({ type: 'list', items: INTERVIEW_LABELS.map(([k, label]) => `${label}: ${noteOr(notes, k)}`) });
 
   if (trials.length) {
     blocks.push({ type: 'h2', text: '부록. 원자료' });

@@ -27,3 +27,9 @@ export const csvTable = (source: import('../pseudonym.ts').CsvSource): Table => 
   head: source.header,
   rows: source.rows.map((r) => r.map((v) => v || '빈 값')),
 });
+
+export const nfcTable = (rows: import('../nfc.ts').Trial[]): Table => ({
+  caption: `가상 골든 데이터 ${rows.length}행. 실제 측정값이 아닙니다.`,
+  head: ['반복', '조건', '내용물', '거리', '방향', '결과', '관찰'],
+  rows: rows.map((t) => [String(t.trial), t.condition, t.contents, `${t.distanceCm}cm`, t.orientation, t.success ? '성공 1' : '실패 0', t.note]),
+});

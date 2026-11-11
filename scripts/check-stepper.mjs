@@ -101,11 +101,11 @@ try {
         }
       }
       await page.goto(origin + '/lab/', { waitUntil: 'networkidle' }); await page.evaluate(() => document.fonts.ready);
-      const cards = page.locator('.workbook-planned'); assert.equal(await cards.count(), 12);
+      const cards = page.locator('.workbook-planned'); assert.equal(await cards.count(), 13);
       assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 0);
-      assert.equal(await cards.first().getByRole('link', { name: '워크북 시작하기' }).getAttribute('href'), '/lab/wifi-rssi/');
+      assert.equal(await cards.first().getByRole('link', { name: '워크북 시작하기' }).getAttribute('href'), '/lab/nfc/');
       assert.equal(await page.locator('.workbook-scene svg').count(), 0);
-      assert.equal(await page.locator('.workbook-scene img').count(), 12);
+      assert.equal(await page.locator('.workbook-scene img').count(), 13);
       for (const card of await cards.all()) {
         assert.equal(await card.locator('.workbook-card__state').textContent(), await card.locator('.workbook-card__start').count() ? '웹 워크북 사용 가능' : '추후 개발 예정');
         assert.equal(await card.locator('dt').count(), 3);
@@ -115,7 +115,7 @@ try {
         assert.equal(await image.getAttribute('decoding'), 'async');
         for (const a of await card.locator('.workbook-card__links a').all()) assert.match(await a.getAttribute('href'), /^\/learn\/(projects|security)\/#/);
       }
-      assert.equal(await page.getByRole('link', { name: 'NFC 워크북 시작하기' }).getAttribute('href'), '/lab/nfc/');
+      assert.equal(await page.getByRole('link', { name: '01 NFC는 지갑과 가방 안에서도 인식될까? 워크북 시작하기' }).getAttribute('href'), '/lab/nfc/');
       assert.equal(await page.locator('.nav').getByRole('link', { name: '실습 미션' }).getAttribute('href'), '/lab/');
       await layout(page);
       if ([375,1280].includes(width)) await page.screenshot({ path: `${shots}/catalog-${width}-${theme}.png`, fullPage: true });

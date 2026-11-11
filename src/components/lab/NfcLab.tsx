@@ -12,6 +12,7 @@ import {
   designWarnings,
   fraction,
   importCsv,
+  nfcSummaryRows,
   notebookJson,
   notesToCsv,
   percent,
@@ -24,6 +25,8 @@ import {
   type Imported,
   type Trial,
 } from '../../lib/nfc';
+import { NotesEditor, type NoteGuide } from './NotesEditor';
+import { SummaryTable } from './SummaryTable';
 import { addTrial, clearDemo, clearReal, download, importNotes, importTrials, loadDemo, removeTrial, restoreTrial, setNote, setView, useLab, visibleTrials } from './store';
 
 const MAX_LIST = 200;
@@ -47,32 +50,10 @@ export function SaveState() {
 
 /* 서술 입력칸 -------------------------------------------------------------- */
 
-export interface NoteField {
-  key: string;
-  label: string;
-  help?: string;
-  rows?: number;
-  placeholder?: string;
-}
-
-export function NoteFields({ fields }: { fields: NoteField[] }) {
+/** 작성 예시를 함께 보여 주는 서술 칸. 예시는 학생이 누를 때만 넣고, 쓴 글이 있으면 먼저 묻는다. */
+export function NoteFields({ fields }: { fields: NoteGuide[] }) {
   const { notes } = useLab();
-  const base = useId();
-  return (
-    <div className="fields">
-      {fields.map((f) => {
-        const id = `${base}-${f.key}`;
-        const helpId = f.help ? `${id}-help` : undefined;
-        return (
-          <div className="field" key={f.key}>
-            <label htmlFor={id}>{f.label}</label>
-            {f.help && <p className="field__help" id={helpId}>{f.help}</p>}
-            <textarea id={id} rows={f.rows ?? 3} maxLength={4000} aria-describedby={helpId} placeholder={f.placeholder} value={notes[f.key] ?? ''} onChange={(e) => setNote(f.key, e.target.value)} />
-          </div>
-        );
-      })}
-    </div>
-  );
+  return <NotesEditor fields={fields} values={notes} onChange={setNote} />;
 }
 
 /* 결과 입력 ---------------------------------------------------------------- */
@@ -234,7 +215,7 @@ export function Records() {
         {s.trials.some((t) => t.dataType === 'demo') ? (
           <button className="btn btn--quiet btn--small" type="button" onClick={clearDemo}>데모 자료 지우기</button>
         ) : (
-          <button className="btn btn--quiet btn--small" type="button" onClick={loadDemo}>화면 확인용 데모 자료 불러오기</button>
+          <button className="btn btn--quiet btn--small" type="button" onClick={loadDemo}>가상 골든 데이터 30행으로 데모 시작</button>
         )}
         {realCount > 0 && (
           <button
@@ -332,6 +313,14 @@ export function Chart() {
       )}
     </div>
   );
+}
+
+/** 7장 예상 분석값과 같은 형식의 계산 결과. 보고서와 Colab 검증용 JSON도 같은 함수를 쓴다. */
+export function Summary() {
+  const s = useLab();
+  const rows = visibleTrials(s);
+  if (!rows.length) return <p className="empty">기록을 입력하거나 데모를 시작하면 계산 결과가 여기에 나타납니다.</p>;
+  return <SummaryTable rows={nfcSummaryRows(rows)} total={rows.length} caption={`${s.view === 'demo' ? '가상 데모' : '내 실제 기록'}의 계산 결과`} />;
 }
 
 /* CSV -------------------------------------------------------------------- */
@@ -494,40 +483,23 @@ export function Report({ sources }: { sources: { title: string; url: string }[] 
 
 /* 자소서·면접 -------------------------------------------------------------- */
 
-export function Interview() {
+export function Interview({ guides }: { guides: NoteGuide[] }) {
   const s = useLab();
   const real = s.trials.filter((t) => t.dataType === 'real');
   const groups = aggregate(real, 'condition');
   const low = groups.length > 1 ? [...groups].sort((a, b) => a.rate - b.rate)[0] : null;
   const high = groups.length > 1 ? [...groups].sort((a, b) => b.rate - a.rate)[0] : null;
-  const base = useId();
 
-  const items = [
-    { key: 'q_curiosity', title: '궁금한 점', q: '왜 이 질문이 궁금했나요? 어떤 장면에서 시작했나요?', tip: '“NFC에 관심이 있었다”보다 직접 겪은 장면을 먼저 쓰세요.' },
-    { key: 'q_design', title: '설계 이유', q: '왜 그 변수를 고르고 나머지는 고정했나요? 반복 횟수는 왜 그만큼인가요?', tip: '다른 방법을 버린 이유까지 말하면 설계를 직접 했다는 점이 드러납니다.' },
-    {
-      key: 'q_unexpected',
-      title: '예상 밖 결과',
-      q: low && high ? `내 기록에서 ${high.key}는 ${percent(high.rate)}(${fraction(high)}), ${low.key}는 ${percent(low.rate)}(${fraction(low)})입니다. 이 차이가 가설과 맞나요? 다르다면 무엇을 먼저 의심했나요?` : '예상과 다른 결과가 나왔다면 무엇을 먼저 의심했나요? 기록을 두 조건 이상 입력하면 이 질문에 내 수치가 들어갑니다.',
-      tip: '예상과 달랐던 결과는 약점이 아니라 가장 좋은 답변 재료입니다.',
-    },
-    { key: 'q_verify', title: '검증', q: '그 원인 후보를 어떻게 확인했나요? 무엇을 바꿔 다시 실험했나요?', tip: '하지 않은 재실험은 쓰지 말고, 하려던 계획이라고 구분해 쓰세요.' },
-    { key: 'q_limit', title: '한계', q: '이 실험으로 말할 수 없는 것은 무엇인가요? 신용카드 보안에 대해 이 결과로 결론 내릴 수 있나요?', tip: '일반 태그 실험은 EMV 결제 보안을 검증한 것이 아닙니다. 이 구분을 말할 수 있어야 합니다.' },
-  ];
-
-  return (
-    <ol className="iv">
-      {items.map((it) => (
-        <li key={it.key}>
-          <h3>{it.title}</h3>
-          <p>{it.q}</p>
-          <p className="field__help">{it.tip}</p>
-          <div className="field">
-            <label htmlFor={`${base}-${it.key}`} className="sr">{it.title} 답변 메모</label>
-            <textarea id={`${base}-${it.key}`} rows={3} maxLength={4000} placeholder="내 답변 메모" value={s.notes[it.key] ?? ''} onChange={(e) => setNote(it.key, e.target.value)} />
-          </div>
-        </li>
-      ))}
-    </ol>
-  );
+  const items: Record<string, [string, string]> = {
+    q_curiosity: ['왜 이 질문이 궁금했나요? 어떤 장면에서 시작했나요?', '“NFC에 관심이 있었다”보다 직접 겪은 장면을 먼저 쓰세요.'],
+    q_design: ['왜 그 변수를 고르고 나머지는 고정했나요? 반복 횟수는 왜 그만큼인가요?', '다른 방법을 버린 이유까지 말하면 설계를 직접 했다는 점이 드러납니다.'],
+    q_unexpected: [
+      low && high ? `내 기록에서 ${high.key}는 ${percent(high.rate)}(${fraction(high)}), ${low.key}는 ${percent(low.rate)}(${fraction(low)})입니다. 이 차이가 가설과 맞나요? 다르다면 무엇을 먼저 의심했나요?` : '예상과 다른 결과가 나왔다면 무엇을 먼저 의심했나요? 실제 기록을 두 조건 이상 입력하면 이 질문에 내 수치가 들어갑니다.',
+      '예상과 달랐던 결과는 약점이 아니라 가장 좋은 답변 재료입니다.',
+    ],
+    q_verify: ['그 원인 후보를 어떻게 확인했나요? 무엇을 바꿔 다시 실험했나요?', '하지 않은 재실험은 쓰지 말고, 하려던 계획이라고 구분해 쓰세요.'],
+    q_limit: ['이 실험으로 말할 수 없는 것은 무엇인가요? 신용카드 보안에 대해 이 결과로 결론 내릴 수 있나요?', '일반 태그 실험은 EMV 결제 보안을 검증한 것이 아닙니다. 이 구분을 말할 수 있어야 합니다.'],
+  };
+  const fields = guides.map((g) => ({ ...g, help: items[g.key] ? `${items[g.key][0]} ${items[g.key][1]}` : g.help }));
+  return <NotesEditor fields={fields} values={s.notes} onChange={setNote} />;
 }

@@ -13,7 +13,10 @@ import { buildCsvReport, csvSummary, pseudonymize, readSource } from '../src/lib
 import * as wifi from '../src/lib/workbooks/wifi-rssi.ts';
 import * as csvBook from '../src/lib/workbooks/csv.ts';
 import { FIELD_WORKBOOKS } from '../src/lib/workbooks/index.ts';
-import type { Guide } from '../src/lib/workbooks/types.ts';
+import * as nfcBook from '../src/lib/workbooks/nfc.ts';
+import { buildReport, importCsv, NOTE_KEYS as NFC_KEYS, nfcSummaryRows, reportToMarkdown, trialsToCsv, validateTrial } from '../src/lib/nfc.ts';
+import { nfcColab } from '../src/lib/colab.ts';
+import type { GuideBody, NoteText } from '../src/lib/workbooks/types.ts';
 
 const PY = process.env.PYTHON ?? 'python3';
 const WRITE = process.argv.includes('--write');
@@ -26,12 +29,13 @@ function walk(v: unknown, where: string) {
   else if (Array.isArray(v)) { assert.ok(v.length, `빈 목록: ${where}`); v.forEach((x, i) => walk(x, `${where}[${i}]`)); }
   else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) walk(x, `${where}.${k}`);
 }
-function checkGuide(g: Guide) {
-  walk(g, g.id);
-  assert.equal(Object.keys(g.notes).sort().join(), [...NOTE_KEYS].sort().join(), `${g.id} 서술 항목`);
+function checkGuide(g: GuideBody, notes: Record<string, NoteText> = (g as { notes?: Record<string, NoteText> }).notes!, keys: readonly string[] = NOTE_KEYS) {
+  walk(g, g.id); walk(notes, `${g.id}.notes`);
+  for (const [k, n] of Object.entries(notes)) assert.ok(n.example.trim() && n.why.trim(), `${g.id} ${k} 작성 예시`);
+  assert.equal(Object.keys(notes).sort().join(), [...keys].sort().join(), `${g.id} 서술 항목`);
   assert.equal(Object.keys(g.checks).length, 13, `${g.id} 장별 확인 질문`);
   assert.ok(g.industry.projects.length >= 2 && g.threats.rows.length >= 3 && g.trouble.length >= 5 && g.terms.length >= 6 && g.refs.length >= 4, `${g.id} 분량`);
-  for (const t of JSON.stringify(g).match(/·/g) ?? []) assert.fail(`${g.id} 가운뎃점 사용: ${t}`);
+  for (const t of JSON.stringify([g, notes]).match(/·/g) ?? []) assert.fail(`${g.id} 가운뎃점 사용: ${t}`);
 }
 function run(code: string, name: string, cwd = dir) {
   const file = path.join(cwd, `wb_${name}.py`);
@@ -125,5 +129,28 @@ const distinctNotes = () => Object.fromEntries(NOTE_KEYS.map((k, i) => [k, `서�
   assert.deepEqual(jsonOf(run(code.replace("SOURCE = 'sample'", "SOURCE = 'file'"), 'csv-file')), want, 'csv 실제 파일 결과');
   keep('csv', sample);
   console.log('PASS csv: 본문, 골든 원본, 가명본 대조, 보고서, Colab sample, file');
+}
+{ // 01 NFC 기본 실습: 서술 항목은 기존 NOTE_KEYS(저장, CSV 호환) 그대로
+  const { guide, notes, golden } = nfcBook;
+  checkGuide(guide, Object.fromEntries(Object.entries(notes).map(([k, n]) => [k, { ...n, help: n.help || '면접 질문은 화면에서 채움' }])), NFC_KEYS);
+  for (const t of golden) assert.notEqual(typeof validateTrial({ trial: String(t.trial), condition: t.condition, contents: t.contents, distance_cm: String(t.distanceCm), orientation: t.orientation, success: String(t.success), note: t.note }, 'demo'), 'string', 'nfc 골든');
+  const back = importCsv(trialsToCsv(golden), NFC_KEYS);
+  assert.ok(back.kind === 'trials' && back.errors.length === 0 && back.trials.length === golden.length, 'nfc CSV 왕복');
+  const want = Object.fromEntries(nfcSummaryRows(golden));
+  const filled = Object.fromEntries(NFC_KEYS.map((k, i) => [k, `서술 ${i}번 칸`]));
+  const report = reportToMarkdown(buildReport({ trials: golden, notes: { ...filled, limits: '' }, dataType: 'demo', date: '2026-01-01', sources: [] }));
+  NFC_KEYS.forEach((k, i) => { if (k !== 'limits') assert.ok(report.includes(`서술 ${i}번 칸`), `nfc 보고서에 ${k} 누락`); });
+  assert.ok(report.includes('(미작성)') && report.includes('데모 자료'), 'nfc 미작성, 데모 표시');
+  for (const [k, v] of nfcSummaryRows(golden)) assert.ok(report.includes(`- ${k}: ${v}`), `nfc 보고서 계산 ${k}`);
+  const code = nfcColab(golden), sample = run(code, 'nfc');
+  assert.deepEqual(jsonOf(sample), want, 'nfc sample 결과');
+  assert.ok(sample.includes('BAD-1') && sample.includes('잘못된 행 1'));
+  const real = golden.map((t) => ({ ...t, dataType: 'real' as const }));
+  writeFileSync(path.join(dir, 'nfc-experiment.csv'), trialsToCsv([...real, ...golden]));
+  const fileRun = run(code.replace("SOURCE = 'sample'", "SOURCE = 'file'"), 'nfc-file');
+  assert.deepEqual(jsonOf(fileRun), want, 'nfc 실제 CSV 결과');
+  assert.ok(fileRun.includes(`real 관찰 ${real.length}행, 다른 구분 ${golden.length}행 제외`));
+  keep('nfc', sample);
+  console.log(`PASS nfc: 본문, 서술 ${NFC_KEYS.length}칸 예시, 골든 ${golden.length}행, CSV 왕복, 보고서, Colab sample, file`);
 }
 if (WRITE) writeFileSync(OUT, JSON.stringify(outputs, null, 2) + '\n');

@@ -9,7 +9,7 @@ import { golden, guide } from '../../lib/workbooks/wifi-rssi';
 
 const pick = (...keys: string[]) => noteFields(guide, keys);
 ---
-<LabGuide guide={guide} scene={0} golden={wifiTable(golden)} expected={wifiSummaryRows(golden)} code={wifiColab(golden)} output={(output as Record<string, string>)['wifi-rssi'] ?? ''} codeFile="wifi-rssi-observations.csv">
+<LabGuide guide={guide} scene={1} golden={wifiTable(golden)} expected={wifiSummaryRows(golden)} code={wifiColab(golden)} output={(output as Record<string, string>)['wifi-rssi'] ?? ''} codeFile="wifi-rssi-observations.csv">
   <WifiNotes slot="design" client:load fields={pick('question', 'hypothesis', 'controls')} />
   <WifiRecord slot="record" client:load golden={golden} />
   <WifiData slot="data" client:load />

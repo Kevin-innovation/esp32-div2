@@ -1,5 +1,6 @@
 ---
 import { Image } from 'astro:assets';
+import nfc from '../../assets/learning/nfc-tag-structure.webp';
 import wifiRssi from '../../assets/learning/workbook/wifi-rssi.webp';
 import ssidMap from '../../assets/learning/workbook/ssid-map.webp';
 import wpaPmf from '../../assets/learning/workbook/wpa-pmf.webp';
@@ -13,8 +14,10 @@ import gps from '../../assets/learning/workbook/gps.webp';
 import firmware from '../../assets/learning/workbook/firmware.webp';
 import csv from '../../assets/learning/workbook/csv.webp';
 
+// 순서는 실습 목록 번호와 같다. 0번이 01 NFC 기본 실습이다.
 interface Props { index: number; }
 const scenes = [
+  { image: nfc, alt: '투명한 원형 접착 태그 안에 감긴 은색 안테나 코일과 가운데 작은 칩', caption: '전지 없는 태그, 코일과 칩 하나' },
   { image: wifiRssi, alt: '집 평면도 위 공유기에서 방마다 퍼지는 신호와 휴대용 측정기', caption: '방을 옮기며 신호의 빈틈 찾기' },
   { image: ssidMap, alt: '평면도 위 두 공유기와 각각의 연결을 살피는 휴대폰', caption: '이름 하나, 서로 다른 기기 주소' },
   { image: wpaPmf, alt: '공유기를 둘러싼 여러 겹의 보호막과 세 개의 방패', caption: '보안 설정마다 지키는 구간은?' },

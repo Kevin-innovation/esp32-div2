@@ -7,6 +7,8 @@ import Sources from '../../components/Sources.astro';
 import { MISSION_DETAILS, READINESS } from '../../data/classroom';
 import { url } from '../../lib/url';
 
+// 목록 위치가 곧 실습 번호이며 WorkbookScene의 그림 순서와 같다. 01 NFC는 기본 실습, 02~13은 선택 미션이다.
+const nfc = { id: 'nfc', href: '/lab/nfc/', question: '태그가 읽힌다는 사실은 무엇을 증명할까?', title: 'NFC는 지갑과 가방 안에서도 인식될까?', observe: '실험용 NFC 태그를 단독, 빈 지갑, 천 가방에 두고 Card Reader로 조건마다 5회씩 읽어 성공과 실패를 기록합니다. 이 기기의 Card Reader 읽기를 확인했습니다.', learn: '태그의 공개 식별자와 결제 인증을 구분하고, 가까운 거리에서 읽힌다는 관찰이 무엇을 증명하고 무엇을 증명하지 못하는지 정리합니다.', artifact: '조건별 인식률 표와 그래프, 보고서와 1분 설명', project: 'nfc-conditions', security: 'nfc', time: '기본 A~E, 각 50분 제안', prep: '기기, 실험용 태그, 자, 고정대, 빈 지갑, 천 가방', prerequisite: '/learn/#route', prerequisiteLabel: '0~5단계 배경, 준비, 원리, 보안', alternative: '읽히지 않은 시도도 실패나 미관찰로 남기고, 워크북의 가상 골든 데이터를 데모로 골라 분석을 연습합니다. 실제 측정과 섞지 않습니다.' };
 const labs = [
   { href: '/lab/wifi-rssi/', question: '연결이 불안정할 때 침입과 신호 음영을 어떻게 구분할까?', title: '방마다 Wi-Fi가 끊기는 이유는?', observe: '내 공유기나 휴대폰에서 확인한 RSSI와 채널을 방별로 직접 기록합니다. 이 기기의 Wi-Fi 스캔 실행은 아직 확인하지 못했습니다.', learn: '음영 지역과 침입 징후를 구분하고, 게스트망·IoT 망 분리로 접근 범위를 줄이는 방법을 배웁니다.', artifact: '방별 신호 지도와 IoT 망 분리 설계도', project: 'wifi-rssi', security: 'wifi' },
   { question: '익숙한 이름이 뜨면 바로 연결해도 될까?', title: '이름이 같은 Wi-Fi는 같은 공유기일까?', observe: '내 AP의 SSID·BSSID 별칭을 관리자 목록·관찰 근거와 대조해 기록합니다. 내 공유기와 관리자 화면이 필요합니다.', learn: '같은 SSID만으로 신뢰할 수 없는 이유와 가짜 AP 위험을 이해하고, BSSID 대조의 한계와 자동 연결 설정을 점검합니다. 가짜 AP를 만드는 활동은 없습니다.', artifact: '내 AP 목록과 연결 확인 체크리스트', project: 'ssid-map', security: 'wifi' },
@@ -22,64 +24,39 @@ const labs = [
   { question: '식별자를 가려도 나를 알아볼 단서가 남을까?', title: '관찰 CSV를 공유해도 내 기기가 드러나지 않을까?', observe: 'NFC Card Reader의 UID와 Wi-Fi 스캐너의 BSSID를 다룬 예시 CSV를 PC에서 검토할 계획입니다. PC와 직접 준비한 CSV가 필요하며 기기의 CSV 내보내기는 미확인입니다.', learn: '식별자 노출과 재식별 위험을 이해하고 UID·BSSID를 가명 처리합니다. 원본 분리 보관, 백업·복구 확인으로 정보 손실을 줄입니다.', artifact: '가명 처리한 예시 CSV와 백업 복구 점검표', project: 'csv-offline', security: 'device' },
  ];
 const readyMissions: Record<string, string> = { channel:'/lab/channel/', 'ble-pair':'/lab/ble-pair/', subghz:'/lab/subghz/', 'ssid-map': '/lab/ssid-map/', 'wpa-pmf': '/lab/wpa-pmf/', firmware: '/lab/firmware/', 'ble-ad': '/lab/ble-ad/', ir: '/lab/ir/', csv: '/lab/csv/', interference: '/lab/interference/', gps: '/lab/gps/' };
-const missions = labs.map((lab, index) => ({ ...lab, ...MISSION_DETAILS[index], index, href: readyMissions[MISSION_DETAILS[index].id] ?? ('href' in lab ? lab.href : undefined) }));
-const sections = [
-  { id: 'available', heading: 'h-more', title: '지금 선택할 수 있는 미션', intro: '기본 NFC를 마친 뒤 Wi-Fi·BLE·IR·간섭·GPS 수동 관찰, SSID/BSSID·WPA/PMF·펌웨어 출처 확인과 CSV 가명처리로 이어 갑니다. 해당 기기 기능 실행과 교실 파일럿은 미검증입니다.', items: missions.filter(mission => mission.href) },
-];
+const missions = [nfc, ...labs.map((lab, i) => ({ ...lab, ...MISSION_DETAILS[i], href: readyMissions[MISSION_DETAILS[i].id] ?? ('href' in lab ? lab.href : undefined) }))].map((m, index) => ({ ...m, index }));
+const TOPICS = [['NFC', '근거리'], ['Wi-Fi', '공간'], ['Wi-Fi', '식별'], ['Wi-Fi', '인증'], ['Wi-Fi', '가용성'], ['BLE', '개인정보'], ['BLE', '페어링'], ['2.4GHz', '간섭'], ['IR', '명령'], ['433MHz', '코드'], ['GPS', '신뢰'], ['펌웨어', '공급망'], ['CSV', '데이터']];
+const webState = (id: string) => id === 'nfc' ? '웹 워크북과 기기 읽기 사용 가능' : id === 'csv' ? '가명처리 사용 가능' : id === 'firmware' ? '출처 기록과 선택 해시 계산 사용 가능' : '수동 기록 사용 가능';
+const deviceState = (id: string) => id === 'nfc' ? READINESS.nfc.device : id === 'wifi-rssi' ? READINESS.wifi.device : READINESS.fieldwork.device;
 ---
-<Base title="실험 워크북 | ESP32-DIV V2.1 실험 노트" description="NFC 기본 수업과 Wi-Fi·BLE·IR·간섭·GPS·CSV 웹 워크북, 13개 웹 워크북과 기기·교실 준비도를 안내합니다.">
+<Base title="실험 워크북 | ESP32-DIV V2.1 실험 노트" description="01 NFC 기본 실습과 02~13 선택 미션, 모두 13개 웹 워크북의 준비물, 시간, 기기와 교실 준비도를 한 목록으로 안내합니다.">
   <div class="wrap">
     <header class="page-head workbook-intro">
       <div>
       <h1>실험 워크북</h1>
       <p class="lead">생활 속 문제를 관찰하고, 해킹 위험과 방어 방법을 함께 배우는 학생용 탐구 목록입니다.</p>
-      <p>기본은 0~6단계의 NFC 수업입니다. 그 뒤 Wi-Fi RSSI·BLE 광고·IR 수신·간섭 관찰·GPS 교차확인·SSID/BSSID·WPA/PMF·펌웨어 출처 확인·시간대별 채널·BLE 페어링·433MHz 문서 비교·CSV 가명처리를 선택할 수 있습니다. 현재 웹 워크북은 NFC 포함 <strong>13개 모두 사용 가능</strong>하며 개발 예정 항목은 0개입니다. 웹 사용 가능은 기기 실행·교실 파일럿 검증을 뜻하지 않습니다. <a href={url('/learn/#classes')}>차시 제안과 기본 수업 보기</a>.</p>
+      <p>모두 <strong>13개</strong>이며 번호 하나로 정렬했습니다. <strong>01 NFC는 기본 실습</strong>으로 0~5단계 학습 뒤 가장 먼저 합니다. <strong>02~13은 선택 미션</strong>이라 번호와 상관없이 관심 있는 것부터 고르면 됩니다. 각 미션의 선수학습을 확인하세요. <a href={url('/learn/#classes')}>차시 제안과 기본 수업 보기</a>.</p>
+      <p class="small muted">웹 워크북 13개를 모두 사용할 수 있습니다. 웹 사용 가능은 기기 실행이나 교실 파일럿 검증을 뜻하지 않습니다. 기기 실행은 01 NFC의 Card Reader 읽기만 확인했습니다.</p>
       </div>
       <figure class="workbook-desk">
         <Image src={workbookDesk} alt="관찰 기기, 공유기, 이어폰과 태그를 놓고 무선 신호를 기록하는 실험 책상 장면" widths={[600, 1200]} sizes="(min-width: 768px) 50vw, 100vw" loading="eager" decoding="async" />
       </figure>
     </header>
 
-    <section class="section section--well" style="margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter)" aria-labelledby="h-nfc">
-      <div class="split">
-        <div>
-          <h2 id="h-nfc" class="question">NFC는 지갑·가방 안에서도 인식될까?</h2>
-          <p class="tags" style="margin-top: var(--space-md)"><span class="tag tag--device">현재 사용 가능</span></p>
-          <div class="btn-row" style="margin-top: var(--space-lg)">
-            <a class="btn" href={url('/lab/nfc/')}>NFC 워크북 시작하기</a>
-          </div>
-        </div>
-        <div class="prose">
-          <p>실험용 NFC 태그, 자, 고정대, 빈 지갑과 천 가방을 준비해 조건별 인식률을 비교합니다. 입력한 값으로 그래프, CSV, 파이썬 분석, 보고서와 면접 질문까지 이어집니다.</p>
-          <p>태그의 공개 식별자와 결제 인증을 구분하고, 가까운 거리에서 읽힌다는 관찰이 무엇을 증명하는지 정리합니다.</p>
-          <ul class="mission-readiness" aria-label="NFC 준비도">
-            <li><strong>웹:</strong> {READINESS.nfc.web}</li><li><strong>기기:</strong> {READINESS.nfc.device}</li><li><strong>교실:</strong> {READINESS.nfc.pilot}</li>
-          </ul>
-          <ul class="mission-setup">
-            <li><strong>제안 시간:</strong> 기본 A~E 각 50분. 관찰·분석·보고서는 C~E에서 나눕니다.</li>
-            <li><strong>준비물:</strong> 기기·실험 태그·자·고정대·빈 지갑·천 가방</li>
-            <li><strong>선수학습:</strong> <a href={url('/learn/#route')}>0~5단계 배경·준비·원리·보안</a></li>
-            <li><strong>막혔을 때:</strong> 실패 관찰을 남기고 워크북의 데모를 명시적으로 선택해 분석할 수 있습니다. 실제 측정과 섞지 않습니다.</li>
-          </ul>
-          <p class="small muted">이 기기의 부팅·메인·More·NFC 메뉴와 PN532 표시, 구매 태그의 UID·P4~P7 읽기를 확인했습니다. 준비 학습: <a href={url('/learn/nfc/')}>NFC 원리</a>.</p>
-        </div>
-      </div>
-    </section>
-
-    {sections.map(section => <section class="section" id={section.id} aria-labelledby={section.heading}>
-      <div class="section__head"><h2 id={section.heading}>{section.title}</h2><p class="muted">{section.intro}</p></div>
-      <p class="workbook-scene-note small muted">각 이미지는 관찰할 장면을 상상하도록 돕는 학습 비주얼입니다. NFC 읽기 외 기기 실행은 미검증이며 모든 미션의 교실 파일럿도 미검증입니다.</p>
-      <ul class="workbook-grid">
-        {section.items.map((l) => (
+    <section class="section" id="available" aria-labelledby="h-more">
+      <div class="section__head"><h2 id="h-more">실습 13개</h2><p class="muted">01 기본 실습을 마친 뒤 02~13 선택 미션으로 이어 갑니다. 이미지는 관찰할 장면을 상상하도록 돕는 학습용 생성 이미지입니다.</p></div>
+      <ol class="workbook-grid">
+        {missions.map((l) => (
           <li class="workbook-planned">
             <div class="workbook-card__meta">
-              <span class="workbook-card__number">{String(l.index + 1).padStart(2, '0')}</span>
-              {[['Wi-Fi', '공간'], ['Wi-Fi', '식별'], ['Wi-Fi', '인증'], ['Wi-Fi', '가용성'], ['BLE', '개인정보'], ['BLE', '페어링'], ['2.4GHz', '간섭'], ['IR', '명령'], ['433MHz', '코드'], ['GPS', '신뢰'], ['펌웨어', '공급망'], ['CSV', '데이터']][l.index].map((t) => <span class="tag">{t}</span>)}
-              <span class={`tag ${l.href ? 'tag--device' : 'tag--unverified'} workbook-card__state`}>웹 워크북 사용 가능</span>
+              <span class="workbook-card__number" aria-label={`실습 ${l.index + 1}번`}>{String(l.index + 1).padStart(2, '0')}</span>
+              <span class="tag">{l.index === 0 ? '기본 실습' : '선택 미션'}</span>
+              {TOPICS[l.index].map((t) => <span class="tag">{t}</span>)}
+              <span class="tag tag--device workbook-card__state">웹 워크북 사용 가능</span>
             </div>
             <WorkbookScene index={l.index} />
             <h3>{l.title}</h3>
-            {l.href && <p class="workbook-card__start"><a class="btn btn--small" href={url(l.href)}>워크북 시작하기</a></p>}
+            <p class="workbook-card__start"><a class="btn btn--small" href={url(l.href!)} aria-label={`${String(l.index + 1).padStart(2, '0')} ${l.title} 워크북 시작하기`}>워크북 시작하기</a></p>
             <p class="small"><strong>제안 시간:</strong> {l.time}<br /><strong>준비물:</strong> {l.prep}</p>
             <dl class="workbook-card__facts">
               <div><dt>관찰 장면</dt><dd>{l.observe}</dd></div>
@@ -87,8 +64,8 @@ const sections = [
               <div><dt>학습 산출물</dt><dd>{l.artifact}</dd></div>
             </dl>
             <ul class="mission-readiness" aria-label={`${l.title} 준비도`}>
-              <li><strong>웹:</strong> {l.href ? l.id === 'csv' ? '가명처리 사용 가능' : l.id === 'firmware' ? '출처 기록·선택 해시 계산 사용 가능' : '수동 기록 사용 가능' : READINESS.fieldwork.web}</li>
-              <li><strong>기기:</strong> {l.id === 'wifi-rssi' ? READINESS.wifi.device : READINESS.fieldwork.device}</li>
+              <li><strong>웹:</strong> {webState(l.id)}</li>
+              <li><strong>기기:</strong> {deviceState(l.id)}</li>
               <li><strong>교실:</strong> {READINESS.fieldwork.pilot}</li>
             </ul>
             <details class="mission-details">
@@ -99,8 +76,8 @@ const sections = [
             <div class="workbook-card__links small"><p class="muted">배경 기술노트</p><ul><li><a href={url(`/learn/projects/#${l.project}`)}>관찰 주제</a></li><li><a href={url(`/learn/security/#${l.security}`)}>정보보호 원리</a></li></ul></div>
           </li>
         ))}
-      </ul>
-    </section>)}
+      </ol>
+    </section>
     <Sources ids={['deviceScreens', 'wiki', 'nfcOverview']} />
   </div>
 </Base>

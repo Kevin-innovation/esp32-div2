@@ -11,7 +11,7 @@ const source = readSource(golden.original);
 const pseudo = pseudonymize(source, golden.actions);
 const pick = (...keys: string[]) => noteFields(guide, keys);
 ---
-<LabGuide guide={guide} scene={11} golden={csvTable(source)} expected={csvSummary(source, pseudo)} code={csvColab(golden.original, pseudo.csv)} output={(output as Record<string, string>).csv ?? ''} codeFile="csv-real-original.csv와 csv-real-pseudonymized.csv">
+<LabGuide guide={guide} scene={12} golden={csvTable(source)} expected={csvSummary(source, pseudo)} code={csvColab(golden.original, pseudo.csv)} output={(output as Record<string, string>).csv ?? ''} codeFile="csv-real-original.csv와 csv-real-pseudonymized.csv">
   <CsvNotesPart slot="design" client:load fields={pick('question', 'hypothesis', 'controls')} />
   <CsvSourcePart slot="record" client:load golden={golden} />
   <CsvExportPart slot="data" client:load />

@@ -8,7 +8,8 @@ export function NotesEditor({ fields, values, onChange, disabled, modeLabel }: {
   values: Record<string, string>;
   onChange: (key: string, value: string) => void;
   disabled?: boolean;
-  modeLabel: string;
+  /** 실제와 데모의 서술을 따로 저장하는 워크북만 표시한다. */
+  modeLabel?: string;
 }) {
   const base = useId();
   return (
@@ -18,7 +19,7 @@ export function NotesEditor({ fields, values, onChange, disabled, modeLabel }: {
         const current = values[f.key] ?? '';
         return (
           <div className="note-field" key={f.key}>
-            <label htmlFor={id}>{f.label} <span className="note-field__mode">{modeLabel}</span></label>
+            <label htmlFor={id}>{f.label}{modeLabel && <> <span className="note-field__mode">{modeLabel}</span></>}</label>
             <p id={`${id}-help`} className="field__help">{f.help}</p>
             <textarea id={id} aria-describedby={`${id}-help`} rows={4} maxLength={4000} disabled={disabled} value={current} onChange={(e) => onChange(f.key, e.target.value)} />
             <details className="note-example">
