@@ -1,0 +1,132 @@
+---
+// 미션 코드 읽기. 입문 다음, 미션 9장 앞의 선택 학습. 해설하는 코드는 data/missionCode.ts가 실제 미션 코드에서 잘라 온 원문이고,
+// 예제 출력은 scripts/check-python-intro.ts가 실행해 mission-code-output.json과 대조한다.
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { BLOCK_GROUPS, CHECKLIST, MISSIONS, OTHER, SYNTAX_TABLE } from '../../data/missionCode';
+import out from '../../data/mission-code-output.json';
+import colab from '../../lib/workbooks/colab-output.json';
+import { url } from '../../lib/url';
+
+const outputs = out as Record<string, string>;
+const nfcOut = (colab as Record<string, string>).nfc.split('\n');
+const stage = (from: RegExp, to?: RegExp) => { const a = nfcOut.findIndex((l) => from.test(l)); const b = to ? nfcOut.findIndex((l, i) => i > a && to.test(l)) : nfcOut.length; return nfcOut.slice(a, b).join('\n'); };
+const nfcCode = MISSIONS.find((m) => m.id === 'nfc')!.code;
+const BLOCK_NAME: Record<string, string> = Object.fromEntries(BLOCK_GROUPS.flatMap((g) => g.blocks.map((b) => [b.id, `${g.title.split(':')[0]} ${b.title.split(':')[0]}`])));
+---
+<LearnLayout
+  title="미션 코드 읽기"
+  heading="미션 코드 읽기: 13개 미션의 Colab 코드를 내 말로 설명하기"
+  lead="NFC, WPA-PMF, CSV 미션의 실제 코드를 줄 묶음으로 잘라 입력, 처리, 중간 출력, 이유, 주의 순으로 읽습니다. 묶음마다 작게 실행해 보고, 예측 문제와 수정 미션으로 바꿔 봅니다."
+  description="ESP32-DIV 실습 미션 9장의 실제 Python·pandas 코드를 줄 묶음별로 해설하고, 실행 예제와 예측·수정 과제로 코드를 스스로 읽고 고치게 돕는 선택 학습입니다."
+  toc={[['goal', '목표와 순서'], ['syntax', '문법 대조표'], ['flow', '입력에서 그래프까지'], ...BLOCK_GROUPS.map((g) => [`read-${g.id}`, g.title.split(':')[0]] as [string, string]), ['others', '나머지 미션'], ['check', '독해 완료 체크']]}
+  sourcesChecked="2026-11-11"
+  sources={['pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'pandasCrosstab', 'pythonTutorial', 'mplBar']}
+>
+  <section id="goal" aria-labelledby="h-goal">
+    <h2 id="h-goal">목표와 순서</h2>
+    <div class="callout">
+      <p><strong>선수 학습 2단계 중 두 번째입니다.</strong> <a href={url('/learn/python-colab/')}>Python·pandas·Colab 입문</a>의 셀 1~8을 먼저 따라 하고, 이 페이지를 본 뒤 각 미션의 9장 Colab 분석으로 갑니다. 브라우저 분석(8장)만으로 미션을 마칠 수 있으니 선택입니다.</p>
+    </div>
+    <p>이 페이지를 마치면 어느 미션의 코드를 열어도 다음 일곱 가지를 찾아 설명할 수 있어야 합니다.</p>
+    <ol class="read-goals">{CHECKLIST.map(([k]) => <li>{k}</li>)}</ol>
+    <p>각 줄 묶음은 <strong>원문 코드 → 입력 데이터 → 처리 → 중간 출력(작은 예제) → 왜 필요한가 → 주의</strong> 순서입니다. 원문 코드는 미션 페이지의 코드에서 그대로 잘라 왔고, 줄 번호도 원문의 번호입니다. 작은 예제는 새 Colab 셀에 붙여 넣으면 같은 출력이 나옵니다.</p>
+  </section>
+
+  <section id="syntax" aria-labelledby="h-syntax">
+    <h2 id="h-syntax">문법 대조표: 미션 코드에 실제로 있는 것만</h2>
+    <p>아래 문법은 13개 미션 코드와 NFC 노트북에서 찾은 것입니다. 원문 줄은 미션 코드에서 그대로 옮겼습니다. 오른쪽 열의 셀이나 묶음에서 쓰임새를 배웁니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="미션 코드 문법 대조표">
+      <table class="read-syntax">
+        <thead><tr><th scope="col">문법</th><th scope="col">미션 코드의 실제 줄</th><th scope="col">배우는 곳</th></tr></thead>
+        <tbody>
+          {SYNTAX_TABLE.map((r) => (
+            <tr><th scope="row">{r.name}</th><td><code class="read-syntax__line">{r.line}</code><span class="small muted"> ({r.from === '노트북' ? 'NFC 노트북' : `미션 ${r.from}`})</span></td><td>{r.where.split(' · ').map((w, i) => { const id = w.split('(')[0]; const note = w.slice(id.length); return <>{i > 0 && ' · '}{BLOCK_NAME[id] ? <a href={`#${id}`}>{BLOCK_NAME[id]}{note}</a> : w}</>; })}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="flow" aria-labelledby="h-flow">
+    <h2 id="h-flow">입력에서 그래프까지: NFC 골든 데이터로 한 번에</h2>
+    <p>NFC 미션 9장 코드를 SOURCE = 'sample'로 실행한 실제 출력입니다. 출력 번호가 코드의 단계와 같습니다.</p>
+    <ol class="read-flow">
+      <li><strong>입력:</strong> 골든 데이터 31행. 그중 BAD-1 행은 일부러 success에 2를 적은 잘못된 행입니다. <a href="#nfc-source">자료 고르기</a>, <a href="#nfc-load">불러오기</a>
+        <CodeBlock kind="output" code={stage(/^1\. /, /^2\. /)} file="stage-1" label="1. 불러오기 출력" /></li>
+      <li><strong>중간 표:</strong> problem 검사로 1행을 빼고 30행이 남습니다. <a href="#nfc-check">검사</a>
+        <CodeBlock kind="output" code={stage(/^2\. /, /그림 G1/)} file="stage-2" label="2. 검사 출력" /></li>
+      <li><strong>그래프:</strong> 조건별 성공과 실패를 쌓은 막대입니다. 그림 이름의 뜻이 먼저 출력됩니다. <a href="#nfc-plot">그래프</a>
+        <CodeBlock kind="output" code={stage(/그림 G1/, /^3\. /)} file="stage-graph" label="그래프 앞 출력" /></li>
+      <li><strong>최종 값:</strong> 조건별·거리별 성공/시도와 인식률. 9장 예상 출력, 8장 브라우저 계산과 같아야 합니다. <a href="#nfc-count">계산</a>
+        <CodeBlock kind="output" code={stage(/^3\. /, /^검증용 JSON/)} file="stage-3" label="3. 계산 결과" /></li>
+    </ol>
+  </section>
+
+  {BLOCK_GROUPS.map((g) => (
+    <section id={`read-${g.id}`} aria-labelledby={`h-read-${g.id}`}>
+      <h2 id={`h-read-${g.id}`}>{g.title}</h2>
+      <p>{g.lead} 원본은 <a href={url(g.href)}>{g.mission} 9장</a>의 코드입니다.</p>
+      {g.blocks.map((b) => (
+        <article class="read-block" id={b.id} aria-labelledby={`h-${b.id}`}>
+          <h3 id={`h-${b.id}`}>{b.title}</h3>
+          <CodeBlock code={b.excerpt.text} file={`${b.source}-colab.py`} label={`${b.source}-colab.py 원문`} start={b.excerpt.start} save={false} />
+          <h4 class="read-label">입력 데이터</h4>
+          <p>{b.data}</p>
+          <h4 class="read-label">처리</h4>
+          <ol>{b.does.map((d) => <li>{d}</li>)}</ol>
+          <h4 class="read-label">중간 출력: {b.example.title}</h4>
+          <CodeBlock code={b.example.code} file={`${b.example.id}.py`} />
+          <CodeBlock kind="output" code={outputs[b.example.id]} file="output" label="실행 결과" />
+          <h4 class="read-label">왜 필요한가</h4>
+          <p>{b.why}</p>
+          <h4 class="read-label">주의</h4>
+          <p>{b.care}</p>
+          {b.tasks.map((t, i) => (
+            <div class="read-task">
+              <p><strong class="read-task__kind">{t.kind} {i + 1}</strong> {t.q}</p>
+              {t.example && <CodeBlock code={t.example.code} file={`${t.example.id}.py`} label={`${t.example.id}.py · 먼저 결과를 예측하고 실행`} />}
+              <details>
+                <summary>{t.example ? '예상 출력과 해설 보기' : '해설 보기'}</summary>
+                {t.example && <CodeBlock kind="output" code={outputs[t.example.id]} file="output" label="실행 결과" />}
+                <p>{t.answer}</p>
+              </details>
+            </div>
+          ))}
+        </article>
+      ))}
+      <p class="read-back"><a href={url(g.href)}>{g.mission} 9장의 전체 코드로 돌아가기 →</a></p>
+    </section>
+  ))}
+
+  <section id="others" aria-labelledby="h-others">
+    <h2 id="h-others">나머지 10개 미션: 같은 틀에서 달라지는 곳</h2>
+    <p>모든 현장 기록형 미션은 NFC·WPA-PMF와 같은 순서(자료 고르기 → 열 확인 → data_type 거르기 → problem 검사 → 세기 → 그래프 → 출력)입니다. 미션마다 달라지는 곳만 아래 표에서 찾아 읽습니다. 표의 값은 각 미션 코드에서 자동으로 뽑았습니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="나머지 미션의 묶는 열, 그래프, 분모">
+      <table>
+        <thead><tr><th scope="col">미션</th><th scope="col">묶는 열(그룹 키)</th><th scope="col">crosstab</th><th scope="col">그래프 제목 · 세로축</th><th scope="col">비율의 분모</th></tr></thead>
+        <tbody>
+          {OTHER.map((m) => (
+            <tr><th scope="row"><a href={url(`${m.href}#ch-9`)}>{m.n} {m.title}</a></th><td><code>{m.group}</code></td><td>{m.cross === '—' ? '—' : <code>{m.cross}</code>}</td><td>{m.chart} · <code>{m.ylabel}</code></td><td>{m.denom}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">‘측정하지 못함을 뺀 시도’는 ratio 함수가 observation_status가 unchecked인 행을 분모에서 빼고 관찰됨/시도로 쓰는 경우입니다. 이 함수는 모든 현장 기록형 코드에 정의되어 있고, 위 표에는 실제로 부르는 미션만 표시했습니다.</p>
+  </section>
+
+  <section id="check" aria-labelledby="h-check">
+    <h2 id="h-check">독해 완료 체크</h2>
+    <p>공책에 각 항목을 내 말로 한두 문장씩 쓴 뒤 해설과 비교합니다. 모두 쓸 수 있으면 미션 9장으로 갑니다.</p>
+    <ol class="read-check">
+      {CHECKLIST.map(([k, task, answer]) => (
+        <li>
+          <p><strong>{k}</strong> {task}</p>
+          <details><summary>해설 보기</summary><p>{answer}</p></details>
+        </li>
+      ))}
+    </ol>
+    <p>마지막 과제: <a href={url('/lab/nfc/#ch-9')}>NFC 미션 9장</a>의 코드에서 <code>data['condition'] == c</code>를 찾아 몇 번째 줄인지 적고, 이 줄을 <code>data['d'] == d</code>로 바꾸면 무엇을 비교하게 되는지 설명합니다.</p>
+    <details><summary>해설 보기</summary><p>원문 {nfcCode.split('\n').findIndex((l) => l.includes("rs = data[data['condition'] == c]")) + 1}번째 줄입니다. 조건(단독·지갑·가방)별로 행을 고르는 줄이라, 거리 d로 바꾸면 거리별 성공/시도를 세게 됩니다. 원문은 바로 아래 두 번째 반복문에서 거리별 값을 따로 셉니다. 두 변수가 함께 바뀐 기록이면 한쪽 결과만으로 그 변수의 효과라고 쓰지 않습니다.</p></details>
+  </section>
+</LearnLayout>

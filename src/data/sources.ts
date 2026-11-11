@@ -35,6 +35,8 @@ export const SOURCES = {
   pandasReadCsv: { title: 'pandas 문서: read_csv', url: 'https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html' },
   pandasGroupby: { title: 'pandas 문서: Group by', url: 'https://pandas.pydata.org/docs/user_guide/groupby.html' },
   pandasMissing: { title: 'pandas 문서: Working with missing data', url: 'https://pandas.pydata.org/docs/user_guide/missing_data.html' },
+  pandasCrosstab: { title: 'pandas 문서: crosstab', url: 'https://pandas.pydata.org/docs/reference/api/pandas.crosstab.html' },
+  pythonTutorial: { title: 'Python 공식 자습서(한국어)', url: 'https://docs.python.org/ko/3/tutorial/index.html' },
   mplBar: { title: 'Matplotlib 문서: pyplot.bar', url: 'https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.bar.html' },
   ntag: { title: 'NXP 데이터시트: NTAG213/215/216', url: 'https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf' },
   metal: { title: 'NXP 앱노트 AN11564: 금속 주변 NFC 안테나', url: 'https://www.nxp.com/docs/en/application-note/AN11564.pdf' },

@@ -9,20 +9,24 @@ interface Props {
   file: string;
   kind?: 'code' | 'output';
   label?: string;
+  /** 원문 발췌일 때 원문에서의 첫 줄 번호 */
+  start?: number;
+  /** false면 내려받기 버튼을 두지 않는다(실행 단위가 아닌 발췌) */
+  save?: boolean;
 }
-const { code, file, kind = 'code', label } = Astro.props;
+const { code, file, kind = 'code', label, start = 1, save = true } = Astro.props;
 const text = code.replace(/\n+$/, '');
 const lines = text.split('\n').length;
 const tall = lines > 24;
 ---
-<figure class={`cb cb--${kind}`} data-cb data-file={file}>
+<figure class={`cb cb--${kind}`} data-cb data-file={file} style={start !== 1 ? `--ln0: ${start - 1}` : undefined}>
   <figcaption class="cb__bar">
     <span class="cb__name">{label ?? file}</span>
-    <span class="cb__meta">{lines}줄</span>
+    <span class="cb__meta">{start !== 1 ? `원문 ${start}~${start + lines - 1}줄` : `${lines}줄`}</span>
     {kind === 'code' && (
       <span class="cb__actions" data-js hidden>
         <button class="btn btn--quiet btn--small" type="button" data-copy>코드 복사</button>
-        <button class="btn btn--quiet btn--small" type="button" data-save>{file.endsWith('.py') ? '.py 파일' : '파일'} 내려받기</button>
+        {save && <button class="btn btn--quiet btn--small" type="button" data-save>{file.endsWith('.py') ? '.py 파일' : '파일'} 내려받기</button>}
       </span>
     )}
   </figcaption>

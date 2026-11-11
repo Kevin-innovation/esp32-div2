@@ -1,13 +1,14 @@
-// Python·Colab 입문 검사: 따라 하기 셀을 한 프로세스에서 차례로 실행해 페이지의 예상 출력과 대조하고,
-// 오류 예시가 적힌 오류를 실제로 내는지 확인한다.
+// Python·Colab 입문과 미션 코드 읽기 검사: 따라 하기 셀을 한 프로세스에서 차례로 실행해 예상 출력과 대조하고,
+// 오류 예시가 적힌 오류를 실제로 내는지, 미션 코드 읽기의 예제(원문 발췌 포함)가 저장된 출력과 같은지 확인한다.
 // 실행: PYTHON=<pandas·matplotlib가 있는 python> node scripts/check-python-intro.ts [--write]
-// --write는 출력을 src/data/python-colab-output.json에, 셀 6 그림을 public/images/python-colab-bar.svg에 저장한다.
+// --write는 출력을 src/data/python-colab-output.json과 mission-code-output.json에, 셀 6 그림을 public/images/python-colab-bar.svg에 저장한다.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { CELLS, TROUBLES, fullScript } from '../src/data/pythonColab.ts';
+import { EXAMPLES } from '../src/data/missionCode.ts';
 
 const PY = process.env.PYTHON ?? 'python3';
 const WRITE = process.argv.includes('--write');
@@ -47,4 +48,15 @@ if (WRITE) {
 } else {
   assert.deepEqual(JSON.parse(readFileSync(file, 'utf8')), result, '페이지의 예상 출력이 실제 실행 결과와 같아야 합니다');
 }
-console.log(`python intro: 셀 ${CELLS.length}개 실행, 전체 코드 출력 일치, 오류 예시 ${TROUBLES.length}개 확인${WRITE ? ' (저장함)' : ''}`);
+// 미션 코드 읽기 예제: 각각 새 프로세스에서 실행한다.
+const examples: Record<string, string> = {};
+for (const e of EXAMPLES) {
+  assert.ok(!(e.id in examples), `예제 id가 겹칩니다: ${e.id}`);
+  examples[e.id] = run(prelude + e.code).replace(/\n+$/, '');
+  assert.ok(examples[e.id].length > 0, `${e.id}: 출력이 없습니다`);
+}
+assert.ok(examples['nfc-count'].includes('한 줄과 나눈 줄이 같다: True'), '체이닝을 나눈 코드가 같은 값을 내야 합니다');
+const mfile = path.join(root, 'src/data/mission-code-output.json');
+if (WRITE) writeFileSync(mfile, JSON.stringify(examples, null, 2) + '\n');
+else assert.deepEqual(JSON.parse(readFileSync(mfile, 'utf8')), examples, '미션 코드 읽기의 예상 출력이 실제 실행 결과와 같아야 합니다');
+console.log(`python intro: 셀 ${CELLS.length}개 실행, 전체 코드 출력 일치, 오류 예시 ${TROUBLES.length}개, 미션 코드 예제 ${EXAMPLES.length}개 확인${WRITE ? ' (저장함)' : ''}`);

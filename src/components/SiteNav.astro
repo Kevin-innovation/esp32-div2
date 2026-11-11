@@ -1,0 +1,86 @@
+---
+// 상단 메뉴. 묶음마다 허브 링크(있으면)와 네이티브 details 토글이 있고, 패널은 details 안에 있어 JS 없이도 열린다.
+// JS가 있으면: 마우스(hover 가능한 정밀 포인터)는 올리면 열리고 벗어나면 잠시 뒤 닫힘, Escape는 닫고 토글로 초점 복귀,
+// 밖을 누르거나 초점이 묶음 밖으로 나가면 닫힘. details의 name으로 한 번에 한 패널만 열린다.
+import { NAV, navSection } from '../data/nav';
+import { url } from '../lib/url';
+
+interface Props { path: string }
+const { path } = Astro.props;
+const here = navSection(path);
+const exact = (href: string) => !href.includes('#') && href === path ? 'page' : undefined;
+---
+<nav class="nav" aria-label="주요 메뉴">
+  {NAV.map((s) => (
+    <div class:list={['nav-item', { 'nav-item--hub': s.hub }]} data-nav-item>
+      {s.hub && <a class="nav-item__link" href={url(s.hub)} aria-current={here === s.id ? (path === s.hub ? 'page' : 'true') : undefined}>{s.label}</a>}
+      <details class="nav-item__more" id={s.id === 'reference' ? 'reference-nav' : `nav-${s.id}`} name="site-nav">
+        <summary aria-current={!s.hub && here === s.id ? 'true' : undefined}>
+          {s.hub ? <span class="sr">{s.label} 하위 메뉴</span> : s.label}
+        </summary>
+        <div class="nav-panel">
+          <div class="nav-panel__head">
+            <p class="nav-panel__hint">{s.hint}</p>
+            {s.hub && <a class="nav-panel__hub" href={url(s.hub)} aria-current={exact(s.hub)}>{s.hubLabel} <span aria-hidden="true">→</span></a>}
+          </div>
+          <div class={`nav-panel__cols nav-panel__cols--${s.id}`}>
+            {s.groups.map((g) => (
+              <div class:list={['nav-col', { 'nav-col--feature': g.feature }]}>
+                <p class="nav-col__title" id={`nav-${s.id}-${g.id}`}>{g.title}</p>
+                {g.hint && <p class="nav-col__hint">{g.hint}</p>}
+                <ul aria-labelledby={`nav-${s.id}-${g.id}`}>
+                  {g.links.map((l) => (
+                    <li>
+                      <a href={url(l.href)} aria-current={exact(l.href)}>
+                        {l.n && <span class="nav-col__n">{l.n}</span>}
+                        <span class="nav-col__label">{l.label}{l.note && <span class="nav-col__note">{l.note}</span>}</span>
+                      </a>
+                      {l.sub && <ul class="nav-col__sub" aria-label={`${l.label} 안의 주제`}>{l.sub.map((x) => <li><a href={url(x.href)}>{x.label}</a></li>)}</ul>}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+    </div>
+  ))}
+</nav>
+
+<script>
+  const items = [...document.querySelectorAll<HTMLElement>('[data-nav-item]')];
+  const all = items.map((item) => item.querySelector('details')!);
+  const fine = matchMedia('(hover: hover) and (pointer: fine)');
+  const close = (d: HTMLDetailsElement) => { d.open = false; delete d.dataset.hover; };
+  for (const item of items) {
+    const d = item.querySelector('details')!;
+    const summary = d.querySelector('summary')!;
+    let timer = 0;
+    d.addEventListener('toggle', () => { if (d.open) all.forEach((o) => o !== d && close(o)); else delete d.dataset.hover; });
+    item.addEventListener('mouseenter', () => {
+      if (!fine.matches) return;
+      clearTimeout(timer);
+      if (!d.open) { d.open = true; d.dataset.hover = '1'; }
+    });
+    item.addEventListener('mouseleave', () => {
+      if (!fine.matches) return;
+      // 트리거와 패널 사이 빈틈을 지나는 동안 닫히지 않게 잠시 기다린다. 키보드 초점이 안에 있으면 그대로 둔다.
+      timer = window.setTimeout(() => { if (!item.querySelector(':focus-visible')) close(d); }, 220);
+    });
+    // 마우스를 올려 이미 연 패널은 토글을 눌러도 닫지 않는다(한 번 더 누르면 닫힘).
+    summary.addEventListener('click', (e) => { if (d.dataset.hover) { e.preventDefault(); delete d.dataset.hover; } });
+    item.addEventListener('focusout', (e) => { const to = e.relatedTarget as Node | null; if (to && !item.contains(to)) close(d); });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = all.find((d) => d.open);
+    if (!open) return;
+    close(open);
+    open.querySelector('summary')!.focus();
+  });
+  document.addEventListener('click', (e) => {
+    if (items.some((item) => item.contains(e.target as Node))) return;
+    all.forEach(close);
+  });
+</script>

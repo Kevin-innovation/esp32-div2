@@ -1,0 +1,21 @@
+{
+  "nfc-source": "sample → demo\nupload → real\nfile → real",
+  "nfc-load": "없는 열: ['orientation']\n1. 불러오기: demo 관찰 6행, 다른 구분 1행 제외",
+  "nfc-load-mix": "거름 단독 2/2\n안 거름 단독 3/3",
+  "nfc-check": "  condition distance_cm success                              이유\n0        단독           1       1                                \n1        지갑           3          success는 1(읽힘) 또는 0(안 읽힘)만 씁니다\n2        가방           셋       0                    거리가 숫자가 아닙니다\n3                     1       1                       조건이 비었습니다",
+  "nfc-check-zero": "뺀 경우: 2/3\n0으로 채운 경우: 2/4",
+  "nfc-count": "한 줄과 나눈 줄이 같다: True\n단독 2/2\n지갑 1/2\n가방 0/1\n  condition  sum  count\n0        지갑    1      2\n1        단독    2      2\n2        가방    0      1",
+  "nfc-count-denom": "조건의 시도로 나눔: 2/2\n전체 행으로 나눔: 2/5",
+  "nfc-count-group": "           sum  count\ncondition            \n단독           2      2\n지갑           1      2\n             sum  count\ndistance_cm            \n1              2      2\n3              1      2",
+  "nfc-plot": "G1 단독: 초록 9, 회색 1, 막대 높이(시도) 10, 인식률 90%\nG2 지갑: 초록 6, 회색 4, 막대 높이(시도) 10, 인식률 60%\nG3 가방: 초록 5, 회색 5, 막대 높이(시도) 10, 인식률 50%",
+  "wpa-filter": "괄호 있음: 1 행\n괄호 없음: TypeError",
+  "wpa-filter-and": "ValueError",
+  "wpa-category": "  configured        pmf             category\n0       wpa3   required      WPA3 전용, PMF 필수\n1      mixed    capable     전환 모드, PMF 선택 이상\n2       wpa2   disabled  WPA2, PMF 없음 또는 미확인\n3  unchecked  unchecked                판정 보류",
+  "wpa-category-q": "WPA2와 PMF",
+  "wpa-count": "WPA3 전용, PMF 필수 1\n전환 모드, PMF 선택 이상 2\nWPA2, PMF 없음 또는 미확인 1\n{'전환 모드, PMF 선택 이상': 2, 'WPA2, PMF 없음 또는 미확인': 1, 'WPA3 전용, PMF 필수': 1}\npmf         capable  disabled  required\nconfigured                             \nmixed             2         0         0\nwpa2              0         1         0\nwpa3              0         0         1",
+  "csv-unguard": "\"'-48\" → '-48'\n'-48' → '-48'\n\"'=SUM(A1)\" → '=SUM(A1)'\n\"it's\" → \"it's\"\n'' → ''",
+  "csv-unguard-q": "ValueError: could not convert string to float: \"'-48\"",
+  "csv-cols": "kept ['rssi_dbm', 'observed_at']\naliased ['uid', 'room']\nremoved ['note']",
+  "csv-pairs": "{'uid 원래 값 종류': '3', 'uid 별칭 종류': '3', 'uid 일대일 대응': '예'}",
+  "csv-pairs-bad": "{'uid 원래 값 종류': '3', 'uid 별칭 종류': '2', 'uid 일대일 대응': '아니요'}"
+}

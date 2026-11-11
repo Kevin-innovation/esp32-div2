@@ -178,19 +178,4 @@ raw['distance_cm'] + 1`,
   },
 ];
 
-/** 미션 9장 코드를 줄 묶음으로 읽는 표. 대표 줄은 모든 미션 코드에 실제로 있는 줄이다. */
-export const MISSION_GROUPS: [string, string, string][] = [
-  ["# 0. 자료 고르기\nSOURCE = 'sample'", "골든 데이터로 연습할지(sample), 내 CSV를 올릴지(upload) 고릅니다.", '셀 7'],
-  ['import io, json, re\nimport pandas as pd', '쓸 도구를 불러옵니다. pd는 pandas, plt는 matplotlib의 짧은 이름입니다.', '셀 2, 6'],
-  ['SAMPLE_CSV = """trial,...', '페이지의 골든 데이터를 CSV 글자 그대로 코드 안에 넣은 것입니다. 마지막에 일부러 잘못된 행이 한 줄 있습니다.', '셀 2'],
-  ['def read_text():', 'SOURCE에 따라 글자를 가져오는 함수입니다. def는 함수를 만들고, 이름() 으로 부릅니다.', '셀 1, 7'],
-  ["MODE = 'demo' if SOURCE == 'sample' else 'real'", 'sample이면 demo 행, 내 파일이면 real 행만 분석하도록 정합니다.', '셀 3'],
-  ['table = pd.read_csv(..., dtype=str, keep_default_na=False)', '모든 칸을 글자로 읽어 빈 칸과 0을 구분합니다. 이어서 필요한 열(NEED)이 있는지 확인합니다.', '셀 2, 4'],
-  ["data = table[table['data_type'] == MODE].copy()", "data_type이 맞는 행만 남기고 '1. 불러오기' 줄을 출력합니다.", '셀 3'],
-  ["def problem(r):\nreasons = data.apply(problem, axis=1)", "행마다 값이 허용 범위인지 검사하고, 잘못된 행은 이유와 함께 빼고 '2. 검사' 줄을 출력합니다.", '셀 4'],
-  ["summary = {...}\nfor ... in data.groupby(...):", '조건별로 묶어 시도, 성공, 비율, 중앙값 같은 값을 딕셔너리에 모읍니다.', '셀 1, 5'],
-  ['bar(labels, values, ...) 또는 plt.bar(...)', 'G1, G2 이름으로 막대그래프를 그리고, 각 이름의 뜻을 먼저 출력합니다.', '셀 6'],
-  ["print('3. 계산 결과')\nprint('검증용 JSON:', ...)", '계산값을 출력합니다. 이 값이 페이지 7장의 예상 분석값, 8장의 브라우저 계산과 같아야 합니다.', '셀 5'],
-];
-
 export const fullScript = (): string => CELLS.map((c) => `# ${c.title}\n${c.code}`).join('\n\n') + '\n';

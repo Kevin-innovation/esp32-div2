@@ -3,7 +3,7 @@
 // 따라 하기 셀과 예상 출력은 data/pythonColab.ts와 scripts/check-python-intro.ts가 실제 실행 결과로 맞춘다.
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
-import { CELLS, MISSION_GROUPS, PRACTICE_CSV, TROUBLES, fullScript } from '../../data/pythonColab';
+import { CELLS, PRACTICE_CSV, TROUBLES, fullScript } from '../../data/pythonColab';
 import output from '../../data/python-colab-output.json';
 import { url } from '../../lib/url';
 
@@ -14,16 +14,16 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
 <LearnLayout
   title="Python·Colab 입문"
   heading="Python·Colab 입문: 미션 9장 코드를 읽고 돌리기"
-  lead="웹 워크북의 계산을 Colab에서 다시 확인하려는 학생을 위한 선택 학습입니다. 짧은 가상 CSV로 셀 8개를 따라 하고 나면, 13개 미션의 Colab 코드를 줄 묶음별로 읽을 수 있습니다."
+  lead="웹 워크북의 계산을 Colab에서 다시 확인하려는 학생을 위한 선택 학습의 첫 페이지입니다. 짧은 가상 CSV로 셀 8개를 따라 하며 Colab, Python, pandas의 기초를 익히고, 다음 페이지에서 실제 미션 코드를 읽습니다."
   description="고등학생 비전공자를 위한 Google Colab, Python 최소 문법, pandas로 CSV 세기, matplotlib 그래프 읽기, 오류 해결과 미션 코드 읽기 안내입니다."
-  toc={[['when', '언제 보나'], ['colab', 'Colab 쓰는 법'], ['syntax', '최소 문법'], ['csv', 'CSV와 DataFrame'], ['group', '세고 나누기'], ['plot', '그래프 읽기'], ['source', 'sample에서 upload로'], ['full', '전체 코드'], ['errors', '오류 해결'], ['mission', '미션 코드 읽기']]}
+  toc={[['when', '언제 보나'], ['colab', 'Colab 쓰는 법'], ['syntax', '최소 문법'], ['csv', 'CSV와 DataFrame'], ['group', '세고 나누기'], ['plot', '그래프 읽기'], ['source', 'sample에서 upload로'], ['full', '전체 코드'], ['errors', '오류 해결'], ['mission', '다음: 미션 코드 읽기']]}
   sourcesChecked="2026-11-11"
   sources={['colabFaq', 'colabFiles', 'pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'mplBar']}
 >
   <section id="when" aria-labelledby="h-when">
     <h2 id="h-when">언제 보나</h2>
     <div class="callout">
-      <p><strong>기본 분석은 브라우저, Colab은 선택입니다.</strong> 0~6단계와 각 미션의 1~8장은 이 페이지 없이 마칠 수 있습니다. 미션 8장(브라우저 분석)을 마친 뒤, 9장 Colab 분석을 하기 전에 봅니다.</p>
+      <p><strong>기본 분석은 브라우저, Colab은 선택입니다.</strong> 0~6단계와 각 미션의 1~8장은 이 페이지 없이 마칠 수 있습니다. 미션 8장(브라우저 분석)을 마친 뒤, 9장 Colab 분석을 하기 전에 <strong>① 이 입문 → ② <a href={url('/learn/mission-code/')}>미션 코드 읽기</a></strong> 순서로 봅니다.</p>
     </div>
     <div class="table-wrap" tabindex="0" role="region" aria-label="브라우저 분석과 Colab 분석 비교">
       <table>
@@ -141,18 +141,7 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
   </section>
 
   <section id="mission" aria-labelledby="h-mission">
-    <h2 id="h-mission">미션 9장 코드를 줄 묶음으로 읽기</h2>
-    <p>13개 미션의 Colab 코드는 같은 순서로 짜여 있습니다. 위에서부터 아래 묶음을 찾아 가며 읽고, 낯선 줄은 오른쪽 열의 셀로 돌아가 봅니다. 예시는 <a href={url('/lab/nfc/#ch-9')}>NFC 미션 9장</a>에서 바로 확인할 수 있습니다.</p>
-    <div class="table-wrap" tabindex="0" role="region" aria-label="미션 코드 줄 묶음 해설">
-      <table class="py-groups">
-        <thead><tr><th scope="col">대표 줄</th><th scope="col">하는 일</th><th scope="col">입문에서</th></tr></thead>
-        <tbody>
-          {MISSION_GROUPS.map(([line, does, where]) => (
-            <tr><td><code class="py-groups__line">{line}</code></td><td>{does}</td><td>{where}</td></tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-    <p>sample로 실행한 출력이 미션 9장의 예상 출력과 같으면 코드를 제대로 붙여 넣은 것입니다. 그다음 <code>SOURCE = 'upload'</code>로 바꿔 내 기록을 분석합니다.</p>
+    <h2 id="h-mission">다음: 미션 코드 읽기</h2>
+    <p>셀 1~8을 따라 했다면 선수 학습의 두 번째 페이지 <a href={url('/learn/mission-code/')}>미션 코드 읽기</a>로 갑니다. NFC, WPA-PMF, CSV 미션의 실제 코드를 줄 묶음으로 잘라 입력, 처리, 중간 출력을 실행해 보고, 예측 문제와 수정 미션으로 13개 미션 코드를 스스로 읽는 연습을 합니다.</p>
   </section>
 </LearnLayout>

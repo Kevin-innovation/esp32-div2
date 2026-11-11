@@ -190,7 +190,7 @@ const has = (name: string) => Astro.slots.has(name);
         <section class="wb-ch" id={`ch-${n('colab')}`} aria-labelledby="h-colab">
           <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('colab'))}</span><div><h2 id="h-colab"><span class="sr">{n('colab')}장. </span>{chapters[8][1]}</h2><p class="wb-ch__aim">{chapters[8][2]}</p></div></header>
           <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
-            <p class="wb-prereq"><strong>선수 학습(선택):</strong> Colab이 처음이거나 아래 코드가 낯설면 먼저 <a href={url('/learn/python-colab/')}>Python·Colab 입문</a>을 봅니다. 셀 실행, CSV 올리기, pandas로 세고 나누기, 그래프 읽기를 따라 하고, 이 장의 코드를 줄 묶음별로 읽는 법이 있습니다. 이 장은 선택이며 8장의 브라우저 계산만으로도 미션을 마칠 수 있습니다.</p>
+            <p class="wb-prereq"><strong>선수 학습(선택):</strong> Colab이 처음이거나 아래 코드가 낯설면 먼저 <a href={url('/learn/python-colab/')}>① Python·Colab 입문</a>에서 셀 실행, CSV 올리기, pandas로 세고 나누기, 그래프 읽기를 따라 하고, <a href={url('/learn/mission-code/')}>② 미션 코드 읽기</a>에서 이 장의 코드를 줄 묶음별로 실행하며 읽습니다. 이 장은 선택이며 8장의 브라우저 계산만으로도 미션을 마칠 수 있습니다.</p>
             <ol>
               <li><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Google Colab</a>에서 새 노트를 엽니다. Google 계정이 필요한 외부 서비스입니다. 쓰기 어렵다면 8장의 브라우저 계산으로 충분합니다.</li>
               <li>아래 코드를 한 셀에 붙여 넣고 그대로 실행합니다. 첫 줄이 <code>SOURCE = 'sample'</code>이면 골든 데이터를 분석하며, 출력이 아래 예상 출력과 같아야 합니다.</li>
