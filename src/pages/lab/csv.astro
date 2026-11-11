@@ -1,24 +1,24 @@
 ---
-import Base from '../../layouts/Base.astro';
-import WorkbookScene from '../../components/lab/WorkbookScene.astro';
-import PseudonymLab from '../../components/lab/PseudonymLab';
-import { url } from '../../lib/url';
+import LabGuide from '../../components/lab/LabGuide.astro';
+import { CsvExportPart, CsvNotesPart, CsvReportPart, CsvSourcePart, CsvWorkPart } from '../../components/lab/PseudonymLab';
+import { csvColab } from '../../lib/colab';
+import { csvSummary, pseudonymize, readSource } from '../../lib/pseudonym';
+import { csvTable, noteFields, noteLabels } from '../../lib/workbooks/render';
+import output from '../../lib/workbooks/colab-output.json';
+import { golden, guide } from '../../lib/workbooks/csv';
+
+const source = readSource(golden.original);
+const pseudo = pseudonymize(source, golden.actions);
+const pick = (...keys: string[]) => noteFields(guide, keys);
 ---
-<Base title="관찰 CSV 가명처리 | 실험 워크북" description="관찰 CSV의 식별자·장소·서술을 검토하고 원본과 가명본을 별도 보관하는 실습입니다.">
-  <div class="wrap"><header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>관찰 CSV를 공유해도 내 기기가 드러나지 않을까?</h1><p class="lead">식별자 하나를 가리는 데서 멈추지 않고 남은 단서의 조합을 검토합니다.</p><p>웹 가명처리 사용 가능 · 기기 CSV 내보내기 미검증 · 교실 파일럿 미검증</p></header>
-    <div class="doc"><div class="doc__main"><section class="lab-section" id="design" aria-labelledby="csv-design"><h2 id="csv-design">질문·가설·준비</h2><WorkbookScene index={11} /><p><strong>질문:</strong> UID·BSSID를 가명으로 바꾸면 누구의 기기인지 알 수 없을까? 장소·시각·서술의 조합에도 단서가 남는다는 가설을 확인합니다.</p><ul><li><strong>시간:</strong> 50분 제안. 단서 찾기 10분, 처리·비교 20분, 복구·방어·보고서 20분.</li><li><strong>준비물:</strong> PC·브라우저, 가상 샘플 또는 공유 권한이 있는 UTF-8 관찰 CSV. 실제 카드 UID·기기 주소를 새로 수집할 필요는 없습니다.</li><li><strong>선수학습:</strong> <a href={url('/learn/projects/#csv-offline')}>CSV 분석 기술노트</a>, <a href={url('/learn/security/#device')}>장비와 자료 보호</a>. <a href={url('/lab/wifi-rssi/#data')}>Wi-Fi CSV 백업</a>이나 <a href={url('/lab/nfc/#data')}>NFC CSV 백업</a>을 해 봤다면 원본 분리 원칙을 연결해 봅니다.</li></ul><p>기기에서 CSV를 자동 내보내는 기능은 확인하지 못했습니다. 이 웹사이트의 파일이나 아래 가상 샘플로 실습할 수 있습니다. 가명본은 분석·공유용 새 파일이며 원래 NFC·Wi-Fi 워크북의 복구 CSV를 대신하지 않습니다. 원래 워크북 복구에는 원본을 사용합니다.</p></section>
-      <section class="lab-section" aria-labelledby="csv-procedure"><h2 id="csv-procedure">단서 찾기 → 변환 → 복구 확인</h2><ol><li>가상 샘플을 선택하거나 원본 CSV를 별도 보관하고 사본으로 시작합니다. 실제·데모 구분을 먼저 확인합니다.</li><li>열별로 식별자·구체 장소·시간·자유서술을 찾습니다. 직접 식별자와 조합으로 드러나는 단서를 나눕니다.</li><li>유지·열별 가명·제거 중 하나를 고르고 새 가명본 미리보기를 대조합니다. 빈 값과 잘못된 행은 수치로 채우지 않습니다.</li><li>남은 열 조합과 서술을 직접 검토한 뒤 새 파일을 내려받습니다. 같은 식별자가 같은 별칭으로 바뀌는지, 필요한 분석 열과 결측이 남는지 확인합니다.</li><li>원본은 접근을 제한해 따로 보관하고, 원본 사본을 다시 가져와 행·열 수를 비교합니다. 공유본의 남은 위험·권한·삭제 시점을 보고서에 적습니다.</li></ol><p><strong>막혔을 때:</strong> 잘못된 열·행 오류를 확인하고 원본 대신 별도 사본을 수정합니다. 읽을 수 없는 파일이나 장비가 없어도 가상 샘플로 완료할 수 있습니다. 원본을 잃었으면 가명본에서 복원을 시도해 값을 만들어 내지 말고 백업 여부를 기록합니다.</p><p><strong>자기 설명:</strong> “식별자가 없어도 드문 장소와 메모로 누구인지 짐작할 수 있나? 공유 목적에 꼭 필요한 열은 무엇인가?”</p></section>
-      <section class="lab-section fieldwork-guide" aria-labelledby="csv-guide">
-        <h2 id="csv-guide">CSV 실습 흐름</h2><p>원본·가명본은 변환 전후의 구분이며 실제·데모 구분과 별개입니다. 아래 세 행은 모두 가상 예시입니다. 입력 기능 없이 공책으로도 같은 흐름을 완성할 수 있습니다.</p>
-        <ol class="fieldwork-flow" aria-label="CSV 실습 6단계"><li><span>1</span><a href="#record">원본 분리</a></li><li><span>2</span><a href="#csv-golden">단서 분류</a></li><li><span>3</span><a href="#csv-golden">가명 처리</a></li><li><span>4</span><a href="#csv-golden">미리보기</a></li><li><span>5</span><a href="#csv-recovery-check">복구 확인</a></li><li><span>6</span><a href="#report">공유·보고서</a></li></ol>
-        <div class="fieldwork-guide-grid"><div><strong>이번에 확인하는 값</strong><p>원본/가명본의 행·열 수, 별칭 대응과 빈 값, 남은 서술 단서</p></div><div><strong>값의 의미</strong><p>처리 규칙에 따른 정보 보존·제거와 공유본의 남은 위험</p></div><div><strong>아직 증명하지 못하는 것</strong><p>식별자를 가렸어도 익명성이나 재식별 불가능성을 보장하지 않습니다.</p></div></div>
-        <div class="fieldwork-golden" id="csv-golden"><div><h3>안전한 골든 케이스: 가상 3행</h3><p class="field__help">실제 식별자를 수집하지 않고 아래 원본 예시를 별도 보관합니다. 가상 샘플 버튼을 쓰거나 두 장의 공책 표로 비교합니다.</p></div><ol><li>UID·장소는 가명, RSSI는 유지, 메모는 제거하는 규칙을 정합니다.</li><li>같은 DEMO-A 두 행이 같은 별칭으로 바뀌는지, 세 행과 RSSI가 남는지 미리보기를 대조합니다.</li><li>공유본에 메모가 남지 않았는지 검토하고 원본 사본을 다시 열어 복구 경로를 확인합니다.</li></ol></div>
-        <div class="table-wrap" tabindex="0" role="region" aria-label="CSV 가상 골든 케이스 3행"><table><caption>원본 형식의 가상 예시 · 실제 관찰 자료 아님</caption><thead><tr><th scope="col">UID</th><th scope="col">장소</th><th scope="col">RSSI</th><th scope="col">메모</th></tr></thead><tbody><tr><td>DEMO-A</td><td>가상 거실</td><td>-48</td><td>가상의 학생 메모</td></tr><tr><td>DEMO-A</td><td>가상 거실</td><td>-53</td><td>빈 값</td></tr><tr><td>DEMO-B</td><td>가상 방</td><td>-70</td><td>가상의 생활 시간</td></tr></tbody></table></div>
-        <h3 id="csv-recovery-check">분석·복구 체크</h3><ul class="fieldwork-analysis-checklist"><li>□ 실제 자료와 가상 샘플을 별도 구분으로 보관했는가?</li><li>□ 원본이 그대로 남고 같은 열의 같은 값이 같은 별칭으로 바뀌었는가?</li><li>□ 행 수·분석에 필요한 열·빈 값이 보존되고 제거할 메모가 빠졌는가?</li><li>□ 남은 장소·시각·서술의 조합을 검토하고 원본 사본을 다시 열었는가?</li></ul>
-        <details class="fieldwork-conclusion"><summary>결론 문장 템플릿 보기</summary><p>“[실제 자료/가상 샘플]의 [식별자·장소]를 가명 처리하고 [메모 등]을 제거했다. [행 수·분석 열·빈 값]의 보존과 원본 복구를 확인했지만 [남은 단서 조합]으로 재식별될 위험은 남는다. [공유 범위·접근 권한·삭제 계획]을 적용하고 다음에는 [추가 점검]을 하겠다.”</p></details>
-      </section>
-      <noscript><section class="callout"><h2>파일을 올리지 않고 공책으로 완료하기</h2><p>변환·저장·파일 출력은 자바스크립트가 필요합니다. 다음 가상 표를 두 장의 공책 표로 옮기세요: UID DEMO-A/장소 가상 거실/RSSI -48/메모 가상의 학생 메모, UID DEMO-B/장소 가상 방/RSSI 빈 값/메모 빈 값. 원본 표는 그대로 두고 다른 표에서 UID·장소를 별칭으로 바꾸고 메모를 제거합니다. 남은 단서·결측·복구할 원본의 보관 장소를 설명하면 됩니다.</p></section></noscript>
-      <PseudonymLab client:load />
-    </div></div>
-  </div>
-</Base>
+<LabGuide guide={guide} scene={11} golden={csvTable(source)} expected={csvSummary(source, pseudo)} code={csvColab(golden.original, pseudo.csv)} output={(output as Record<string, string>).csv ?? ''} codeFile="csv-real-original.csv와 csv-real-pseudonymized.csv">
+  <CsvNotesPart slot="design" client:load fields={pick('question', 'hypothesis', 'controls')} />
+  <CsvSourcePart slot="record" client:load golden={golden} />
+  <CsvExportPart slot="data" client:load />
+  <CsvWorkPart slot="analysis" client:load />
+  <CsvNotesPart slot="interpret" client:load fields={pick('interpretation', 'conclusion')} />
+  <CsvNotesPart slot="defense" client:load fields={pick('defense', 'limits')} />
+  <CsvNotesPart slot="application" client:load fields={pick('application')} />
+  <CsvNotesPart slot="explain" client:load fields={pick('explain')} />
+  <CsvReportPart slot="report" client:load title={guide.title} labels={noteLabels(guide)} />
+</LabGuide>

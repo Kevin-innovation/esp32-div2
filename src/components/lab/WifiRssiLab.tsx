@@ -1,13 +1,14 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type SyntheticEvent } from 'react';
+import { persisted } from './labStore';
+import { NotesEditor, type NoteGuide } from './NotesEditor';
+import { SummaryTable } from './SummaryTable';
 import {
   WIFI_CSV_FILENAME,
   WIFI_DEFAULT_NOTES,
   WIFI_MAX_ROWS,
-  WIFI_PYTHON,
   WIFI_STORAGE_KEY,
   WORKBOOK_MAX_BYTES,
   buildWifiReport,
-  demoWifiObservations,
   importWifiCsv,
   mergeWifiObservations,
   summarizeWifiByRoom,
@@ -19,6 +20,7 @@ import {
   type WifiNotes,
   type WifiObservation,
   type WorkbookDataType,
+  wifiSummaryRows,
 } from '../../lib/workbook';
 
 const MAX_VISIBLE = 200;
@@ -206,7 +208,7 @@ function RecordPanel({ observations, view, setView, setObservations }: RecordPan
       ) : <div className="empty"><p>아직 기록이 없습니다. 같은 공유기를 방·거리·시각별로 관찰해 첫 값을 적어 보세요.</p></div>}
 
       <div className="btn-row">
-        {hasDemo ? <button className="btn btn--quiet btn--small" type="button" onClick={() => { setObservations(observations.filter((row) => row.dataType !== 'demo')); setView('real'); }}>데모 자료 지우기</button> : <button className="btn btn--quiet btn--small" type="button" onClick={() => { const demo = demoWifiObservations(); if (observations.length + demo.length > WIFI_MAX_ROWS) { setError('기록 한도에 도달했습니다. 먼저 CSV로 백업하세요.'); return; } setObservations([...observations, ...demo]); setView('demo'); }}>화면 확인용 데모 자료 불러오기</button>}
+        {hasDemo && <button className="btn btn--quiet btn--small" type="button" onClick={() => { setObservations(observations.filter((row) => row.dataType !== 'demo')); setView('real'); }}>데모 자료 지우기</button>}
         {realCount > 0 && <button className="btn btn--quiet btn--small" type="button" onClick={() => { if (window.confirm(`실제 기록 ${realCount}건을 모두 지울까요? 먼저 CSV로 백업하세요.`)) { setObservations(observations.filter((row) => row.dataType !== 'real')); setEditingId(null); setUndo(null); } }}>실제 기록 전부 지우기</button>}
       </div>
     </div>
@@ -215,7 +217,7 @@ function RecordPanel({ observations, view, setView, setObservations }: RecordPan
 
 function ChartPanel({ rows }: { rows: WifiObservation[] }) {
   const summary = summarizeWifiByRoom(rows);
-  if (!summary.length) return <div className="empty"><p>기록을 입력하면 방별 중앙값·평균·범위와 유효 표본 수가 나타납니다.</p></div>;
+  if (!summary.length) return <div className="empty"><p>기록을 입력하면 방별 중앙값, 평균, 범위와 유효 표본 수가 나타납니다.</p></div>;
   const targets = new Set(rows.map(row => `${row.ssidAlias}/${row.bssidAlias}`));
   return <div className="fields">
     {targets.size > 1 && <p className="callout">대상 AP 별칭이 여러 개입니다. 같은 공유기를 비교했는지 확인하고 다른 AP의 값을 방 차이로 해석하지 마세요.</p>}
@@ -279,94 +281,62 @@ function CsvPanel({ observations, setObservations, notes, setNotes, setView }: {
   </div>;
 }
 
-const NOTE_FIELDS: { key: string; label: string; help: string }[] = [
-  { key: 'question', label: '탐구 질문', help: '이번 관찰로 답하고 싶은 질문 한 가지를 씁니다.' },
-  { key: 'motivation', label: '궁금해진 장면', help: '집에서 실제로 겪은 끊김이나 속도 차이로 시작합니다.' },
-  { key: 'hypothesis', label: '가설', help: '어느 방에서 왜 신호가 약할지 예상합니다.' },
-  { key: 'controls', label: '고정한 조건', help: '같은 AP, 기기 높이, 잡는 방향처럼 바꾸지 않을 것을 적습니다.' },
-  { key: 'plan', label: '반복 계획', help: '각 위치를 몇 번, 어느 시간대에 잴지 적습니다.' },
-  { key: 'interpretation', label: '관찰 결과 해석', help: '방별 중앙값·평균·범위·유효 n을 인용하고 결측 수를 함께 적습니다.' },
-  { key: 'conclusion', label: '결론', help: '가설을 얼마나 뒷받침했는지 실제 관찰 근거로 답합니다.' },
-  { key: 'security', label: '보안 질문에 대한 답', help: 'RSSI만으로 침입을 판단할 수 없는 이유와 추가 확인 근거를 적습니다.' },
-  { key: 'unexpected', label: '예상 밖 결과와 원인 후보', help: '문, 사람, 기기 위치, 시간대처럼 다시 확인할 변수를 적습니다.' },
-  { key: 'followup', label: '추가 실험', help: '원인 후보를 구분하려면 다음에 무엇 하나를 바꾸어 볼지 씁니다.' },
-  { key: 'defense', label: '방어 설계', help: '공유기 위치, 게스트망·IoT 망 분리, 자동 연결 점검처럼 적용할 방법을 씁니다.' },
-  { key: 'limits', label: '실험의 한계', help: '이 장치와 이 공간의 수동 관찰이며 침입을 검증한 실험이 아님을 구분합니다.' },
-  { key: 'interview', label: '면접에서 1분으로 설명하기', help: '궁금증→설계→수치→예상 밖 결과→배운 점 순서로 씁니다.' },
-];
+interface WifiState { observations: WifiObservation[]; notes: WifiNotes; view: WorkbookDataType }
+const store = persisted<WifiState>(WIFI_STORAGE_KEY, { observations: [], notes: WIFI_DEFAULT_NOTES, view: 'real' }, (raw) => {
+  const restored = restoreWifiState(raw);
+  let warning = '';
+  if (restored.dropped) {
+    try { localStorage.setItem(`${WIFI_STORAGE_KEY}.broken.${Date.now()}`, raw); warning = `저장 자료 중 ${restored.dropped}개 항목을 형식 오류로 제외했습니다. 원본은 별도 키에 보관했습니다.`; }
+    catch { warning = `저장 자료 중 ${restored.dropped}개 항목을 형식 오류로 제외했습니다.`; }
+  }
+  const view = JSON.parse(raw)?.view === 'demo' ? 'demo' as const : 'real' as const;
+  return { state: { observations: restored.observations, notes: restored.notes, view }, warning };
+});
+const useWifi = () => {
+  const snap = store.use();
+  const set = (patch: Partial<WifiState>) => store.set((s) => ({ ...s, ...patch }));
+  return { ...snap, set };
+};
 
-function NotesPanel({ notes, setNotes, fields }: { notes: WifiNotes; setNotes: (notes: WifiNotes) => void; fields: typeof NOTE_FIELDS }) {
-  const base = useId();
-  return <div className="fields">{fields.map((field) => <div className="field" key={field.key}><label htmlFor={`${base}-${field.key}`}>{field.label}</label><p id={`${base}-${field.key}-help`} className="field__help">{field.help}</p><textarea id={`${base}-${field.key}`} aria-describedby={`${base}-${field.key}-help`} rows={3} maxLength={4000} value={notes[field.key] ?? ''} onChange={(event) => setNotes({ ...notes, [field.key]: event.target.value })} /></div>)}</div>;
+function SaveLine() {
+  const { state, ready, blocked, message } = useWifi();
+  return <p className={blocked ? 'save-state save-state--error' : 'save-state'} role="status">{!ready ? '저장 자료를 확인하는 중입니다.' : blocked ? '자동 저장이 멈췄습니다. CSV를 내려받아 보관하세요.' : `입력은 서버로 보내지 않고 이 브라우저에만 저장합니다. 실제 기록 ${state.observations.filter((r) => r.dataType === 'real').length}건.`} {message}</p>;
 }
 
-function ReportPanel({ rows, notes, view }: { rows: WifiObservation[]; notes: WifiNotes; view: WorkbookDataType }) {
+export function WifiRecord({ golden }: { golden: WifiObservation[] }) {
+  const { state, ready, set } = useWifi();
+  return <div className="lab-tool">
+    <SaveLine />
+    <div className="btn-row"><button className="btn btn--quiet btn--small" type="button" disabled={!ready} onClick={() => set({ observations: [...state.observations.filter((r) => r.dataType !== 'demo'), ...golden.map((r) => ({ ...r }))], view: 'demo' })}>가상 골든 데이터 {golden.length}행으로 데모 시작</button><span className="field__help">데모 행만 바꾸며 실제 기록은 그대로 둡니다.</span></div>
+    <RecordPanel observations={state.observations} view={state.view} setView={(view) => set({ view })} setObservations={(observations) => set({ observations })} />
+  </div>;
+}
+export function WifiChart() {
+  const { state, set } = useWifi();
+  const rows = state.observations.filter((r) => r.dataType === state.view);
+  return <div className="lab-tool">
+    <ViewSwitch view={state.view} setView={(view) => set({ view })} hasDemo={state.observations.some((r) => r.dataType === 'demo')} />
+    <SummaryTable rows={wifiSummaryRows(rows)} total={0} caption={`${state.view === 'demo' ? '가상 데모' : '내 실제 기록'}의 방별 계산 결과`} />
+    <ChartPanel rows={rows} />
+  </div>;
+}
+export function WifiData() {
+  const { state, set } = useWifi();
+  return <CsvPanel observations={state.observations} setObservations={(observations) => set({ observations })} notes={state.notes} setNotes={(notes) => set({ notes })} setView={(view) => set({ view })} />;
+}
+export function WifiNotes({ fields }: { fields: NoteGuide[] }) {
+  const { state, ready, set } = useWifi();
+  return <NotesEditor fields={fields} disabled={!ready} modeLabel="실제와 데모 공통" values={state.notes} onChange={(key, value) => set({ notes: { ...state.notes, [key]: value } })} />;
+}
+export function WifiReport({ labels }: { labels: Record<string, string> }) {
+  const { state, set } = useWifi();
   const [date, setDate] = useState('(열어 본 날)');
   const [message, setMessage] = useState('');
   useEffect(() => setDate(new Date().toLocaleDateString('sv')), []);
-  const report = buildWifiReport(rows, notes, view, date);
-  const summary = summarizeWifiByRoom(rows);
-  const copy = async () => {
-    try { await navigator.clipboard.writeText(report); setMessage('보고서 초안을 복사했습니다.'); }
-    catch { setMessage('복사하지 못했습니다. Markdown 파일을 내려받으세요.'); }
-  };
-  return <div className="fields">
-    <div className="btn-row"><button className="btn" type="button" onClick={copy}>보고서 초안 복사</button><button className="btn btn--quiet" type="button" onClick={() => download(view === 'demo' ? 'wifi-rssi-report-demo.md' : 'wifi-rssi-report.md', report, 'text/markdown;charset=utf-8')}>Markdown 내려받기</button><button className="btn btn--quiet" type="button" onClick={() => window.print()}>보고서 인쇄</button><p className="status" role="status">{message}</p></div>
-    <article className="report" aria-label="Wi-Fi RSSI 보고서 미리보기">
-      <h1>{notes.question?.trim() || '(아직 작성하지 않음)'}</h1><p>작성일 {date}, {view === 'demo' ? '데모' : '실제'} 기록 {rows.length}건</p>
-      {view === 'demo' && <p className="demo-note">가상 값으로 만든 미리보기입니다. 실제 실험 결과가 아닙니다.</p>}
-      <h2>방별 결과 (dBm)</h2>{summary.length ? <ul>{summary.map(group => <li key={group.room}>{group.room}: 유효 n {group.count}, 중앙값 {group.median ?? '—'}, 평균 {group.average?.toFixed(1) ?? '—'}, 범위 {group.min ?? '—'}~{group.max ?? '—'}, 신호 못 찾음 {group.notObserved}, 미측정 {group.unchecked}</li>)}</ul> : <p>입력된 기록이 없습니다.</p>}
-      <p>결측은 집계에서 제외했습니다. 평균은 dBm 수치의 산술평균이며 실제 전력 평균이 아닙니다.</p>
-      {NOTE_FIELDS.filter(field => field.key !== 'question').map(field => <section key={field.key}><h2>{field.label}</h2><p>{notes[field.key]?.trim() || '(아직 작성하지 않음)'}</p></section>)}
-      <h2>원자료와 출처</h2><p>관찰 CSV와 탐구 서술 CSV를 함께 보관합니다. 실제로 쓴 관찰 도구와 참고 자료를 보고서에 덧붙이세요.</p>
-    </article>
+  const report = buildWifiReport(state.observations, state.notes, state.view, date, labels);
+  return <div className="lab-tool">
+    <ViewSwitch view={state.view} setView={(view) => set({ view })} hasDemo={state.observations.some((r) => r.dataType === 'demo')} />
+    <div className="btn-row"><button className="btn" type="button" onClick={() => download(state.view === 'demo' ? 'wifi-rssi-report-demo.md' : 'wifi-rssi-report.md', report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button><button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button><p className="status" role="status">{message}</p></div>
+    <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
   </div>;
-}
-
-export default function WifiRssiLab() {
-  const [observations, setObservations] = useState<WifiObservation[]>([]);
-  const [notes, setNotes] = useState<WifiNotes>(WIFI_DEFAULT_NOTES);
-  const [view, setView] = useState<WorkbookDataType>('real');
-  const [loaded, setLoaded] = useState(false);
-  const [saveError, setSaveError] = useState('');
-  const [loadWarning, setLoadWarning] = useState('');
-  const writeBlocked = useRef(false);
-
-  useEffect(() => {
-    let raw: string | null = null;
-    try { raw = localStorage.getItem(WIFI_STORAGE_KEY); }
-    catch { writeBlocked.current = true; setSaveError('이 브라우저의 저장 공간을 읽지 못해 새 저장을 막았습니다. 창을 닫기 전에 CSV로 백업하세요.'); }
-    if (raw) {
-      const preserve = () => {
-        try { localStorage.setItem(`${WIFI_STORAGE_KEY}.broken.${Date.now()}`, raw); return true; }
-        catch { writeBlocked.current = true; return false; }
-      };
-      try {
-        const restored = restoreWifiState(raw);
-        setObservations(restored.observations); setNotes(restored.notes);
-        if (restored.dropped) setLoadWarning(`저장 자료 중 ${restored.dropped}개 항목을 형식 오류로 제외했습니다.${preserve() ? ' 원본은 별도 키에 보관했습니다.' : ' 원본을 지키려고 새 저장을 막았습니다. 이번 입력은 CSV로 백업하세요.'}`);
-      } catch {
-        setLoadWarning(`저장된 자료를 읽지 못했습니다.${preserve() ? ' 원본은 별도 키에 보관하고 빈 상태로 시작합니다.' : ' 원본을 지키려고 새 저장을 막았습니다. 이번 입력은 CSV로 백업하세요.'}`);
-      }
-    }
-    setLoaded(true);
-  }, []);
-
-  useEffect(() => {
-    if (!loaded || writeBlocked.current) return;
-    try { localStorage.setItem(WIFI_STORAGE_KEY, JSON.stringify({ schemaVersion: 1, workbookId: 'wifi-rssi', observations, notes })); setSaveError(''); }
-    catch { setSaveError('이 브라우저에 저장하지 못했습니다. 창을 닫기 전에 CSV로 백업하세요.'); }
-  }, [loaded, notes, observations]);
-
-  const visible = observations.filter((row) => row.dataType === view);
-  return (
-    <div className="wifi-app">
-      <div role="status" aria-live="polite"><p className={saveError ? 'save-state save-state--error' : 'save-state'}>{saveError || `입력은 서버로 보내지 않고 이 브라우저에만 저장합니다. 실제 기록 ${observations.filter((row) => row.dataType === 'real').length}건.`}</p>{loadWarning && <p className="save-state save-state--error">{loadWarning}</p>}</div>
-      <section className="lab-section" id="record" aria-labelledby="h-record"><h2 id="h-record"><span className="lab-section__n">2</span> 관찰값 기록</h2><p>같은 AP를 같은 높이와 방향에서 확인하고, 화면에 보인 값을 사람이 직접 옮겨 적습니다. 이 사이트는 무선 신호를 자동 측정하지 않습니다.</p><h3>관찰 전 질문과 가설</h3><NotesPanel notes={notes} setNotes={setNotes} fields={NOTE_FIELDS.slice(0, 5)} /><h3>한 번의 관찰</h3><RecordPanel observations={observations} view={view} setView={setView} setObservations={setObservations} /></section>
-      <section className="lab-section" id="chart" aria-labelledby="h-chart"><h2 id="h-chart"><span className="lab-section__n">3</span> 방별 RSSI 비교</h2><p className="demo-note">{view === 'demo' ? '현재 그래프는 데모 가상 자료입니다.' : '현재 그래프는 내 실제 기록만 사용합니다.'}</p><ChartPanel rows={visible} /></section>
-      <section className="lab-section" id="data" aria-labelledby="h-data"><h2 id="h-data"><span className="lab-section__n">4</span> CSV 백업과 복구</h2><p>실험이 끝날 때마다 관찰과 탐구 서술 CSV를 함께 내려받습니다. =, +, -, @로 시작하는 글은 표 프로그램에서 수식으로 실행되지 않도록 보호합니다.</p><CsvPanel observations={observations} setObservations={setObservations} notes={notes} setNotes={setNotes} setView={setView} /><details><summary>CSV를 Python으로 분석하기</summary><p>관찰 CSV와 분석 파일을 같은 폴더에 두고 PC에서 <code>python3 wifi-rssi-analysis.py</code>를 실행합니다. 표준 라이브러리만 사용하며 실제 기록의 n·중앙값·평균·범위·결측 수가 터미널에 나옵니다. 이 웹페이지에서 실행하지는 않습니다.</p><button className="btn btn--quiet btn--small" type="button" onClick={() => download('wifi-rssi-analysis.py', WIFI_PYTHON, 'text/x-python;charset=utf-8')}>Python 분석 코드 내려받기</button><pre className="code" tabIndex={0}><code>{WIFI_PYTHON}</code></pre><p>수정해 볼 것: 방 대신 관찰 조건으로 묶으려면 <code>row["room"]</code>을 <code>row["condition"]</code>으로 바꾸고 같은 결과인지 비교합니다. 중앙값은 정렬한 가운데 값이며, 짝수 개면 가운데 둘의 평균입니다.</p></details></section>
-      <section className="lab-section" id="interpret" aria-labelledby="h-interpret"><h2 id="h-interpret"><span className="lab-section__n">5</span> 해석, 보안 질문, 방어 설계</h2><p><strong>RSSI가 달라졌다는 사실만으로 침입이나 공격을 증명할 수 없습니다.</strong> 내 AP의 별칭, 공간 조건, 시간대와 공유기 설정을 함께 확인하고, 타인 네트워크에는 접속하지 않습니다.</p><NotesPanel notes={notes} setNotes={setNotes} fields={NOTE_FIELDS.slice(5)} /></section>
-      <section className="lab-section" id="report" aria-labelledby="h-report"><h2 id="h-report"><span className="lab-section__n">6</span> 보고서와 면접 준비</h2><p>수치를 인용하되, 실제로 확인하지 않은 원인은 결론이 아니라 추가 실험 계획으로 구분합니다.</p><ReportPanel rows={visible} notes={notes} view={view} /></section>
-    </div>
-  );
 }

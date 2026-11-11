@@ -1,0 +1,25 @@
+---
+// 현장 기록형 워크북 한 권: 주제 본문(Guide)과 입력 도구를 LabGuide의 장에 꽂는다.
+import LabGuide from './LabGuide.astro';
+import { FieldAnalysis, FieldData, FieldNotes, FieldRecord, FieldReport } from './FieldworkLab';
+import { fieldworkColab } from '../../lib/colab';
+import { summaryRows, type Kind, type Row } from '../../lib/fieldwork';
+import { fieldTable, noteFields, noteLabels } from '../../lib/workbooks/render';
+import output from '../../lib/workbooks/colab-output.json';
+import type { Guide } from '../../lib/workbooks/types';
+
+interface Props { kind: Kind; guide: Guide; golden: Row[]; scene: number }
+const { kind, guide, golden, scene } = Astro.props;
+const pick = (...keys: string[]) => noteFields(guide, keys);
+---
+<LabGuide guide={guide} scene={scene} golden={fieldTable(kind, golden)} expected={summaryRows(kind, golden)} code={fieldworkColab(kind, golden)} output={(output as Record<string, string>)[kind] ?? ''} codeFile={`${kind}-observations.csv`}>
+  <FieldNotes slot="design" client:load kind={kind} fields={pick('question', 'hypothesis', 'controls')} />
+  <FieldRecord slot="record" client:load kind={kind} golden={golden} help={guide.fieldHelp} />
+  <FieldData slot="data" client:load kind={kind} />
+  <FieldAnalysis slot="analysis" client:load kind={kind} />
+  <FieldNotes slot="interpret" client:load kind={kind} fields={pick('interpretation', 'conclusion')} />
+  <FieldNotes slot="defense" client:load kind={kind} fields={pick('defense', 'limits')} />
+  <FieldNotes slot="application" client:load kind={kind} fields={pick('application')} />
+  <FieldNotes slot="explain" client:load kind={kind} fields={pick('explain')} />
+  <FieldReport slot="report" client:load kind={kind} title={guide.title} labels={noteLabels(guide)} />
+</LabGuide>

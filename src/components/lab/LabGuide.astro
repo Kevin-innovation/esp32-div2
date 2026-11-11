@@ -1,0 +1,255 @@
+---
+// 실습 워크북 한 권의 틀. 열세 장의 순서와 '설명, 예시, 수행, 확인' 구성을 모든 주제에 똑같이 적용하고,
+// 내용은 주제마다 쓴 Guide 데이터와 입력 도구(슬롯)로 채운다.
+import Base from '../../layouts/Base.astro';
+import WorkbookScene from './WorkbookScene.astro';
+import { url } from '../../lib/url';
+import type { Guide } from '../../lib/workbooks/types';
+import type { Table } from '../../lib/workbooks/render';
+
+interface Props {
+  guide: Guide;
+  scene: number;
+  golden: Table;
+  expected: [string, string][];
+  code: string;
+  output: string;
+  codeFile: string;
+}
+const { guide: g, scene, golden, expected, code, output, codeFile } = Astro.props;
+const chapters = [
+  ['mission', '미션과 생활 사례', '어떤 생활 문제에서 출발하는지 보고 내 탐구 질문을 정합니다.'],
+  ['device', '우리 장비와 외부 도구', '이 기기에서 읽을 것과 다른 도구로 확인할 것을 나눕니다.'],
+  ['terms', '용어와 화면 읽기', '화면과 문서에 나오는 말을 뜻과 위치로 익힙니다.'],
+  ['flow', '원리: 무엇이 오가는가', '신호와 데이터가 어떤 순서로 오가는지 이해합니다.'],
+  ['design', '실험 설계', '바꿀 것, 고정할 것, 잴 것과 반복 횟수를 정합니다.'],
+  ['procedure', '한 번의 측정과 기록', '번호대로 한 번 관찰하고 바로 한 행으로 기록합니다.'],
+  ['golden', '골든 데이터와 예상 분석값', '정답을 아는 가상 자료로 기록과 계산을 연습합니다.'],
+  ['analysis', '분석: 입력에서 결론까지', '기록이 CSV, 계산, 그래프, 결론으로 이어지는 길을 따라갑니다.'],
+  ['colab', 'Colab으로 같은 계산 확인', '복사한 코드로 골든 데이터와 내 CSV를 분석합니다.'],
+  ['trouble', '문제 해결', '실패, 미측정, 예상 밖 결과를 어떻게 다룰지 정합니다.'],
+  ['threats', '위협과 방어', '실생활 위협이 성립하는 조건과 방어, 그 근거와 한계를 정리합니다.'],
+  ['industry', '현업 응용과 확장 프로젝트', '같은 원리가 실제 개발과 운영에서 어떻게 쓰이는지 보고 내 프로젝트를 설계합니다.'],
+  ['report', '보고서와 평가', '내 입력과 계산 결과로 보고서를 만들고 스스로 평가합니다.'],
+] as const;
+const n = (id: string) => chapters.findIndex(([c]) => c === id) + 1;
+const pad = (i: number) => String(i).padStart(2, '0');
+---
+<Base title={`${g.title} | 실험 워크북`} description={g.lead}>
+  <div class="wrap wb">
+    <header class="wb-hero">
+      <div class="wb-hero__text">
+        <p class="page-back"><a href={url('/lab/')}>실험 워크북 목록</a></p>
+        <h1>{g.title}</h1>
+        <p class="lead">{g.lead}</p>
+        <div class="btn-row">
+          <a class="btn" href="#ch-1">1장부터 시작하기</a>
+          <a class="btn btn--quiet" href="#ch-6">바로 기록하기</a>
+        </div>
+        <p class="wb-hero__status"><span class="tag tag--device">{g.status.web}</span> <span class="tag tag--unverified">{g.status.device}</span></p>
+      </div>
+      <WorkbookScene index={scene} />
+    </header>
+
+    <section class="wb-brief" aria-labelledby="wb-brief-h">
+      <h2 id="wb-brief-h" class="sr">미션 요약</h2>
+      <dl class="wb-brief__list">
+        <div class="wb-brief__wide"><dt>미션 목표</dt><dd>{g.mission}</dd></div>
+        <div class="wb-brief__wide"><dt>핵심 질문</dt><dd class="wb-brief__q">{g.question}</dd></div>
+        <div><dt>준비</dt><dd>{g.prep}</dd></div>
+        <div><dt>시간</dt><dd>{g.time}</dd></div>
+        <div><dt>학습 산출물</dt><dd><ul>{g.outputs.map((o) => <li>{o}</li>)}</ul></dd></div>
+      </dl>
+    </section>
+
+    <div class="wb-body">
+      <nav class="wb-toc" aria-labelledby="wb-toc-h">
+        <h2 id="wb-toc-h">장 목차</h2>
+        <ol>{chapters.map(([, title], i) => <li><a href={`#ch-${i + 1}`}><span class="wb-toc__n">{pad(i + 1)}</span><span>{title}</span></a></li>)}</ol>
+      </nav>
+
+      <div class="wb-main">
+        <noscript><p class="callout callout--warn">입력, 저장, 계산, 보고서 만들기는 자바스크립트가 켜져 있어야 동작합니다. 모든 장의 설명, 절차, 골든 데이터, Colab 코드는 그대로 읽을 수 있으며 공책에 같은 순서로 기록하면 됩니다.</p></noscript>
+
+        <section class="wb-ch" id={`ch-${n('mission')}`} aria-labelledby="h-mission">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('mission'))}</span><div><h2 id="h-mission"><span class="sr">{n('mission')}장. </span>{chapters[0][1]}</h2><p class="wb-ch__aim">{chapters[0][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.scene.map((p) => <p>{p}</p>)}</div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body"><p>이 장면에서 세울 수 있는 탐구 질문입니다.</p><ul>{g.questions.map((q) => <li>{q}</li>)}</ul></div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><p>학습 목표를 읽고, 내가 가장 궁금한 질문 하나를 <a href={`#ch-${n('design')}`}>5장 탐구 질문 칸</a>에 씁니다.</p><ol>{g.goals.map((x) => <li>{x}</li>)}</ol></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.mission.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('device')}`} aria-labelledby="h-device">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('device'))}</span><div><h2 id="h-device"><span class="sr">{n('device')}장. </span>{chapters[1][1]}</h2><p class="wb-ch__aim">{chapters[1][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            <dl class="facts facts--stack"><div><dt>기기 메뉴</dt><dd><strong>{g.device.menu}</strong></dd></div><div><dt>확인 상태</dt><dd>{g.device.verified}</dd></div></dl>
+            <div class="table-wrap" tabindex="0" role="region" aria-label="장비에서 읽을 것"><table><caption>우리 장비에서 읽을 것</caption><thead><tr><th scope="col">화면 항목</th><th scope="col">읽는 법과 주의</th></tr></thead><tbody>{g.device.reads.map(([a, b]) => <tr><th scope="row">{a}</th><td>{b}</td></tr>)}</tbody></table></div>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            <div class="table-wrap" tabindex="0" role="region" aria-label="외부 도구로 할 일"><table><caption>다른 도구로 확인할 것</caption><thead><tr><th scope="col">도구</th><th scope="col">이 도구로 하는 일</th></tr></thead><tbody>{g.device.external.map(([a, b]) => <tr><th scope="row">{a}</th><td>{b}</td></tr>)}</tbody></table></div>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
+            <p>준비물을 하나씩 확인합니다.</p>
+            <ul class="wb-prep">{g.device.prep.map(([a, b]) => <li><strong>{a}</strong> {b}</li>)}</ul>
+            <div class="callout callout--warn"><p><strong>안전 경계</strong></p><ul>{g.device.safety.map((s) => <li>{s}</li>)}</ul></div>
+          </div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.device.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('terms')}`} aria-labelledby="h-terms">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('terms'))}</span><div><h2 id="h-terms"><span class="sr">{n('terms')}장. </span>{chapters[2][1]}</h2><p class="wb-ch__aim">{chapters[2][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            <dl class="wb-terms">{g.terms.map(([t, m, w]) => <div><dt>{t}</dt><dd><p>{m}</p><p class="wb-terms__where"><strong>읽는 위치:</strong> {w}</p></dd></div>)}</dl>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><ol>{g.termsDo.map((x) => <li>{x}</li>)}</ol></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.terms.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('flow')}`} aria-labelledby="h-flow">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('flow'))}</span><div><h2 id="h-flow"><span class="sr">{n('flow')}장. </span>{chapters[3][1]}</h2><p class="wb-ch__aim">{chapters[3][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            {g.flow.intro.map((p) => <p>{p}</p>)}
+            <ol class="wb-flow">{g.flow.steps.map(([t, d]) => <li><strong>{t}</strong><p>{d}</p></li>)}</ol>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            <p>{g.flow.example}</p>
+            <div class="wb-split"><div><h4>화면과 문서로 알 수 있는 것</h4><ul>{g.flow.visible.map((v) => <li>{v}</li>)}</ul></div><div><h4>이 관찰로는 알 수 없는 것</h4><ul>{g.flow.hidden.map((v) => <li>{v}</li>)}</ul></div></div>
+          </div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.flow.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('design')}`} aria-labelledby="h-design">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('design'))}</span><div><h2 id="h-design"><span class="sr">{n('design')}장. </span>{chapters[4][1]}</h2><p class="wb-ch__aim">{chapters[4][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            <dl class="facts facts--stack">
+              <div><dt>바꾸는 것</dt><dd>{g.design.change}</dd></div>
+              <div><dt>고정하는 것</dt><dd><ul>{g.design.fixed.map((x) => <li>{x}</li>)}</ul></dd></div>
+              <div><dt>기록하는 것</dt><dd><ul>{g.design.measured.map((x) => <li>{x}</li>)}</ul></dd></div>
+              <div><dt>반복</dt><dd>{g.design.repeats}</dd></div>
+              <div><dt>판정 기준</dt><dd>{g.design.success}</dd></div>
+              <div><dt>순서</dt><dd>{g.design.order}</dd></div>
+            </dl>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
+            <p>아래 세 칸은 보고서의 1~3절이 됩니다. 각 칸의 작성 예시를 열어 보고 내 말로 씁니다.</p>
+            <slot name="design" />
+          </div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.design.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('procedure')}`} aria-labelledby="h-procedure">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('procedure'))}</span><div><h2 id="h-procedure"><span class="sr">{n('procedure')}장. </span>{chapters[5][1]}</h2><p class="wb-ch__aim">{chapters[5][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.procedureNote.map((p) => <p>{p}</p>)}</div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
+            <h4>한 번의 측정</h4>
+            <ol class="wb-steps">{g.procedure.map((x) => <li>{x}</li>)}</ol>
+            <h4>기록하기</h4>
+            <slot name="record" />
+            <h4>저장과 복구</h4>
+            <slot name="data" />
+          </div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.procedure.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('golden')}`} aria-labelledby="h-golden">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('golden'))}</span><div><h2 id="h-golden"><span class="sr">{n('golden')}장. </span>{chapters[6][1]}</h2><p class="wb-ch__aim">{chapters[6][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.golden.story.map((p) => <p>{p}</p>)}</div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            <div class="table-wrap" tabindex="0" role="region" aria-label="골든 데이터"><table><caption>{golden.caption}</caption><thead><tr><th scope="col">행</th>{golden.head.map((h) => <th scope="col">{h}</th>)}</tr></thead><tbody>{golden.rows.map((r, i) => <tr><td>{i + 1}</td>{r.map((c) => <td>{c}</td>)}</tr>)}</tbody></table></div>
+            <div class="table-wrap" tabindex="0" role="region" aria-label="예상 분석값"><table class="summary-table"><caption>이 골든 데이터의 예상 분석값. 브라우저 계산과 Colab 출력이 모두 이 값이어야 합니다.</caption><thead><tr><th scope="col">항목</th><th scope="col">예상 값</th></tr></thead><tbody>{expected.map(([k, v]) => <tr><th scope="row">{k}</th><td class="summary-table__value">{v}</td></tr>)}</tbody></table></div>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><ol>{g.golden.reading.map((x) => <li>{x}</li>)}</ol></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.golden.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('analysis')}`} aria-labelledby="h-analysis">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('analysis'))}</span><div><h2 id="h-analysis"><span class="sr">{n('analysis')}장. </span>{chapters[7][1]}</h2><p class="wb-ch__aim">{chapters[7][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body"><ol class="wb-flow">{g.analysis.pipeline.map(([t, d]) => <li><strong>{t}</strong><p>{d}</p></li>)}</ol></div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body">
+            <h4>지금 자료의 계산 결과</h4>
+            <slot name="analysis" />
+            <ul>{g.analysis.reading.map((x) => <li>{x}</li>)}</ul>
+            <h4>해석과 결론 쓰기</h4>
+            <slot name="interpret" />
+          </div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.analysis.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('colab')}`} aria-labelledby="h-colab">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('colab'))}</span><div><h2 id="h-colab"><span class="sr">{n('colab')}장. </span>{chapters[8][1]}</h2><p class="wb-ch__aim">{chapters[8][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            <ol>
+              <li><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Google Colab</a>에서 새 노트를 엽니다. Google 계정이 필요한 외부 서비스입니다. 쓰기 어렵다면 8장의 브라우저 계산으로 충분합니다.</li>
+              <li>아래 코드를 한 셀에 붙여 넣고 그대로 실행합니다. 첫 줄이 <code>SOURCE = 'sample'</code>이면 골든 데이터를 분석하며, 출력이 아래 예상 출력과 같아야 합니다.</li>
+              <li>내 기록을 분석할 때는 6장에서 <code>{codeFile}</code>을 내려받고, <code>SOURCE = 'upload'</code>로 바꿔 다시 실행한 뒤 파일을 고릅니다. 실제 기록(<code>data_type=real</code>)만 분석합니다.</li>
+              <li>올리기 전에 실제 이름, SSID, BSSID, UID, 집 주소가 들어 있지 않은지 확인합니다. 들어 있다면 <a href={url('/lab/csv/')}>CSV 가명처리 워크북</a>으로 먼저 바꿉니다.</li>
+            </ol>
+            {g.colab.notes.map((p) => <p>{p}</p>)}
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            <details class="code-block" open><summary>Colab에 붙여 넣는 분석 코드</summary><pre class="code" tabindex="0" aria-label="Colab 분석 코드"><code>{code}</code></pre></details>
+            <h4>sample로 실행했을 때의 예상 출력</h4>
+            <pre class="code code--output" tabindex="0" aria-label="예상 출력"><code>{output}</code></pre>
+            <p class="field__help">그림은 출력 사이에 표시됩니다. 그림의 G1, G2 같은 이름은 바로 위에 출력된 뜻을 가리킵니다.</p>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><ol>{g.colab.change.map((x) => <li>{x}</li>)}</ol></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.colab.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('trouble')}`} aria-labelledby="h-trouble">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('trouble'))}</span><div><h2 id="h-trouble"><span class="sr">{n('trouble')}장. </span>{chapters[9][1]}</h2><p class="wb-ch__aim">{chapters[9][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body"><p>원인 후보는 결론이 아닙니다. 한 번에 하나만 바꿔 확인하고, 그래도 모르면 모른다고 기록합니다.</p>
+            <dl class="wb-trouble">{g.trouble.map(([s, c, d]) => <div><dt>{s}</dt><dd><p><strong>원인 후보:</strong> {c}</p><p><strong>할 일:</strong> {d}</p></dd></div>)}</dl>
+          </div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.trouble.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('threats')}`} aria-labelledby="h-threats">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('threats'))}</span><div><h2 id="h-threats"><span class="sr">{n('threats')}장. </span>{chapters[10][1]}</h2><p class="wb-ch__aim">{chapters[10][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.threats.intro.map((p) => <p>{p}</p>)}</div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            {g.threats.rows.map(([t, c, d, e]) => <article class="wb-threat"><h4>{t}</h4><dl class="facts facts--stack"><div><dt>성립 조건과 영향</dt><dd>{c}</dd></div><div><dt>방어</dt><dd>{d}</dd></div><div><dt>검증 근거와 한계</dt><dd>{e}</dd></div></dl></article>)}
+            <div class="callout"><ul>{g.threats.boundary.map((b) => <li>{b}</li>)}</ul></div>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><slot name="defense" /></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.threats.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('industry')}`} aria-labelledby="h-industry">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('industry'))}</span><div><h2 id="h-industry"><span class="sr">{n('industry')}장. </span>{chapters[11][1]}</h2><p class="wb-ch__aim">{chapters[11][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">{g.industry.intro.map((p) => <p>{p}</p>)}</div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            {g.industry.projects.map((p) => <article class="wb-project">
+              <h4>{p.title}</h4>
+              <p>{p.practice}</p>
+              <ol class="wb-ipo"><li><strong>입력</strong><p>{p.input}</p></li><li><strong>처리</strong><p>{p.process}</p></li><li><strong>출력</strong><p>{p.output}</p></li></ol>
+              <dl class="facts facts--stack">
+                <div><dt>필요한 부품과 도구</dt><dd><ul>{p.parts.map((x) => <li>{x}</li>)}</ul></dd></div>
+                <div><dt>최소 기능 버전(MVP)</dt><dd><ol>{p.mvp.map((x) => <li>{x}</li>)}</ol></dd></div>
+                <div><dt>확인 기준</dt><dd><ul>{p.check.map((x) => <li>{x}</li>)}</ul></dd></div>
+                <div><dt>한계</dt><dd><ul>{p.limits.map((x) => <li>{x}</li>)}</ul></dd></div>
+              </dl>
+            </article>)}
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><slot name="application" /></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.industry.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-ch" id={`ch-${n('report')}`} aria-labelledby="h-report">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('report'))}</span><div><h2 id="h-report"><span class="sr">{n('report')}장. </span>{chapters[12][1]}</h2><p class="wb-ch__aim">{chapters[12][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body"><p>보고서는 앞 장에서 쓴 서술(질문, 가설, 고정 조건, 해석, 결론, 위협과 방어, 한계, 응용 아이디어)과 지금 보고 있는 기록, 8장의 계산 결과로 만들어집니다. 쓰지 않은 항목은 (미작성)으로 남고, 빈 값과 미확인은 0으로 바뀌지 않습니다. 데모를 보고 있으면 보고서 첫 줄에 가상 데모 자료라고 적힙니다.</p></div></div>
+          <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
+            <div class="table-wrap" tabindex="0" role="region" aria-label="평가 체크"><table><caption>제출 전 평가 체크</caption><thead><tr><th scope="col">항목</th><th scope="col">잘 된 보고서의 모습</th></tr></thead><tbody>{g.rubric.map(([a, b]) => <tr><th scope="row">{a}</th><td>{b}</td></tr>)}</tbody></table></div>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><slot name="explain" /><h4>보고서 미리보기와 내려받기</h4><slot name="report" /></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.report.map((c) => <li>{c}</li>)}</ul></div></div>
+        </section>
+
+        <section class="wb-refs" aria-labelledby="h-refs">
+          <h2 id="h-refs">근거 자료</h2>
+          <ul>{g.refs.map((r) => <li><a href={r.url} target="_blank" rel="noopener noreferrer">{r.title}</a>{r.note && <span class="small muted"> {r.note}</span>}</li>)}</ul>
+        </section>
+      </div>
+    </div>
+  </div>
+</Base>

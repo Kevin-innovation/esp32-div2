@@ -1,15 +1,5 @@
 ---
-import Base from '../../layouts/Base.astro';
-import WorkbookScene from '../../components/lab/WorkbookScene.astro';
-import FieldworkLab from '../../components/lab/FieldworkLab';
-import { url } from '../../lib/url';
+import FieldworkPage from '../../components/lab/FieldworkPage.astro';
+import { golden, guide } from '../../lib/workbooks/ssid-map';
 ---
-<Base title="이름이 같은 Wi-Fi는 같은 공유기일까? | 실험 워크북" description="내 AP의 SSID·BSSID 별칭과 자동 연결 설정을 대조하고 이름·주소만으로 진위를 단정하지 않는 수동 워크북입니다.">
-  <div class="wrap"><header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>이름이 같은 Wi-Fi는 같은 공유기일까?</h1><p class="lead">익숙한 이름과 내 장비라는 근거를 구분합니다.</p><p>웹 수동 기록 사용 가능 · 이 기기의 Wi-Fi 실행 미검증 · 교실 파일럿 미검증</p></header>
-    <div class="doc"><div class="doc__main"><section class="lab-section" id="design" aria-labelledby="ssid-design"><h2 id="ssid-design">질문·가설·준비</h2><WorkbookScene index={1} /><p><strong>질문:</strong> 같은 SSID 아래 주소가 다르면 모두 가짜일까? 내 AP의 여러 대역·메시·확장 구성도 가능한 설명이라는 가설을 세웁니다.</p><ul><li><strong>시간:</strong> 50분 제안. 준비·가설 10분, 목록·설정 대조 20분, 분석·방어·보고서 20분.</li><li><strong>준비물:</strong> 내가 관리하거나 확인 허락을 받은 AP, 관리자 장비 목록·설명서, 내 휴대폰·PC. 실제 SSID·BSSID·비밀번호는 워크북에 입력하지 않습니다.</li><li><strong>선수학습:</strong> <a href={url('/lab/wifi-rssi/')}>Wi-Fi RSSI</a>, <a href={url('/learn/projects/#ssid-map')}>SSID·BSSID 기술노트</a>, <a href={url('/learn/security/#wifi')}>Wi-Fi 위협·방어</a>.</li></ul><div class="callout"><p>메뉴 경로는 Wi-Fi → WiFi Scanner이며 이 기기의 실행은 미검증입니다. 사용 허락을 받은 내 장비의 목록과 설정만 읽습니다. 가짜 AP를 만들거나 타인 네트워크에 접속하지 않습니다.</p></div></section>
-      <section class="lab-section" aria-labelledby="ssid-procedure"><h2 id="ssid-procedure">별칭 목록 → 근거 대조 → 자동 연결 점검</h2><ol><li>내 물리 AP를 AP-A, 네트워크 이름을 SSID-A, 주소를 BSSID-A처럼 별칭으로 정합니다. 같은 원래 이름·주소에는 같은 별칭을 씁니다. 원래 값과 대응하는 개인 메모는 공유본과 분리합니다.</li><li>내 관리자 목록·허가받은 관찰 화면을 대조합니다. 같은 이름이지만 주소가 다르면 BSSID-B로 구분합니다. AP별 대역·확장 구성 등 확인한 맥락을 조건란에 적습니다.</li><li>확인했다면 관찰됨, 확인을 시도했지만 해당 항목을 찾지 못했다면 미관찰, 권한·장비가 없어 시작하지 못했다면 미측정입니다. 확인 못 한 설정을 ‘꺼짐’으로 바꾸지 않습니다.</li><li>내 기기의 해당 네트워크 자동 연결 설정을 읽고 켜짐·꺼짐·미확인을 구분합니다. 설정을 바꾸는 실험은 필요하지 않습니다. 관리자 목록·물리 장비·설명서 중 무엇을 확인했는지 근거란에 적습니다.</li><li>같은 SSID의 다른 BSSID, 자동 연결, 미확인 건수를 비교합니다. 이름·주소 하나로 진위를 단정하지 않고, 낯선 항목에서 연결을 보류하고 관리자에게 확인하는 방어를 제안합니다.</li></ol><p><strong>막혔을 때:</strong> 관리자 권한이 없으면 멈추고 미측정 이유를 적습니다. 가상 데모로 여러 주소가 가능한 이유와 자동 연결 점검표를 만들 수 있습니다. 권한을 얻으면 원래 준비 단계에서 재개합니다.</p><p><strong>완료 기준:</strong> AP·SSID·BSSID 별칭, 상태·근거·자동 연결 설정을 구분한 표와 방어·한계 보고서. <strong>자기 설명:</strong> “주소가 다르다는 사실 외에 어떤 근거가 더 필요한가?”</p></section>
-      <noscript><section class="callout"><h2>공책으로 이어가기</h2><p>입력·저장·CSV는 자바스크립트가 필요합니다. AP·SSID·BSSID 별칭/조건/관찰 상태/같은 SSID의 다른 주소 여부/자동 연결/근거를 표로 적으세요. 직접 식별자는 옮기지 않습니다. 가상 사례는 AP-A와 AP-B가 SSID-A를 쓰고 각각 BSSID-A·BSSID-B를 갖는 상황입니다. 실제 관찰과 구분해 가능한 원인·방어·한계·1분 설명을 완성합니다.</p></section></noscript>
-      <FieldworkLab kind="ssid-map" client:load />
-    </div></div>
-  </div>
-</Base>
+<FieldworkPage kind="ssid-map" guide={guide} golden={golden} scene={1} />

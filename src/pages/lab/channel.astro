@@ -1,16 +1,5 @@
 ---
-import Base from '../../layouts/Base.astro';
-import WorkbookScene from '../../components/lab/WorkbookScene.astro';
-import FieldworkLab from '../../components/lab/FieldworkLab';
-import { url } from '../../lib/url';
+import FieldworkPage from '../../components/lab/FieldworkPage.astro';
+import { golden, guide } from '../../lib/workbooks/channel';
 ---
-<Base title="저녁마다 느린 인터넷, AP 수만으로 설명할 수 있을까? | 실험 워크북" description="같은 위치의 시각별 표시값과 백업 연결 경로를 구분합니다.">
-  <div class="wrap"><header class="page-head"><p><a href={url('/lab/')}>실습 미션 목록</a></p><h1>저녁마다 느린 인터넷, AP 수만으로 설명할 수 있을까?</h1><p class="lead">같은 위치의 시각별 표시값과 백업 연결 경로를 구분합니다.</p><p>웹 수동 기록 사용 가능 · 이 기기의 해당 기능 실행 미검증 · 교실 파일럿 미검증</p><p class="small">질문 → 준비 → 관찰 → 기록 → 분석 → 방어 → 보고서</p></header>
-    <div class="doc"><div class="doc__main">
-      <section class="lab-section" id="design" aria-labelledby="channel-design"><h2 id="channel-design">질문·가설·준비</h2><WorkbookScene index={3} /><p><strong>질문:</strong> 보이는 AP 수가 늘면 속도도 반드시 느려질까? 신호·이용량·도구 차이가 다른 설명일 수 있다는 가설과 같은 조건의 반복 계획을 세웁니다.</p><ul><li><strong>시간:</strong> 50분 제안. 질문·준비 10분, 관찰·문서 기록 20분, 분석·방어·보고서 20분.</li><li><strong>준비물:</strong> 내 AP, 허가된 내 휴대폰·PC의 관찰 도구, 시계, 유선·모바일 백업 경로를 확인할 문서. 원래 SSID·BSSID·위치는 공유본에 입력하지 않습니다.</li><li><strong>선수학습:</strong> <a href={url('/lab/wifi-rssi/')}>Wi-Fi RSSI 워크북</a>.</li></ul><div class="callout"><p>관련 메뉴 Wi-Fi → WiFi Scanner의 이 기기 실행은 미검증입니다. 내 AP와 허가된 관찰 화면만 읽습니다. 방해 트래픽·재밍을 만들거나 타인 AP에 접속하지 않습니다. AP 수는 점유율이나 속도 측정값이 아닙니다.</p></div></section>
-      <section class="lab-section" aria-labelledby="channel-procedure"><h2 id="channel-procedure">관찰 → 시각별 기록 → 백업 경로 판단</h2><ol><li>내 AP를 AP-A, 화면 채널을 CH-A처럼 별칭으로 정하고 같은 위치·관찰 도구·대역 조건을 고정합니다. 원래 채널 값과 별칭의 대응은 개인 메모로 분리합니다.</li><li>둘 이상의 시각을 정해 화면을 읽고 날짜·시간을 남깁니다. 도구가 채널별 AP 수를 직접 표시할 때만 그 수를 옮깁니다. 목록에서 임의로 세거나 점유율을 추측하지 않습니다.</li><li>RSSI가 표시되면 내 AP의 값만 기록합니다. 숫자가 없으면 빈 값으로 두고 근거에 표시되지 않았다고 적습니다. 확인 시도 중 못 찾음은 미관찰, 시작하지 못함은 미측정입니다.</li><li>AP 별칭·시각·채널 별칭·표시값·관찰 상태를 한 행씩 추가합니다. 0이라는 표시를 직접 본 경우와 빈 값을 구분합니다. 도구·화면 항목의 근거를 적습니다.</li><li>같은 조건끼리 시각별 표를 비교합니다. AP 수를 점유율·속도로 환산하지 말고 실제 이용량·거리·벽·도구 차이 등 대안 원인과 추가 확인 방법을 적습니다.</li><li>유선·모바일 등 내가 쓸 수 있는 백업 경로와 문서 확인/실제 연결 확인 여부를 적습니다. 방해 없이 연결을 보류하거나 담당자에게 확인할 순서, 한계, 1분 설명을 보고서로 만듭니다.</li></ol><p><strong>막혔을 때:</strong> 표시 AP 수나 RSSI가 없으면 비워 두고 이유를 기록합니다. 관찰 도구가 없으면 가상 데모나 내 도구의 설명서 사례를 실제와 구분해 분석합니다.</p><p><strong>완료 기준:</strong> 동일 조건의 시각별 표, 표시값/결측 구분, AP 수 해석의 한계와 백업 경로 확인 계획. <strong>자기 설명:</strong> “AP 수가 늘었다는 사실 외에 속도 저하를 설명하려면 무엇을 더 확인해야 하나?”</p></section>
-      <noscript><section class="callout"><h2>공책으로 이어가기</h2><p>입력·저장·CSV는 자바스크립트가 필요합니다. AP 별칭/조건/날짜·시각/채널 별칭/관찰 상태/표시 AP 수/표시 RSSI/백업 경로·확인 여부/근거를 공책 표에 적습니다. 가상 예시: 같은 AP-A·CH-A에서 오전 표시 AP 2개, 저녁 5개, 두 번째 RSSI는 미표시. 이를 점유율·속도로 바꾸지 말고 대안 원인·방어·한계·1분 설명을 작성합니다. 실제와 데모를 나눠 질문·가설·분석·방어·한계 보고서를 완성하세요.</p></section></noscript>
-      <FieldworkLab kind="channel" client:load />
-    </div></div>
-  </div>
-</Base>
+<FieldworkPage kind="channel" guide={guide} golden={golden} scene={3} />

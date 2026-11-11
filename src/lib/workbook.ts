@@ -28,7 +28,7 @@ export const WIFI_CSV_COLUMNS = [
 export const WIFI_NOTE_COLUMNS = ['schema_version', 'workbook_id', 'field', 'value'] as const;
 export const WIFI_NOTE_KEYS = [
   'question', 'motivation', 'hypothesis', 'controls', 'plan', 'interpretation', 'conclusion',
-  'security', 'unexpected', 'followup', 'defense', 'limits', 'interview',
+  'security', 'unexpected', 'followup', 'defense', 'limits', 'interview', 'application', 'explain',
 ] as const;
 export const WIFI_DEFAULT_NOTES: WifiNotes = { question: '방마다 Wi-Fi 신호가 다른 이유는 무엇일까?' };
 export const WIFI_MAX_ROWS = 5000;
@@ -174,18 +174,33 @@ export function restoreWifiState(raw: string): { observations: WifiObservation[]
   return { observations, notes, dropped };
 }
 
-const note = (notes: WifiNotes, key: string) => notes[key]?.trim() || '(아직 작성하지 않음)';
+const note = (notes: WifiNotes, key: string) => notes[key]?.trim() || '(미작성)';
 const mdTableCell = (value: string) => mdEscape(value).replace(/\r?\n/g, ' ');
-export function buildWifiReport(rows: WifiObservation[], notes: WifiNotes, dataType: WorkbookDataType, date: string): string {
+const WIFI_LABELS: Record<string, string> = {
+  hypothesis: '가설과 그 이유', controls: '고정 조건과 반복 계획', interpretation: '자료 해석', conclusion: '결론', defense: '위협과 방어 제안',
+  limits: '한계와 예상 밖 결과', application: '응용 아이디어와 확장 프로젝트', explain: '1분 자기 설명',
+};
+const LEGACY: [string, string][] = [['motivation', '궁금해진 장면'], ['plan', '반복 계획'], ['security', '보안 질문에 대한 답'], ['unexpected', '예상 밖 결과와 원인 후보'], ['followup', '추가 실험'], ['interview', '면접에서 설명하기']];
+/** 학생 서술과 지금 보고 있는 자료(실제 또는 데모), 방별 계산 결과로 만든 보고서. 비어 있는 항목은 (미작성)으로 남긴다. */
+export function buildWifiReport(rows: WifiObservation[], notes: WifiNotes, dataType: WorkbookDataType, date: string, labels: Record<string, string> = {}): string {
   const selected = rows.filter((row) => row.dataType === dataType);
-  const summary = summarizeWifiByRoom(selected);
-  const table = summary.length ? ['| 방·위치 | 유효 n | 중앙값 | 평균 | 최소~최대 | 신호 못 찾음 | 미측정 |', '| --- | ---: | ---: | ---: | ---: | ---: | ---: |', ...summary.map((g) => `| ${mdTableCell(g.room)} | ${g.count} | ${g.median ?? '—'} | ${g.average?.toFixed(1) ?? '—'} | ${g.min ?? '—'}~${g.max ?? '—'} | ${g.notObserved} | ${g.unchecked} |`)].join('\n') : '입력된 기록이 없습니다.';
-  const fields = [
-    ['motivation', '탐구 동기'], ['hypothesis', '가설'], ['controls', '고정 조건'], ['plan', '반복 계획'],
-    ['interpretation', '결과 해석'], ['conclusion', '결론'], ['security', '보안 질문'], ['unexpected', '예상 밖 결과와 원인 후보'],
-    ['followup', '추가 실험'], ['defense', '방어 설계'], ['limits', '한계'], ['interview', '면접에서 설명하기'],
+  const label = (k: string) => labels[k] ?? WIFI_LABELS[k];
+  const raw = selected.length ? selected.map((r, i) => `${i + 1}) ${mdTableCell(r.room)}, ${mdTableCell(r.condition)}, ${r.distanceM}m, ${{ observed: '값 관찰됨', 'not-observed': '신호 못 찾음', unchecked: '미측정' }[r.status]}, RSSI ${r.rssiDbm ?? '빈 값'}, 채널 ${r.channel ?? '빈 값'}, ${r.observedAt.replace('T', ' ')}`).join('\n') : '(기록 없음)';
+  const legacy = LEGACY.filter(([k]) => notes[k]?.trim()).map(([k, l]) => `### ${l}\n\n${mdEscape(notes[k])}`).join('\n\n');
+  const parts = [
+    `# ${mdEscape(note(notes, 'question'))}`,
+    `작성일 ${date}, ${dataType === 'demo' ? '데모' : '실제'} 기록 ${selected.length}건`,
+    dataType === 'demo' ? '> **데모 자료의 가상 값입니다. 실제 실험 결과가 아닙니다.**' : '',
+    `## 1. 탐구 질문\n\n${mdEscape(note(notes, 'question'))}`,
+    `## 2. ${label('hypothesis')}\n\n${mdEscape(note(notes, 'hypothesis'))}`,
+    `## 3. ${label('controls')}\n\n${mdEscape(note(notes, 'controls'))}`,
+    `## 4. 관찰 원자료\n\n${raw}`,
+    `## 5. 계산 결과\n\n${wifiSummaryRows(selected).map(([k, v]) => `- ${mdTableCell(k)}: ${v}`).join('\n') || '(기록 없음)'}\n\n신호 못 찾음과 미측정은 RSSI 계산에서 빼고 따로 셌습니다. RSSI 차이는 속도나 침입을 뜻하지 않습니다.`,
+    ...['interpretation', 'conclusion', 'defense', 'limits', 'application', 'explain'].map((k, i) => `## ${6 + i}. ${label(k)}\n\n${mdEscape(note(notes, k))}`),
+    legacy ? `## 이전 버전에서 쓴 서술\n\n${legacy}` : '',
+    '## 원자료와 출처\n\n관찰 CSV와 탐구 서술 CSV를 함께 보관합니다. 이 기기의 Wi-Fi 스캔 실행은 미검증입니다.',
   ];
-  return `# ${mdEscape(note(notes, 'question'))}\n\n작성일 ${date}, ${dataType === 'demo' ? '데모' : '실제'} 기록 ${selected.length}건\n\n${dataType === 'demo' ? '> **데모 자료의 가상 값입니다. 실제 실험 결과가 아닙니다.**\n\n' : ''}## 방별 결과 (dBm)\n\n${table}\n\n결측 RSSI는 집계에서 제외했습니다. 평균은 dBm 수치의 산술평균이며 전력의 평균이나 속도·침입 가능성을 뜻하지 않습니다.\n\n${fields.map(([key, label]) => `## ${label}\n\n${mdEscape(note(notes, key))}`).join('\n\n')}\n\n## 원자료와 출처\n\n관찰 CSV와 탐구 서술 CSV를 함께 보관합니다. 실제로 쓴 관찰 도구와 참고 자료를 보고서에 덧붙이세요.\n`;
+  return parts.filter(Boolean).join('\n\n') + '\n';
 }
 
 export const WIFI_PYTHON = `# 같은 폴더에 실제 기록 CSV를 놓고 실행: python3 wifi-rssi-analysis.py
@@ -230,3 +245,16 @@ for room, group in sorted(rooms.items()):
 if not rooms:
     print("실제 기록이 없습니다.")
 `;
+
+/** 방별 계산 결과. Colab 코드의 검증용 JSON과 같은 항목·순서(유니코드 순 정렬)다. */
+export function wifiSummaryRows(rows: WifiObservation[]): [string, string][] {
+  const fmt = (v: number) => Number.isInteger(v) ? String(v) : v.toFixed(1);
+  const out: [string, string][] = [];
+  for (const room of [...new Set(rows.map((r) => r.room))].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))) {
+    const rs = rows.filter((r) => r.room === room);
+    const values = rs.filter((r) => r.status === 'observed' && r.rssiDbm !== null).map((r) => r.rssiDbm as number).sort((a, b) => a - b);
+    const n = values.length, m = Math.floor(n / 2);
+    out.push([`${room} 유효 n`, String(n)], [`${room} 중앙값`, n ? `${fmt(n % 2 ? values[m] : (values[m - 1] + values[m]) / 2)}dBm` : '값 없음'], [`${room} 범위`, n ? `${values[0]}~${values[n - 1]}dBm` : '값 없음'], [`${room} 신호 못 찾음`, String(rs.filter((r) => r.status === 'not-observed').length)], [`${room} 미측정`, String(rs.filter((r) => r.status === 'unchecked').length)]);
+  }
+  return out;
+}
