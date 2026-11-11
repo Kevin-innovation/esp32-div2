@@ -429,6 +429,7 @@ const TOPICS: SearchItem[] = [
   { title: '문제 해결 목록', sub: '업데이트·문제 해결', href: '/update/#trouble', terms: '문제 해결 troubleshooting FAQ 고장 안 됨' },
   { title: 'NFC는 지갑·가방 안에서도 인식될까?', sub: '학습 6단계', href: '/lab/nfc/', terms: 'NFC 실험 프로젝트 지갑 가방 탐구 태그 wallet bag' },
   { title: '실험 기록과 CSV', sub: 'NFC 실험', href: '/lab/nfc/#data', terms: 'CSV 백업 가져오기 내보내기 기록 export import' },
+  { title: 'Python·Colab 입문', sub: '참고 자료', href: '/learn/python-colab/', terms: '파이썬 python colab 코랩 pandas 판다스 matplotlib 그래프 CSV DataFrame groupby read_csv 셀 실행 Shift Enter 런타임 NameError FileNotFoundError KeyError 입문 기초' },
   { title: '파이썬 분석과 노트북', sub: 'NFC 실험', href: '/lab/nfc/#python', terms: '파이썬 python pandas matplotlib notebook ipynb 노트북' },
   { title: '일반 태그와 EMV 결제 보안', sub: 'NFC 실험', href: '/lab/nfc/#security', terms: 'EMV 신용카드 결제 보안 credit card payment 복제 security' },
   { title: '보고서 만들기', sub: 'NFC 실험', href: '/lab/nfc/#report', terms: '보고서 report Markdown 인쇄 print' },

@@ -1,0 +1,19 @@
+{
+  "cells": {
+    "basics": "단독 3 0.8\n{'조건': '단독', '시도': 4, '성공': 3}\n3\n3번 이상 읽혔습니다\n80 %",
+    "load": "(9, 5)\n   trial condition  distance_cm  success data_type\n0      1        단독            1      1.0      demo\n1      2        단독            3      1.0      demo\n2      3        단독            5      0.0      demo\ntrial            int64\ncondition       object\ndistance_cm      int64\nsuccess        float64\ndata_type       object\ndtype: object",
+    "select": "['단독' '지갑' '가방']\ndemo 행: 8 / 전체 행: 9\n   trial  distance_cm  success\n3      4            1      1.0\n4      5            3      0.0\n5      6            5      NaN",
+    "blank": "1 칸이 비어 있음\n4 번 실패(0)\n분석에 쓰는 행: 7\n'' '0'\n3.0",
+    "group": "           시도  성공  인식률(%)\ncondition                \n단독          3   2    66.7\n지갑          2   1    50.0\n가방          2   0     0.0",
+    "plot": "그림 G1 = 단독\n그림 G2 = 지갑\n그림 G3 = 가방",
+    "source": "sample 9 행",
+    "save": "condition,시도,성공,인식률(%)\n단독,3,2,66.7\n지갑,2,1,50.0\n가방,2,0,0.0"
+  },
+  "troubles": {
+    "name": "NameError: name 'table' is not defined",
+    "file": "FileNotFoundError: [Errno 2] No such file or directory: 'nfc-experiment.csv'",
+    "column": "KeyError: 'conditon'",
+    "empty": "Empty DataFrame\nColumns: [trial, condition, distance_cm, success, data_type]\nIndex: []",
+    "type": "TypeError: can only concatenate str (not \"int\") to str"
+  }
+}

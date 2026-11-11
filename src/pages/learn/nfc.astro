@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import tagStructure from '../../assets/learning/nfc-tag-structure.webp';
 import LearnLayout from '../../layouts/LearnLayout.astro';
-import Evidence from '../../components/Evidence.astro';
 import ScreenShot from '../../components/learn/ScreenShot.astro';
 import Think from '../../components/learn/Think.astro';
 import TermLink from '../../components/learn/TermLink.astro';
@@ -211,7 +210,7 @@ const pages = [
         </tbody>
       </table>
     </div>
-    <p>왜 144와 48이 다를까요? 펌웨어가 Ultralight 계열의 범용 범위를 표시하는 것일 수 있지만, <strong>원인은 확인하지 못했습니다.</strong> <Evidence kind="unverified" /> 가짜 태그, 고장, 정품 가운데 무엇이라고도 단정하지 않습니다. 16바이트 샘플로 전체 용량을 판정할 수도 없습니다.</p>
+    <p>왜 144와 48이 다를까요? 펌웨어가 Ultralight 계열의 범용 범위를 표시하는 것일 수 있지만, <strong>원인은 확인하지 못했습니다.</strong> 가짜 태그, 고장, 정품 가운데 무엇이라고도 단정하지 않습니다. 16바이트 샘플로 전체 용량을 판정할 수도 없습니다.</p>
     <Think q="UID 첫 바이트도 단서가 될까요?">
       <p>NXP 데이터시트는 NXP 칩의 UID 첫 바이트를 제조사 번호 <code>04h</code>로 적습니다. 이 태그의 첫 바이트는 <code>53</code>으로 그 값과 다릅니다. 판매 표기를 다시 확인해 볼 이유는 되지만, 어느 회사 칩인지나 사양이 어떤지, 정품인지는 이 값만으로 결론 내리지 않습니다.</p>
     </Think>

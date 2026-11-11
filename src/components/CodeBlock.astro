@@ -1,0 +1,69 @@
+---
+// 코드와 예상 출력 블록. Python은 Astro 내장 Code(Shiki)로 양테마 강조, 줄 번호는 CSS로만 그려 복사되지 않는다.
+// 복사와 .py 내려받기는 화면의 코드 글자(원문과 같음)를 그대로 쓴다. JS가 없으면 버튼만 숨고 코드는 전부 보인다.
+import { Code } from 'astro:components';
+
+interface Props {
+  code: string;
+  /** 내려받을 파일 이름. output이면 표시용 이름 */
+  file: string;
+  kind?: 'code' | 'output';
+  label?: string;
+}
+const { code, file, kind = 'code', label } = Astro.props;
+const text = code.replace(/\n+$/, '');
+const lines = text.split('\n').length;
+const tall = lines > 24;
+---
+<figure class={`cb cb--${kind}`} data-cb data-file={file}>
+  <figcaption class="cb__bar">
+    <span class="cb__name">{label ?? file}</span>
+    <span class="cb__meta">{lines}줄</span>
+    {kind === 'code' && (
+      <span class="cb__actions" data-js hidden>
+        <button class="btn btn--quiet btn--small" type="button" data-copy>코드 복사</button>
+        <button class="btn btn--quiet btn--small" type="button" data-save>{file.endsWith('.py') ? '.py 파일' : '파일'} 내려받기</button>
+      </span>
+    )}
+  </figcaption>
+  {kind === 'code'
+    ? <Code code={text} lang="python" themes={{ light: 'github-light', dark: 'github-dark' }} defaultColor={false} class="cb__pre" aria-label={`${label ?? file} 코드`} data-lines={tall ? 'long' : undefined} />
+    : <pre class="cb__pre" tabindex="0" aria-label={label ?? '예상 출력'} data-lines={tall ? 'long' : undefined}><code>{text}</code></pre>}
+  {(kind === 'code' || tall) && (
+    <div class="cb__foot" data-js hidden>
+      {tall && <button class="btn btn--quiet btn--small" type="button" data-more aria-expanded="false">전체 {lines}줄 펼쳐 보기</button>}
+      <p class="cb__status small" role="status"></p>
+    </div>
+  )}
+</figure>
+
+<script>
+  for (const box of document.querySelectorAll<HTMLElement>('[data-cb]')) {
+    const pre = box.querySelector('pre')!;
+    const status = box.querySelector('.cb__status');
+    const say = (m: string) => { if (status) status.textContent = m; };
+    const raw = () => pre.querySelector('code')!.textContent ?? '';
+    box.querySelectorAll<HTMLElement>('[data-js]').forEach((el) => (el.hidden = false));
+    box.querySelector('[data-copy]')?.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(raw()); say('코드를 복사했습니다. Colab 셀에 붙여 넣으세요.'); }
+      catch { say('복사하지 못했습니다. 파일 내려받기를 쓰거나 코드를 직접 선택해 복사하세요.'); }
+    });
+    box.querySelector('[data-save]')?.addEventListener('click', () => {
+      const url = URL.createObjectURL(new Blob([raw()],{ type: 'text/x-python;charset=utf-8' }));
+      const a = Object.assign(document.createElement('a'), { href: url, download: box.dataset.file });
+      a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+      say(`${box.dataset.file} 파일을 내려받았습니다.`);
+    });
+    const more = box.querySelector<HTMLButtonElement>('[data-more]');
+    if (more) {
+      const label = more.textContent;
+      box.classList.add('is-short');
+      more.addEventListener('click', () => {
+        const open = box.classList.toggle('is-short') === false;
+        more.setAttribute('aria-expanded', String(open));
+        more.textContent = open ? '접기' : label;
+        if (!open) box.scrollIntoView({ block: 'nearest' });
+      });
+    }
+  }
+</script>

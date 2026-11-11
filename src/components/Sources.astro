@@ -3,12 +3,15 @@ import { CHECKED, SOURCES, type Source, type SourceId } from '../data/sources';
 
 interface Props {
   ids: SourceId[];
+  /** 이 페이지의 출처를 따로 확인한 날. 없으면 사이트 공통 확인일 */
+  checked?: string;
 }
+const checked = Astro.props.checked ?? CHECKED;
 const items = Astro.props.ids.map((id) => SOURCES[id] as Source);
 ---
 <aside class="sources" aria-labelledby="sources-title">
   <h2 id="sources-title">이 페이지의 출처</h2>
-  <p class="muted small">확인일 {CHECKED}</p>
+  <p class="muted small">확인일 {checked}</p>
   <ul>
     {items.map((s) => (
       <li>

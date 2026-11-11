@@ -16,7 +16,6 @@ import {
   notebookJson,
   notesToCsv,
   percent,
-  pythonScript,
   reportToMarkdown,
   trialsToCsv,
   validateTrial,
@@ -410,25 +409,9 @@ export function CsvPanel() {
 /* 파이썬 ------------------------------------------------------------------ */
 
 export function PythonPanel() {
-  const [message, setMessage] = useState('');
-  const code = pythonScript();
-  const copy = async () => {
-    try {
-      await navigator.clipboard.writeText(code);
-      setMessage('코드를 복사했습니다.');
-    } catch {
-      setMessage('복사하지 못했습니다. 코드 파일을 내려받으세요.');
-    }
-  };
   return (
-    <div className="fields">
-      <div className="btn-row">
-        <button className="btn btn--small" type="button" onClick={() => download('nfc-analysis.ipynb', notebookJson(), 'application/x-ipynb+json')}>분석 노트북 내려받기</button>
-        <button className="btn btn--quiet btn--small" type="button" onClick={() => download('nfc-analysis.py', code, 'text/x-python;charset=utf-8')}>파이썬 파일 내려받기</button>
-        <button className="btn btn--quiet btn--small" type="button" onClick={copy}>코드 복사</button>
-        <p className="status" role="status">{message}</p>
-      </div>
-      <pre className="code" tabIndex={0} aria-label="파이썬 분석 코드"><code>{code}</code></pre>
+    <div className="btn-row">
+      <button className="btn btn--small" type="button" onClick={() => download('nfc-analysis.ipynb', notebookJson(), 'application/x-ipynb+json')}>분석 노트북 내려받기</button>
     </div>
   );
 }

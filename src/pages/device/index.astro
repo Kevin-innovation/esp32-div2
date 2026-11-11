@@ -2,7 +2,6 @@
 import { MAIN_MENU } from '../../data/learn';
 import { url } from '../../lib/url';
 import Base from '../../layouts/Base.astro';
-import Evidence from '../../components/Evidence.astro';
 import Plate from '../../components/Plate.astro';
 import Sources from '../../components/Sources.astro';
 import back from '../../assets/device/back.jpg';
@@ -12,53 +11,67 @@ import front from '../../assets/device/front.jpg';
 import ports from '../../assets/device/ports.jpg';
 import sideSwitch from '../../assets/device/switch.jpg';
 
-type Kind = 'photo' | 'device' | 'doc' | 'manual' | 'unverified' | 'lab';
-interface Part { n: number; id: string; x: number; y: number; title: string; body: string; tags: Kind[] }
+// 번호마다 근거를 '대상: 결과' 줄로 적는다. 한 항목에 확인과 미확인 표시를 함께 붙이지 않는다.
+type Check = [what: string, result: string];
+/** 해 보지 않았거나 근거가 없는 결과. 경고색 글자로 구분한다. */
+const OPEN = /^(아직 안 함|자료 없음|확인 안 함|재지 않음|사진만으로는|이 기기에서 확인 안 함|위성 수신은 아직)/;
+interface Part { n: number; id: string; x: number; y: number; title: string; body: string; checks: Check[] }
 
 const backParts: Part[] = [
-  { n: 1, id: 'back-name', x: 85, y: 32, title: 'ESP32-DIV V2.1 표기', body: '초록 글자로 인쇄되어 있고 About에도 Board: ESP32 DIV V2.1 by MK로 표시됩니다. 공식 위키와 웹 안내, README에서는 V2.1 표기를 찾지 못했습니다. 공식 v2와 어떻게 다른지는 모릅니다.', tags: ['photo', 'device', 'unverified'] },
-  { n: 2, id: 'back-nfc', x: 91.5, y: 44, title: 'NFC 표기', body: '화면에 리더 칩 PN532가 표시되고 실험 태그를 읽는 것까지 확인했습니다. 이 글자 아래에 코일이 있는지는 확인하지 못했습니다. 동봉 설명서에는 NFC 메뉴가 없지만 기기 메뉴에는 있습니다.', tags: ['photo', 'device', 'unverified'] },
-  { n: 3, id: 'back-gps', x: 70, y: 55, title: 'GPS 표기와 단자', body: '꺾이는 안테나가 이 단자에 달려 있고 More 안에 GPS 메뉴가 있습니다. 공식 문서는 Neo-6M 호환 모듈을 설명합니다. 동봉 설명서에는 GPS 메뉴가 없고, 위성 수신은 확인하지 못했습니다.', tags: ['photo', 'device', 'unverified'] },
-  { n: 4, id: 'back-antenna', x: 58.5, y: 36, title: '2G4 단자 3개', body: '공식 문서는 NRF24 모듈 3개를 설명합니다. 단자와 모듈의 실제 연결은 확인하지 못했습니다.', tags: ['photo', 'unverified'] },
-  { n: 5, id: 'back-433', x: 61, y: 18.5, title: '433M 단자', body: '공식 문서의 CC1101 모듈과 관련 있어 보이지만 내부 연결은 확인하지 못했습니다. 체결부 금속 색이 다른 단자와 다릅니다.', tags: ['photo', 'unverified'] },
-  { n: 6, id: 'back-switch', x: 81, y: 53, title: 'ON, OFF 음각', body: '슬라이드 스위치 쪽에 음각이 있습니다. 실제 켜짐 방향은 직접 확인합니다.', tags: ['photo', 'unverified'] },
-  { n: 7, id: 'back-marks', x: 59, y: 10, title: 'R, B 등 음각', body: '모서리 가까이에 R과 B처럼 보이는 음각, 위쪽에 SD처럼 보이는 음각이 있습니다. 공식 문서의 RESET, BOOT, SD 슬롯과 같은 뜻인지 알 수 없어 의미를 단정하지 않습니다.', tags: ['photo', 'unverified'] },
+  { n: 1, id: 'back-name', x: 85, y: 32, title: 'ESP32-DIV V2.1 표기', body: '이 수업에서 쓰는 기기의 이름입니다. 공식 프로젝트 문서는 v2 보드를 설명하므로, 문서와 화면이 다르면 이 기기의 실제 메뉴 이름과 순서를 따릅니다.', checks: [['외관 표기', '뒷면 초록 글자 ESP32-DIV V2.1'], ['About 표시', 'Board: ESP32 DIV V2.1 by MK, Build: V1.2 Stable by MK SIGNAL'], ['공식 자료', '원본 프로젝트 ESP32-DIV v2 문서를 참고 자료로 씀']] },
+  { n: 2, id: 'back-nfc', x: 91.5, y: 44, title: 'NFC 표기', body: '기본 실습의 Card Reader가 쓰는 부분입니다. 태그는 Card Reader 따라 하기대로 뒷면에 평평하게 댑니다. 동봉 설명서에는 NFC 메뉴가 없으니 메뉴는 기기 화면을 따릅니다.', checks: [['외관 표기', '뒷면 NFC 글자'], ['화면 표시', 'Card Reader에 리더 칩 PN532 표시'], ['동작 확인', '실험 태그 1개의 UID와 P4~P7 16바이트 읽기'], ['코일 위치', '자료 없음']] },
+  { n: 3, id: 'back-gps', x: 70, y: 55, title: 'GPS 표기와 단자', body: '꺾이는 안테나를 다는 단자입니다. 메뉴는 More 안의 GPS입니다.', checks: [['외관 표기', 'GPS 글자, 꺾이는 안테나 체결'], ['메뉴 표시', 'More → GPS'], ['공식 자료', 'Neo-6M 호환 GPS 모듈'], ['동작 확인', '위성 수신은 아직 안 함']] },
+  { n: 4, id: 'back-antenna', x: 58.5, y: 36, title: '2G4 단자 3개', body: '2.4GHz 안테나 단자입니다. 받은 위치 그대로 두고 표기로만 구분합니다.', checks: [['외관 표기', '2G4 글자 3개'], ['공식 자료', 'NRF24 모듈 3개'], ['동작 확인', '아직 안 함'], ['내부 연결', '자료 없음']] },
+  { n: 5, id: 'back-433', x: 61, y: 18.5, title: '433M 단자', body: 'Sub-GHz 안테나 단자입니다. 받은 위치 그대로 두고 표기로만 구분합니다.', checks: [['외관 표기', '433M 글자 1개'], ['공식 자료', 'CC1101 Sub-GHz 모듈'], ['동작 확인', '아직 안 함'], ['내부 연결', '자료 없음']] },
+  { n: 6, id: 'back-switch', x: 81, y: 53, title: 'ON, OFF 음각', body: '전원 스위치 표시입니다. 스위치를 밀어 화면이 켜지는 쪽을 직접 확인해 적습니다.', checks: [['외관 표기', '스위치 옆 ON, OFF 음각'], ['켜짐 방향', '사진만으로는 알 수 없음. 기기 준비에서 직접 확인']] },
+  { n: 7, id: 'back-marks', x: 59, y: 10, title: 'R, B, SD 음각', body: '모서리의 R, B와 위쪽의 SD처럼 보이는 작은 음각입니다. 이 수업의 기본 활동에서는 누르거나 쓰지 않습니다. 펌웨어 복구처럼 버튼이 필요한 일은 업데이트·문제 해결의 절차와 교사 확인을 따릅니다.', checks: [['외관 표기', '작은 음각 R, B, SD'], ['뜻', '이 기기에서 확인 안 함']] },
 ];
 
 const frontParts: Part[] = [
-  { n: 1, id: 'front-antennas', x: 31, y: 20, title: '안테나 4개', body: '위쪽 단자 4개에 곧은 안테나가 달려 있습니다. 앞에서 볼 때 가장 왼쪽 안테나만 모양이 다릅니다. 역할은 뒷면 표기로만 구분합니다.', tags: ['photo'] },
-  { n: 2, id: 'front-holes', x: 43.6, y: 47.2, title: '위쪽 작은 구멍 2개', body: 'MK SIGNAL 글자 위에 긴 구멍과 작은 구멍이 있습니다. 표시등, IR 창, 환기구 중 무엇인지 알 수 없습니다.', tags: ['photo', 'unverified'] },
-  { n: 3, id: 'front-brand', x: 62, y: 50, title: 'MK SIGNAL 인쇄', body: '공식 프로젝트 자료에는 없는 표기입니다. About에도 MK SIGNAL DIV V2.1과 Build: V1.2 Stable by MK SIGNAL로 나옵니다. 회사나 제작자의 정보는 확인하지 못했습니다.', tags: ['photo', 'device', 'unverified'] },
-  { n: 4, id: 'front-screen', x: 34, y: 66, title: '터치 화면', body: '설명서와 공식 문서는 2.8인치 ILI9341 화면이라고 적습니다. 사진의 화면에는 보호 필름의 흠집이 보입니다. 메뉴 표시는 확인했지만 칩 종류와 크기는 재지 않았습니다.', tags: ['photo', 'device', 'manual', 'doc'] },
-  { n: 5, id: 'front-side-antenna', x: 88, y: 40, title: '꺾이는 안테나', body: '옆면 단자에 달린 안테나입니다. 뒷면 기준 GPS 표기 단자입니다.', tags: ['photo'] },
-  { n: 6, id: 'front-switch', x: 70, y: 74, title: '초록 슬라이드 스위치', body: '뒷면의 ON, OFF 음각 옆에 있습니다.', tags: ['photo'] },
-  { n: 7, id: 'front-buttons', x: 54, y: 88, title: '버튼 5개', body: '십자 배열입니다. 공식 문서는 PCF8574 칩으로 읽는 위, 아래, 왼쪽, 오른쪽, 선택 키를 설명합니다.', tags: ['photo', 'doc'] },
-  { n: 8, id: 'front-usb', x: 34, y: 97, title: '아래쪽 단자 구멍', body: '아래쪽 면에 USB-C 두 개가 있습니다. 역할 표기는 없습니다.', tags: ['photo', 'unverified'] },
+  { n: 1, id: 'front-antennas', x: 31, y: 20, title: '안테나 4개', body: '위쪽 단자 4개에 달린 곧은 안테나입니다. 역할은 뒷면 단자 표기로 구분합니다.', checks: [['외관', '곧은 안테나 4개']] },
+  { n: 2, id: 'front-holes', x: 43.6, y: 47.2, title: '위쪽 작은 구멍 2개', body: 'MK SIGNAL 글자 위의 긴 구멍과 작은 구멍입니다. 용도 표기가 없어 기본 수업에서는 쓰지 않습니다.', checks: [['외관', '구멍 2개'], ['용도', '표기 없음']] },
+  { n: 3, id: 'front-brand', x: 62, y: 50, title: 'MK SIGNAL 인쇄', body: '앞면에 인쇄된 이름입니다. About 화면의 기기 이름과 빌드 이름에도 같은 MK SIGNAL이 나오므로, 버전 정보를 적을 때 이 문자열을 그대로 옮겨 적습니다.', checks: [['외관 표기', '앞면 MK SIGNAL'], ['About 표시', 'MK SIGNAL DIV V2.1, Build: V1.2 Stable by MK SIGNAL, Credits: CiferTech ESP32 DIV Project']] },
+  { n: 4, id: 'front-screen', x: 34, y: 66, title: '터치 화면', body: '메뉴가 표시되는 화면입니다. 아래 버튼과 터치로 조작합니다.', checks: [['화면 표시', '부팅, 메인 메뉴, About, Card Reader 화면'], ['설명서·공식 자료', '2.8인치 ILI9341 터치 화면'], ['칩과 크기', '재지 않음']] },
+  { n: 5, id: 'front-side-antenna', x: 88, y: 40, title: '꺾이는 안테나', body: '옆면 단자에 달린 안테나로, 뒷면의 GPS 표기 단자입니다.', checks: [['외관', '옆면 단자 1개']] },
+  { n: 6, id: 'front-switch', x: 70, y: 74, title: '초록 슬라이드 스위치', body: '전원 스위치입니다. 뒷면의 ON, OFF 음각 옆에 있습니다.', checks: [['외관', '초록 슬라이드 스위치']] },
+  { n: 7, id: 'front-buttons', x: 54, y: 88, title: '버튼 5개', body: '십자 배열 버튼입니다. 메뉴 이동과 선택에 씁니다.', checks: [['외관', '십자 배열 5개'], ['공식 자료', 'PCF8574 칩으로 읽는 위, 아래, 왼쪽, 오른쪽, 선택 키']] },
+  { n: 8, id: 'front-usb', x: 34, y: 97, title: '아래쪽 USB-C 2개', body: '아래쪽 면의 USB-C 단자 두 개입니다. 각 포트가 충전, 컴퓨터 연결 중 무엇을 하는지는 기기 준비의 포트 확인 절차로 하나씩 연결해 보고 적습니다.', checks: [['외관', 'USB-C 2개'], ['역할 표기', '없음'], ['포트별 역할', '확인 안 함']] },
 ];
 
 const specs = [
-  ['ESP32-S3 마이크로컨트롤러', '기재', '기재', '직접 확인 못 함'],
-  ['2.8인치 ILI9341 터치 화면', '기재', '기재', '화면 표시 확인, 칩은 미확인'],
-  ['LF33 3.3V 전압 조정', '기재', '위키 본문에 없음', '미확인'],
-  ['IP5306 배터리 충전·보호', '기재', '기재', '미확인'],
-  ['CP2102 USB 시리얼', '기재', '기재', '미확인'],
+  ['ESP32-S3 마이크로컨트롤러', '기재', '기재', '확인 안 함'],
+  ['2.8인치 ILI9341 터치 화면', '기재', '기재', '메뉴 표시 확인, 칩은 확인 안 함'],
+  ['LF33 3.3V 전압 조정', '기재', '위키 본문에 없음', '확인 안 함'],
+  ['IP5306 배터리 충전·보호', '기재', '기재', '확인 안 함'],
+  ['CP2102 USB 시리얼', '기재', '기재', '확인 안 함'],
   ['PCF8574 버튼 확장', '기재', '기재', '버튼 5개만 확인'],
-  ['SD 카드 슬롯', '기재', '기재', '위치 미확인'],
+  ['SD 카드 슬롯', '기재', '기재', '위치 확인 안 함'],
   ['NRF24 모듈 3개', '주파수 메뉴만 기재', '기재', '2G4 표기 3개만 확인'],
   ['CC1101 Sub-GHz', '주파수 메뉴만 기재', '기재', '433M 표기만 확인'],
   ['PN532 NFC', '없음', '기재', '화면에 PN532 표시, 태그 읽기 확인'],
   ['Neo-6M 호환 GPS', '없음', '기재', 'GPS 표기와 메뉴만 확인'],
   ['IR 송수신 회로', 'IR 메뉴 기재', '기재', 'IR Remote 메뉴만 확인'],
-  ['WS2812 표시등 4개', 'NeoPixel 메뉴 기재', '기재', '미확인'],
-  ['부저', '없음', '기재', '미확인'],
+  ['WS2812 표시등 4개', 'NeoPixel 메뉴 기재', '기재', '확인 안 함'],
+  ['부저', '없음', '기재', '확인 안 함'],
 ];
 ---
-<Base title="기기 알아보기 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1 실물 사진에 번호를 붙여 사진으로 확인한 부분과 확인하지 못한 부분을 구분해 설명합니다.">
+<Base title="기기 알아보기 | ESP32-DIV V2.1 실험 노트" description="ESP32-DIV V2.1 실물 사진에 번호를 붙여 부분마다 무엇을 어디서 확인했는지 설명합니다.">
   <div class="wrap">
     <header class="page-head">
       <h1>사진에 보이는 것만 먼저 믿기</h1>
-      <p class="lead">번호마다 근거를 표시했습니다. 분해 사진이 없어 내부 부품은 화면 표시 외에는 직접 확인하지 못했습니다.</p>
+      <p class="lead">번호마다 무엇을 어디서 확인했는지 한 줄씩 적었습니다. 케이스를 열지 않았으므로 내부 부품은 화면 표시와 공식 자료로만 말합니다.</p>
     </header>
+
+    <section class="section" style="padding-top: 0" aria-labelledby="h-target">
+      <h2 id="h-target">이 수업의 기기</h2>
+      <dl class="facts" style="margin-top: var(--space-md)">
+        <div><dt>About 표시</dt><dd><code>MK SIGNAL DIV V2.1</code>, <code>Board: ESP32 DIV V2.1 by MK</code>, <code>Build: V1.2 Stable by MK SIGNAL</code>, 펌웨어 <code>1.7.2 stable by MK_SIGNAL_V1</code>. 읽는 법은 <a href={url('/learn/device/#about')}>About 따라 하기</a>에 있습니다.</dd></div>
+        <div><dt>공식 자료</dt><dd>원본 프로젝트 <a href="https://github.com/cifertech/ESP32-DIV#readme" rel="noopener">ESP32-DIV README</a>와 <a href="https://github.com/cifertech/ESP32-DIV/wiki" rel="noopener">위키</a>의 v2 보드 설명을 부품과 기능의 참고 자료로 씁니다.</dd></div>
+        <div><dt>화면이 다를 때</dt><dd>공식 문서와 메뉴 이름·순서가 다르면 이 기기 화면을 따르고, 다른 점을 공책에 적습니다. 예: 이 기기의 More에는 공식 위키의 More 목록에 없는 Games가 있습니다.</dd></div>
+        <div><dt>이 기기에서 해 본 것</dt><dd>부팅, 메뉴 표시, About 읽기, Card Reader로 실험 태그 읽기. 다른 기능의 실행은 아직 하지 않았습니다.</dd></div>
+      </dl>
+      <p class="small muted" style="margin-top: var(--space-sm)">아래 번호의 줄에서 ‘아직 안 함’은 해 보지 않은 것, ‘자료 없음’은 사진·화면·공식 자료 어디에도 근거가 없는 것입니다.</p>
+    </section>
 
     <section class="section" style="padding-top: 0" aria-labelledby="h-menus">
       <h2 id="h-menus">겉모습 다음에는 메뉴를 읽습니다</h2>
@@ -66,7 +79,7 @@ const specs = [
       <nav class="btn-row btn-row--grid" aria-label="메인 메뉴별 설명" style="margin-top: var(--space-lg)">
         {MAIN_MENU.map(menu => <a class="btn btn--quiet btn--small" href={url(`/learn/device/#menu-${menu.id}`)}>{menu.name}</a>)}
       </nav>
-      <p class="small muted" style="margin-top: var(--space-md)">아래 사진은 외관 근거입니다. 메뉴 이름이 보이는 것만으로 해당 기능이나 내부 부품의 동작이 검증된 것은 아닙니다. NFC 태그 읽기 외 기능 실행은 미확인입니다.</p>
+      <p class="small muted" style="margin-top: var(--space-md)">메뉴 이름이 보이는 것과 그 기능이 동작하는 것은 다릅니다. 이 기기에서 실행해 본 기능은 Card Reader 태그 읽기뿐입니다.</p>
     </section>
 
     <section class="section" style="padding-top: 0" aria-labelledby="h-back">
@@ -90,7 +103,7 @@ const specs = [
             <div>
               <h3>{p.title}</h3>
               <p>{p.body}</p>
-              <div class="tags">{p.tags.map((k) => <Evidence kind={k} />)}</div>
+              <dl class="checks">{p.checks.map(([what, result]) => <div><dt>{what}</dt><dd class:list={{ "is-open": OPEN.test(result) }}>{result}</dd></div>)}</dl>
             </div>
           </li>
         ))}
@@ -122,7 +135,7 @@ const specs = [
               <div>
                 <h3>{p.title}</h3>
                 <p>{p.body}</p>
-                <div class="tags">{p.tags.map((k) => <Evidence kind={k} />)}</div>
+                <dl class="checks">{p.checks.map(([what, result]) => <div><dt>{what}</dt><dd class:list={{ "is-open": OPEN.test(result) }}>{result}</dd></div>)}</dl>
               </div>
             </li>
           ))}
@@ -139,7 +152,7 @@ const specs = [
         </details>
         <details>
           <summary>전원 스위치 원본 사진 보기</summary>
-          <Plate src={sideSwitch} alt="초록 슬라이드 스위치와 네모난 구멍 두 개가 있는 긴 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="스위치 왼쪽 구멍 안에 부품과 작은 빨간 점이, 오른쪽 구멍 안에 금속 부품이 보입니다. 무엇인지는 확인하지 못했습니다." />
+          <Plate src={sideSwitch} alt="초록 슬라이드 스위치와 네모난 구멍 두 개가 있는 긴 옆면" sizes="(min-width: 960px) 560px, 100vw" widths={[640, 960, 1400]} caption="초록 슬라이드 스위치와 네모난 구멍 두 개. 구멍의 용도 표기는 없습니다." />
         </details>
       </div>
     </section>
@@ -147,7 +160,7 @@ const specs = [
     <section class="section section--rule" aria-labelledby="h-spec">
       <div class="section__head">
         <h2 id="h-spec">문서에 적힌 부품과 내 기기 사이의 거리</h2>
-        <p class="muted">공식 문서는 원본 프로젝트 v2 기준입니다. 같은 부품을 쓰는지는 항목별로 구분했습니다.</p>
+        <p class="muted">공식 문서는 원본 프로젝트 v2 보드를 설명합니다. 문서에 적힌 부품이 이 기기에도 같은지는 마지막 열의 범위까지만 말합니다.</p>
       </div>
       <div class="table-wrap" tabindex="0" role="region" aria-label="부품별 근거 표">
         <table>

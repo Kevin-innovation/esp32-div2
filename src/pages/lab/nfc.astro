@@ -6,7 +6,8 @@ import Think from '../../components/learn/Think.astro';
 import TermLink from '../../components/learn/TermLink.astro';
 import { Chart, CsvPanel, Interview, NoteFields, PythonPanel, Records, Report, SaveState, Summary } from '../../components/lab/NfcLab';
 import { nfcColab } from '../../lib/colab';
-import { nfcSummaryRows } from '../../lib/nfc';
+import { nfcSummaryRows, pythonScript } from '../../lib/nfc';
+import CodeBlock from '../../components/CodeBlock.astro';
 import { nfcTable } from '../../lib/workbooks/render';
 import output from '../../lib/workbooks/colab-output.json';
 import { golden, guide, notes } from '../../lib/workbooks/nfc';
@@ -129,6 +130,7 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
     </ol>
     <p><TermLink id="groupby" label="groupby" />는 조건별 시도 수와 성공 수를 세고, <TermLink id="recognition-rate" label="인식률" />은 성공/시도입니다. <TermLink id="wilson-interval" label="Wilson 구간" />은 표본이 적을 때의 불확실성을 보여 주는 참고선이지, 보안 보장이나 가설 검정이 아닙니다. 지갑과 가방 조건은 거리도 함께 달라질 수 있어 거리 그래프만으로 거리의 단독 효과를 결론 내리지 않습니다.</p>
     <PythonPanel client:load />
+    <CodeBlock code={pythonScript()} file="nfc-analysis.py" label="nfc-analysis.py · 노트북과 같은 코드" />
     <figure class="nfc-example">
       <img src="/images/nfc-colab-example.svg" alt="가상 자료로 만든 NFC Colab 결과 예시. 왼쪽은 조건별 성공과 실패 횟수, 오른쪽 위는 거리별 인식률, 오른쪽 아래는 조건과 거리별 성공/시도 히트맵이다." loading="lazy" width="1200" height="760" style="display: block; width: 100%; height: auto;" />
       <figcaption><strong>모양을 익히기 위한 가상 예시입니다.</strong> 단독 5/5, 지갑 3/5, 가방 2/5라는 임의의 값으로 그렸습니다. 실제 실험의 예상값이나 정답이 아니며, 학생의 그림은 측정 결과에 따라 달라집니다.</figcaption>

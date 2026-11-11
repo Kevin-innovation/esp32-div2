@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import Evidence from '../../components/Evidence.astro';
 import Plate from '../../components/Plate.astro';
 import Sources from '../../components/Sources.astro';
 import back from '../../assets/device/back.jpg';
@@ -31,7 +30,6 @@ const toc = [
       <div class="doc__main">
         <section id="parts" aria-labelledby="h-parts">
           <h2 id="h-parts">구성품 확인</h2>
-          <div class="tags"><Evidence kind="photo" /></div>
           <p>사진에는 본체 1대, 곧은 안테나 4개, 꺾이는 안테나 1개, 인쇄 설명서가 있습니다.</p>
           <p>사진에 없는 것은 따로 확인하세요.</p>
           <ul>
@@ -39,7 +37,7 @@ const toc = [
             <li>microSD 카드. 설명서와 공식 FAQ 기준 32GB 이하, FAT32 형식입니다.</li>
             <li>실험용 NFC 태그. 이 실험의 태그는 구매 표기 NTAG213, 25mm 접착식입니다.</li>
           </ul>
-          <p>본체에 배터리가 들어 있는지는 사진으로 알 수 없습니다. <Evidence kind="unverified" /></p>
+          <p>본체에 배터리가 들어 있는지는 사진으로 알 수 없습니다. 아래 전원 확인에서 USB를 뺀 채로 켜지는지 보고 적습니다.</p>
         </section>
 
         <section id="antenna" aria-labelledby="h-antenna">
@@ -48,7 +46,6 @@ const toc = [
           <details>
             <summary>안테나 표기 원본 사진 보기</summary>
             <Plate src={back} alt="뒷면의 안테나 단자 원본 사진. 433M 표기 아래로 2G4 표기가 세 번 있고 아래쪽에 GPS 표기가 있다." sizes="(min-width: 960px) 720px, 100vw" caption="뒷면 표기: 433M 1개, 2G4 3개, GPS 1개." />
-            <div class="tags"><Evidence kind="photo" /></div>
           </details>
           <ol>
             <li>전원을 끈 상태에서 시작합니다.</li>
@@ -57,7 +54,7 @@ const toc = [
             <li>공구로 세게 조이지 않습니다.</li>
           </ol>
           <div class="callout callout--warn">
-            <p><strong>안테나 자체에는 주파수 표기가 보이지 않습니다.</strong> 433M 단자의 체결부는 금색으로 다른 단자와 달라 보이지만, 안테나별 주파수 대역은 확인하지 못했습니다. 단자의 내부 연결도 미확인이니 표기로만 구분합니다.</p>
+            <p><strong>안테나 자체에는 주파수 표기가 없습니다.</strong> 그래서 받은 위치를 바꾸지 않고, 단자는 뒷면 표기(433M, 2G4, GPS)로만 구분합니다.</p>
             <p>일반적인 무선 장비 수칙으로, 안테나 없이 송신 기능을 실행하지 않습니다.</p>
           </div>
         </section>
@@ -68,7 +65,6 @@ const toc = [
             <summary>전원 스위치 원본 사진 보기</summary>
             <Plate src={sideSwitch} alt="기기 긴 옆면 사진. 초록색 슬라이드 스위치 왼쪽과 오른쪽 멀리에 네모난 구멍이 있다." sizes="(min-width: 960px) 720px, 100vw" widths={[640, 960, 1400]} caption="긴 옆면의 초록 슬라이드 스위치와 네모난 구멍 두 개. 뒷면에는 스위치 옆으로 ON, OFF 음각이 있습니다." />
           </details>
-          <div class="tags"><Evidence kind="photo" /><Evidence kind="unverified" /></div>
           <p>스위치를 움직여 화면이 켜지는 쪽을 확인합니다. 슬라이드 방향과 켜짐의 관계는 직접 확인해 적어 두세요.</p>
           <details>
             <summary>USB-C 원본 사진 보기</summary>
@@ -90,12 +86,11 @@ const toc = [
           <div class="split split--even">
             <Plate src={frontCutout} alt="기기 앞면. 위로 안테나 네 개, 가운데 화면, 그 위에 MK SIGNAL 글자, 화면 아래에 십자 모양 버튼 다섯 개가 있다." sizes="(min-width: 960px) 260px, 200px" widths={[320, 640, 900]} cutout class="art-front" />
             <div class="prose">
-              <div class="tags"><Evidence kind="photo" /></div>
-              <p>화면 아래 버튼은 십자로 놓인 5개입니다.</p>
-              <div class="tags"><Evidence kind="doc" /></div>
-              <p>공식 문서는 위, 아래, 왼쪽, 오른쪽, 선택(Select) 키와 터치를 설명합니다.</p>
-              <div class="tags"><Evidence kind="unverified" /></div>
-              <p>이 기기는 안테나가 위쪽일 때 버튼이 아래에 옵니다. 화면 방향과 버튼 방향이 맞는지 직접 눌러 확인하세요.</p>
+              <dl class="checks">
+                <div><dt>외관</dt><dd>화면 아래 십자 배열 버튼 5개</dd></div>
+                <div><dt>공식 자료</dt><dd>위, 아래, 왼쪽, 오른쪽, 선택(Select) 키와 터치</dd></div>
+                <div><dt>직접 확인</dt><dd>안테나를 위로 두고 버튼을 눌러, 화면의 움직임과 버튼 방향이 맞는지 적습니다.</dd></div>
+              </dl>
             </div>
           </div>
           <div class="table-wrap" tabindex="0" role="region" aria-label="메인 메뉴 8칸">
@@ -115,14 +110,14 @@ const toc = [
 
         <section id="sd" aria-labelledby="h-sd">
           <h2 id="h-sd">SD 카드</h2>
-          <div class="tags"><Evidence kind="manual" /><Evidence kind="doc" /><Evidence kind="unverified" /></div>
+          <p>동봉 설명서와 공식 FAQ의 조건(FAT32, 32GB 이하)을 따릅니다. 이 기기에서 카드 인식은 아직 해 보지 않았으니 결과를 적어 둡니다.</p>
           <ol>
             <li>컴퓨터에서 microSD 카드를 FAT32로 포맷합니다. 안에 있는 자료는 모두 지워지니 먼저 옮겨 둡니다.</li>
             <li>기기 전원을 끕니다.</li>
             <li>카드 슬롯을 찾아 넣습니다. 들어가지 않으면 힘을 주지 말고 멈춥니다.</li>
             <li>전원을 켜고, Tools의 SD File Manager에서 카드가 보이는지 확인합니다.</li>
           </ol>
-          <p>뒷면 위쪽 음각이 SD처럼 보이지만 읽기가 불확실하고, 그 면의 사진이 없어 슬롯 위치를 확정하지 못했습니다.</p>
+          <p>슬롯 위치는 사진에 나와 있지 않습니다. 기기 둘레에서 microSD 크기의 틈을 찾고, 찾지 못하면 억지로 넣지 말고 교사에게 확인합니다.</p>
           <div class="table-wrap" tabindex="0" role="region" aria-label="SD 카드 폴더 구조">
             <table>
               <caption>공식 문서에 적힌 SD 카드 구조</caption>
@@ -139,7 +134,7 @@ const toc = [
 
         <section id="first-scan" aria-labelledby="h-first">
           <h2 id="h-first">준비 확인: 내 기기 기록 네 가지</h2>
-          <p>이 기기에서 아래 값까지 확인했습니다. 내 기기와 같은지 비교해 적습니다. <Evidence kind="device" /></p>
+          <p>이 사이트를 만든 기기의 화면에서 아래 값을 확인했습니다. 내 기기와 같은지 비교해 적습니다.</p>
           <ul>
             <li>About의 펌웨어 표시: <code>1.7.2 stable by MK_SIGNAL_V1</code></li>
             <li>메인 메뉴 8칸</li>
@@ -155,7 +150,7 @@ const toc = [
           </ul>
           <details>
             <summary>선택: Wi-Fi 스캔으로 화면 익히기</summary>
-            <p>주변 공유기 목록을 보는 <a href={url('/guide/wifi/#wifi-scanner')}>Wi-Fi 스캐너</a>를 써 볼 수 있습니다. 이 기기에서 아직 실행해 확인하지 못한 기능이니 결과를 적어 두세요. <Evidence kind="unverified" /></p>
+            <p>주변 공유기 목록을 보는 <a href={url('/guide/wifi/#wifi-scanner')}>Wi-Fi 스캐너</a>를 써 볼 수 있습니다. 이 기기에서는 아직 실행해 보지 않은 기능이니, 화면에 나온 결과를 그대로 적어 두세요.</p>
             <ol>
               <li>메인 메뉴에서 WiFi를 고릅니다.</li>
               <li>WiFi Scanner를 고릅니다.</li>

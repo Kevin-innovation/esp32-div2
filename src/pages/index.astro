@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import Evidence from '../components/Evidence.astro';
 import Plate from '../components/Plate.astro';
 import backCutout from '../assets/device/back-cutout.webp';
 import frontCutout from '../assets/device/front-cutout.webp';
@@ -99,7 +98,7 @@ const nfcSteps = [
 
   <section class="section section--rule" aria-label="근거 표시 안내">
     <div class="wrap small muted">
-      <p>설명 옆 표시는 근거입니다. <Evidence kind="device" /> <Evidence kind="photo" /> <Evidence kind="manual" /> <Evidence kind="doc" /> <Evidence kind="unverified" /> 이 기기에서 확인한 범위와 아직 확인하지 못한 항목은 <a href={url('/device/')}>기기 알아보기</a>와 <a href={url('/update/')}>업데이트</a>에 정리했습니다.</p>
+      <p>설명마다 근거를 대상별로 적습니다. 예: 외관 표기, About 표시, 동작 확인, 공식 자료. 해 보지 않은 것은 ‘아직 안 함’, 근거가 없는 것은 ‘자료 없음’으로 적습니다. 이 기기에서 확인한 범위와 아직 해 보지 않은 항목은 <a href={url('/device/')}>기기 알아보기</a>와 <a href={url('/update/')}>업데이트</a>에 정리했습니다.</p>
     </div>
   </section>
 </Base>

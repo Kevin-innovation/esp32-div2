@@ -1,0 +1,158 @@
+---
+// Python·Colab 입문. 0~6단계 순서 밖의 선택 학습이며, 미션 9장(Colab 분석) 앞에서 본다.
+// 따라 하기 셀과 예상 출력은 data/pythonColab.ts와 scripts/check-python-intro.ts가 실제 실행 결과로 맞춘다.
+import LearnLayout from '../../layouts/LearnLayout.astro';
+import CodeBlock from '../../components/CodeBlock.astro';
+import { CELLS, MISSION_GROUPS, PRACTICE_CSV, TROUBLES, fullScript } from '../../data/pythonColab';
+import output from '../../data/python-colab-output.json';
+import { url } from '../../lib/url';
+
+const out = output as { cells: Record<string, string>; troubles: Record<string, string> };
+const cell = (id: string) => CELLS.find((c) => c.id === id)!;
+const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
+---
+<LearnLayout
+  title="Python·Colab 입문"
+  heading="Python·Colab 입문: 미션 9장 코드를 읽고 돌리기"
+  lead="웹 워크북의 계산을 Colab에서 다시 확인하려는 학생을 위한 선택 학습입니다. 짧은 가상 CSV로 셀 8개를 따라 하고 나면, 13개 미션의 Colab 코드를 줄 묶음별로 읽을 수 있습니다."
+  description="고등학생 비전공자를 위한 Google Colab, Python 최소 문법, pandas로 CSV 세기, matplotlib 그래프 읽기, 오류 해결과 미션 코드 읽기 안내입니다."
+  toc={[['when', '언제 보나'], ['colab', 'Colab 쓰는 법'], ['syntax', '최소 문법'], ['csv', 'CSV와 DataFrame'], ['group', '세고 나누기'], ['plot', '그래프 읽기'], ['source', 'sample에서 upload로'], ['full', '전체 코드'], ['errors', '오류 해결'], ['mission', '미션 코드 읽기']]}
+  sourcesChecked="2026-11-11"
+  sources={['colabFaq', 'colabFiles', 'pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'mplBar']}
+>
+  <section id="when" aria-labelledby="h-when">
+    <h2 id="h-when">언제 보나</h2>
+    <div class="callout">
+      <p><strong>기본 분석은 브라우저, Colab은 선택입니다.</strong> 0~6단계와 각 미션의 1~8장은 이 페이지 없이 마칠 수 있습니다. 미션 8장(브라우저 분석)을 마친 뒤, 9장 Colab 분석을 하기 전에 봅니다.</p>
+    </div>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="브라우저 분석과 Colab 분석 비교">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">브라우저 분석(미션 8장)</th><th scope="col">Python·Colab(미션 9장)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">어디서 계산하나</th><td>이 웹페이지가 내 브라우저 안에서 계산</td><td>Google이 빌려주는 가상 컴퓨터(런타임)에서 내가 붙여 넣은 코드가 계산</td></tr>
+          <tr><th scope="row">필요한 것</th><td>이 사이트만</td><td>Google 계정과 인터넷. 외부 서비스라 학교 규칙을 먼저 확인</td></tr>
+          <tr><th scope="row">기록의 위치</th><td>내 브라우저 저장소. 서버로 보내지 않음</td><td>내가 올린 CSV가 Colab 런타임에 복사됨</td></tr>
+          <tr><th scope="row">얻는 것</th><td>표, 막대, 보고서</td><td>같은 계산을 코드로 다시 해 보고, 그래프와 표를 직접 바꿔 볼 수 있음</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="colab" aria-labelledby="h-colab">
+    <h2 id="h-colab">Colab 쓰는 법</h2>
+    <ol>
+      <li><strong>새 노트:</strong> <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Google Colab</a>에 Google 계정으로 로그인하고 File → New notebook을 고릅니다. 노트는 내 Google Drive에 저장됩니다.</li>
+      <li><strong>코드 셀과 텍스트 셀:</strong> 회색 칸이 코드 셀입니다. + Code로 코드 셀, + Text로 설명을 적는 텍스트 셀을 더합니다. 텍스트 셀은 실행되지 않습니다.</li>
+      <li><strong>실행:</strong> 코드 셀을 누르고 <kbd>Shift</kbd>+<kbd>Enter</kbd>를 누르면 실행되고 다음 셀로 넘어갑니다. 출력은 셀 바로 아래에 나옵니다.</li>
+      <li><strong>런타임:</strong> 처음 실행하면 런타임(가상 컴퓨터)이 연결됩니다. 셀에서 만든 변수는 런타임이 살아 있는 동안만 기억됩니다.</li>
+      <li><strong>다시 실행:</strong> 위 셀을 고쳤다면 그 셀부터 다시 실행합니다. 꼬였다면 Runtime → Restart session 뒤 Runtime → Run all로 맨 위부터 다시 돌립니다.</li>
+      <li><strong>파일 올리기:</strong> 왼쪽 폴더 아이콘(Files)에 CSV를 끌어 놓거나, 코드에서 <code>files.upload()</code>로 고릅니다(셀 {n('source')}).</li>
+      <li><strong>파일은 오래 남지 않습니다:</strong> Colab FAQ에 따르면 런타임은 쓰지 않으면 시간이 지나 끊기고 최대 사용 시간도 있습니다. 런타임이 지워지면 거기에 올린 CSV와 만든 파일도 남지 않는다고 생각하고, 결과는 바로 내려받습니다(셀 {n('save')}).</li>
+    </ol>
+  </section>
+
+  <section id="syntax" aria-labelledby="h-syntax">
+    <h2 id="h-syntax">최소 문법</h2>
+    <p>미션 코드에 나오는 문법만 봅니다. <code>#</code> 뒤는 사람을 위한 설명(주석)이라 실행되지 않습니다. 줄 앞 칸(들여쓰기)은 뜻이 있으니 지우지 않습니다.</p>
+    <h3>{cell('basics').title}</h3>
+    <CodeBlock code={cell('basics').code} file="cell-1-basics.py" />
+    <CodeBlock kind="output" code={out.cells.basics} file="output" label="예상 출력" />
+  </section>
+
+  <section id="csv" aria-labelledby="h-csv">
+    <h2 id="h-csv">CSV와 DataFrame</h2>
+    <p>CSV는 쉼표로 칸을 나눈 글자 파일입니다. 첫 줄은 열 이름, 그 아래 한 줄이 기록 한 건(행)입니다. 아래는 연습용 <strong>가상 자료</strong>입니다. 미션 CSV처럼 섞인 구분을 나누는 연습을 위해 마지막 행에만 <code>real</code>을 붙였고, 6번 행은 <code>success</code>를 비워 두었습니다.</p>
+    <CodeBlock kind="output" code={PRACTICE_CSV} file="practice.csv" label="practice.csv · 가상 자료" />
+    <p>pandas의 <code>read_csv</code>는 이 글자를 <strong>DataFrame</strong>(행과 열이 있는 표)으로 읽습니다. 왼쪽의 0, 1, 2는 pandas가 붙인 행 번호(index)입니다. 빈 칸이 있는 <code>success</code> 열은 빈 값(NaN)을 담으려고 실수(float64)로 읽힙니다.</p>
+    <h3>{cell('load').title}</h3>
+    <CodeBlock code={cell('load').code} file="cell-2-load.py" />
+    <CodeBlock kind="output" code={out.cells.load} file="output" label="예상 출력" />
+    <h3>{cell('select').title}</h3>
+    <p><code>df['열']</code>은 열 하나, <code>df[['열1', '열2']]</code>는 열 여러 개, <code>df[조건]</code>은 조건이 참인 행만 고릅니다. 미션 코드는 <code>data_type</code>으로 데모(demo)와 실제 기록(real)을 나눕니다.</p>
+    <CodeBlock code={cell('select').code} file="cell-3-select.py" />
+    <CodeBlock kind="output" code={out.cells.select} file="output" label="예상 출력" />
+    <h3>{cell('blank').title}</h3>
+    <p><strong>빈 값은 0이 아닙니다.</strong> 0은 “시도했지만 못 읽음”이고, 빈 칸은 “기록하지 않음”입니다. 빈 칸을 0으로 바꾸면 실패가 늘어난 것처럼 보입니다.</p>
+    <CodeBlock code={cell('blank').code} file="cell-4-blank.py" />
+    <CodeBlock kind="output" code={out.cells.blank} file="output" label="예상 출력" />
+  </section>
+
+  <section id="group" aria-labelledby="h-group">
+    <h2 id="h-group">세고 나누기: groupby와 agg</h2>
+    <p><code>groupby('condition')</code>는 조건이 같은 행끼리 묶고, <code>agg(['count', 'sum'])</code>는 묶음마다 행 수와 합을 셉니다. success가 1(성공)과 0(실패)이라 합이 곧 성공 수이고, 인식률은 성공 ÷ 시도입니다.</p>
+    <CodeBlock code={cell('group').code} file="cell-5-group.py" />
+    <CodeBlock kind="output" code={out.cells.group} file="output" label="예상 출력" />
+    <p class="small muted">빈 칸이었던 지갑 5cm 행은 4번 셀에서 빠졌으므로 지갑의 시도는 2입니다. 표본이 이렇게 작으면 66.7%와 50.0%의 차이만으로 결론을 내리지 않습니다.</p>
+  </section>
+
+  <section id="plot" aria-labelledby="h-plot">
+    <h2 id="h-plot">그래프 읽기</h2>
+    <CodeBlock code={cell('plot').code} file="cell-6-plot.py" />
+    <CodeBlock kind="output" code={out.cells.plot} file="output" label="예상 출력(그림 위에 나오는 글자)" />
+    <figure class="py-figure">
+      <img src={url('/images/python-colab-bar.svg')} alt="셀 6을 실행한 막대그래프. 가로축은 G1, G2, G3, 세로축은 0에서 100까지의 인식률(%)이며 G1은 약 67, G2는 50, G3은 0이다." width="480" height="288" loading="lazy" />
+      <figcaption>셀 6의 실제 실행 결과. 가상 자료라 실제 실험의 예상값이 아닙니다.</figcaption>
+    </figure>
+    <ul>
+      <li><strong>축과 단위부터:</strong> 세로축 이름 <code>read rate (%)</code>는 인식률, 단위는 퍼센트입니다. 가로축 G1~G3의 뜻은 그림 위에 출력된 글자(G1 = 단독…)에서 찾습니다.</li>
+      <li><strong>세로축 범위:</strong> <code>plt.ylim(0, 100)</code>으로 0부터 그렸습니다. 0이 아닌 곳에서 시작하면 작은 차이가 크게 보입니다.</li>
+      <li><strong>막대 0은 “측정 안 함”이 아닙니다.</strong> G3(가방)은 2번 시도해 0번 읽힌 결과입니다. 시도 수는 그래프에 없으니 셀 5의 표와 함께 읽습니다.</li>
+    </ul>
+  </section>
+
+  <section id="source" aria-labelledby="h-source">
+    <h2 id="h-source">sample에서 upload로: 미션과 연결</h2>
+    <p>미션 9장 코드의 맨 위에도 같은 스위치가 있습니다. <code>'sample'</code>이면 코드 안의 골든 데이터(데모)를, <code>'upload'</code>면 내가 올린 CSV의 실제 기록(<code>data_type=real</code>)을 분석합니다.</p>
+    <CodeBlock code={cell('source').code} file="cell-7-source.py" />
+    <CodeBlock kind="output" code={out.cells.source} file="output" label="예상 출력(SOURCE = 'sample')" />
+    <div class="callout callout--warn">
+      <p><strong>올리기 전 개인 식별자 점검.</strong> CSV를 메모장이나 스프레드시트로 열어 실제 이름, 학번, 집 주소, 태그 UID, 공유기 이름(SSID)과 주소(BSSID), 정확한 위치가 없는지 봅니다. 있으면 올리지 말고 <a href={url('/lab/csv/')}>CSV 가명처리 워크북</a>으로 먼저 바꿉니다.</p>
+    </div>
+    <h3>{cell('save').title}</h3>
+    <CodeBlock code={cell('save').code} file="cell-8-save.py" />
+    <CodeBlock kind="output" code={out.cells.save} file="output" label="예상 출력" />
+  </section>
+
+  <section id="full" aria-labelledby="h-full">
+    <h2 id="h-full">전체 코드</h2>
+    <p>셀 1~8을 이어 붙인 파일입니다. 새 노트의 한 셀에 붙여 넣고 실행하면 위 출력이 차례로 나오고 그림이 하나 그려집니다.</p>
+    <CodeBlock code={fullScript()} file="python-colab-practice.py" />
+  </section>
+
+  <section id="errors" aria-labelledby="h-errors">
+    <h2 id="h-errors">오류 해결</h2>
+    <p>빨간 글이 나오면 <strong>맨 아래 줄</strong>부터 읽습니다. 오류 이름과 이유가 거기 있습니다. 아래 결과는 각 코드를 새 노트에서 따로 실행한 실제 마지막 줄입니다.</p>
+    <dl class="facts facts--stack py-errors">
+      {TROUBLES.map((t) => (
+        <div id={`error-${t.id}`}>
+          <dt>{t.error}</dt>
+          <dd>
+            <p><strong>언제:</strong> {t.when}</p>
+            <CodeBlock kind="output" code={out.troubles[t.id]} file="error" label="마지막 줄" />
+            <p><strong>해결:</strong> {t.fix}</p>
+            <details>
+              <summary>이 오류를 낸 코드</summary>
+              <CodeBlock code={t.code} file={`error-${t.id}.py`} />
+            </details>
+          </dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section id="mission" aria-labelledby="h-mission">
+    <h2 id="h-mission">미션 9장 코드를 줄 묶음으로 읽기</h2>
+    <p>13개 미션의 Colab 코드는 같은 순서로 짜여 있습니다. 위에서부터 아래 묶음을 찾아 가며 읽고, 낯선 줄은 오른쪽 열의 셀로 돌아가 봅니다. 예시는 <a href={url('/lab/nfc/#ch-9')}>NFC 미션 9장</a>에서 바로 확인할 수 있습니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="미션 코드 줄 묶음 해설">
+      <table class="py-groups">
+        <thead><tr><th scope="col">대표 줄</th><th scope="col">하는 일</th><th scope="col">입문에서</th></tr></thead>
+        <tbody>
+          {MISSION_GROUPS.map(([line, does, where]) => (
+            <tr><td><code class="py-groups__line">{line}</code></td><td>{does}</td><td>{where}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p>sample로 실행한 출력이 미션 9장의 예상 출력과 같으면 코드를 제대로 붙여 넣은 것입니다. 그다음 <code>SOURCE = 'upload'</code>로 바꿔 내 기록을 분석합니다.</p>
+  </section>
+</LearnLayout>

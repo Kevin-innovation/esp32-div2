@@ -25,7 +25,7 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
       <div class="doc__main">
         <section class="prose" aria-label="하드웨어 근거">
           <p>{group.hardware}</p>
-          <div class="tags"><Evidence kind="doc" />{group.slug === 'nfc' && <Evidence kind="device" />}<Evidence kind="unverified" /></div>
+          <p class="small muted">{group.slug === 'nfc' ? '위 설명은 공식 문서 기준입니다. 이 기기에서는 Card Reader로 태그 읽기까지 해 보았고, 다른 NFC 기능은 아직 실행하지 않았습니다.' : '위 설명은 공식 문서 기준입니다. 이 기기에서는 이 묶음의 기능을 아직 실행하지 않았습니다.'}</p>
           {group.note && <div class="callout callout--warn"><p>{group.note}</p></div>}
         </section>
 
@@ -43,8 +43,7 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
               <div>
                 <dt>지원 버전</dt>
                 <dd>
-                  {f.id === 'games' ? '공식 위키의 More 목록에는 없음.' : '공식 펌웨어 v1.7.2 메뉴에 있음.'} {f.manual ? `동봉 설명서에 ${f.manual}로 기재.` : '동봉 설명서에는 없음.'} {f.device ?? '이 기기에서는 미검증.'}
-                  <div class="tags" style="margin-top: var(--space-xs)">{f.id !== 'games' && <Evidence kind="doc" />}{f.manual && <Evidence kind="manual" />}{f.device ? <Evidence kind="device" /> : <Evidence kind="unverified" />}</div>
+                  {f.id === 'games' ? '공식 위키의 More 목록에는 없음.' : '공식 펌웨어 v1.7.2 메뉴에 있음.'} {f.manual ? `동봉 설명서에 ${f.manual}로 기재.` : '동봉 설명서에는 없음.'} {f.device ?? '이 기기에서는 아직 실행하지 않음.'}
                 </dd>
               </div>
               <div>
@@ -66,7 +65,8 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
               {lab.map((f) => (
                 <li id={f.id}>
                   <h3>{f.ko} <span class="feature__en">{f.en}</span></h3>
-                  <div class="tags"><Evidence kind="lab" />{f.manual && <Evidence kind="manual" />}<Evidence kind="doc" /><Evidence kind="unverified" /></div>
+                  <div class="tags"><Evidence kind="lab" /></div>
+                  <p class="small muted">{f.manual ? `동봉 설명서에 ${f.manual}로 기재. ` : ''}설명은 공식 문서 기준이며, 이 기기에서 실행하지 않았습니다.</p>
                   {f.device && <p class="small muted">{f.device}</p>}
                   <dl class="facts">
                     <div><dt>원리</dt><dd>{f.principle}</dd></div>

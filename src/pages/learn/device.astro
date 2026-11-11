@@ -1,6 +1,5 @@
 ---
 import LearnLayout from '../../layouts/LearnLayout.astro';
-import Evidence from '../../components/Evidence.astro';
 import ScreenShot from '../../components/learn/ScreenShot.astro';
 import Think from '../../components/learn/Think.astro';
 import { DeviceExplorer } from '../../components/learn/DeviceExplorer';
@@ -85,7 +84,7 @@ const functions = [
   <section id="status-bar" aria-labelledby="h-status">
     <h2 id="h-status">위쪽 상태 표시</h2>
     <p>화면 위의 배터리 %, <code>CHG</code>, <code>BAT</code>는 충전 또는 배터리 사용 상태의 표시로 보입니다. 정확한 전원 상태를 재는 계측값으로 쓰지는 마세요.</p>
-    <p>빨간 SD 아이콘은 카드 상태와 관련 있어 보이지만, 그 색만 보고 고장이나 미삽입으로 단정하지 않습니다. SD 카드는 <a href={url('/start/#sd')}>기기 준비</a>의 절차로 확인합니다. <Evidence kind="unverified" /></p>
+    <p>빨간 SD 아이콘은 카드 상태와 관련 있어 보이지만, 그 색만 보고 고장이나 미삽입으로 단정하지 않습니다. SD 카드는 <a href={url('/start/#sd')}>기기 준비</a>의 절차로 확인합니다.</p>
   </section>
 
   <section id="about" aria-labelledby="h-about">
@@ -107,7 +106,7 @@ const functions = [
         </tbody>
       </table>
     </div>
-    <p>번호가 같다고 공식 v1.7.2와 내용이 같다고 단정하지 않습니다. 이 기기에만 있는 Games 메뉴가 그 예입니다.</p>
+    <p>번호가 같다고 공식 v1.7.2와 내용이 같다고 단정하지 않습니다. 공식 위키의 More 목록에 없는 Games 메뉴가 이 기기에 있는 것이 그 예입니다. 공식 위키의 화면과 메뉴 이름·순서가 다르면 이 기기 화면을 따르고, 다른 점을 공책에 적습니다.</p>
   </section>
 
   <section id="more" aria-labelledby="h-more">
@@ -173,7 +172,7 @@ const functions = [
 
   <section id="functions" aria-labelledby="h-functions">
     <h2 id="h-functions">NFC 메뉴는 무엇이 다른가</h2>
-    <p>메뉴가 보이는 것은 확인했지만, Card Reader를 뺀 나머지는 실행하지 않았습니다. <Evidence kind="unverified" /> 이 실험은 Card Reader만 씁니다.</p>
+    <p>메뉴가 보이는 것은 확인했지만, Card Reader를 뺀 나머지는 실행하지 않았습니다. 이 실험은 Card Reader만 씁니다.</p>
     <div class="table-wrap" tabindex="0" role="region" aria-label="NFC 메뉴 비교">
       <table>
         <thead><tr><th scope="col">메뉴</th><th scope="col">동작</th><th scope="col">무엇을 하나</th><th scope="col">쓸 수 있는 조건</th></tr></thead>

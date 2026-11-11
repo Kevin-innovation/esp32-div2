@@ -50,7 +50,7 @@ try{
    assert.ok(await nav.getByRole('link',{name:route==='/learn/'?'수업 시작':'실습 미션',exact:true}).getAttribute('aria-current'));checks++;
    const summary=p.locator('#reference-nav > summary');await summary.focus();await p.keyboard.press('Enter');
    assert.equal(await p.locator('#reference-nav').getAttribute('open'),'');checks++;
-   assert.equal(await p.locator('#reference-nav ul a:visible').count(),5);checks++;
+   assert.equal(await p.locator('#reference-nav ul a:visible').count(),6);checks++;
    await p.keyboard.press('Tab');assert.equal(await p.evaluate(()=>document.activeElement.getAttribute('href')),'/device/');checks++;
    await bounds(p);
    if(js){

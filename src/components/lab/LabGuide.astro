@@ -5,6 +5,7 @@
 // scene은 실습 목록 위치(0이 01 NFC 기본 실습)이며 첫 화면 그림과 번호를 함께 정한다.
 import Base from '../../layouts/Base.astro';
 import WorkbookScene from './WorkbookScene.astro';
+import CodeBlock from '../CodeBlock.astro';
 import { url } from '../../lib/url';
 import type { GuideBody } from '../../lib/workbooks/types';
 import type { Table } from '../../lib/workbooks/render';
@@ -36,6 +37,7 @@ const chapters = [
 ] as const;
 const n = (id: string) => chapters.findIndex(([c]) => c === id) + 1;
 const pad = (i: number) => String(i).padStart(2, '0');
+const pyFile = `${Astro.url.pathname.split('/').filter(Boolean).pop()}-colab.py`;
 const order = `실습 ${pad(scene + 1)}`;
 const has = (name: string) => Astro.slots.has(name);
 ---
@@ -188,6 +190,7 @@ const has = (name: string) => Astro.slots.has(name);
         <section class="wb-ch" id={`ch-${n('colab')}`} aria-labelledby="h-colab">
           <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('colab'))}</span><div><h2 id="h-colab"><span class="sr">{n('colab')}장. </span>{chapters[8][1]}</h2><p class="wb-ch__aim">{chapters[8][2]}</p></div></header>
           <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            <p class="wb-prereq"><strong>선수 학습(선택):</strong> Colab이 처음이거나 아래 코드가 낯설면 먼저 <a href={url('/learn/python-colab/')}>Python·Colab 입문</a>을 봅니다. 셀 실행, CSV 올리기, pandas로 세고 나누기, 그래프 읽기를 따라 하고, 이 장의 코드를 줄 묶음별로 읽는 법이 있습니다. 이 장은 선택이며 8장의 브라우저 계산만으로도 미션을 마칠 수 있습니다.</p>
             <ol>
               <li><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Google Colab</a>에서 새 노트를 엽니다. Google 계정이 필요한 외부 서비스입니다. 쓰기 어렵다면 8장의 브라우저 계산으로 충분합니다.</li>
               <li>아래 코드를 한 셀에 붙여 넣고 그대로 실행합니다. 첫 줄이 <code>SOURCE = 'sample'</code>이면 골든 데이터를 분석하며, 출력이 아래 예상 출력과 같아야 합니다.</li>
@@ -197,9 +200,10 @@ const has = (name: string) => Astro.slots.has(name);
             {g.colab.notes.map((p) => <p>{p}</p>)}
           </div></div>
           <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
-            <details class="code-block" open><summary>Colab에 붙여 넣는 분석 코드</summary><pre class="code" tabindex="0" aria-label="Colab 분석 코드"><code>{code}</code></pre></details>
+            <h4>Colab에 붙여 넣는 분석 코드</h4>
+            <CodeBlock code={code} file={pyFile} label={pyFile} />
             <h4>sample로 실행했을 때의 예상 출력</h4>
-            <pre class="code code--output" tabindex="0" aria-label="예상 출력"><code>{output}</code></pre>
+            <CodeBlock kind="output" code={output} file="output.txt" label="예상 출력 · SOURCE = 'sample'" />
             <p class="field__help">그림은 출력 사이에 표시됩니다. 그림의 G1, G2 같은 이름은 바로 위에 출력된 뜻을 가리킵니다.</p>
             <slot name="colab-example" />
           </div></div>

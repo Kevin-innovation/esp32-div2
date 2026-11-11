@@ -11,8 +11,9 @@ interface Props {
   toc?: [string, string][];
   sources: SourceId[];
   compactHeader?: boolean;
+  sourcesChecked?: string;
 }
-const { title, heading, lead, description, toc = [], sources, compactHeader = false } = Astro.props;
+const { title, heading, lead, description, toc = [], sources, compactHeader = false, sourcesChecked } = Astro.props;
 ---
 <Base title={`${title} | ESP32-DIV 실험 노트`} description={description}>
   <div class="wrap">
@@ -23,7 +24,7 @@ const { title, heading, lead, description, toc = [], sources, compactHeader = fa
     <div class="doc">
       <div class="doc__main">
         <slot />
-        <Sources ids={sources} />
+        <Sources ids={sources} checked={sourcesChecked} />
       </div>
       {toc.length > 0 && (
         <nav class="doc__aside toc" aria-label="이 장의 목차">

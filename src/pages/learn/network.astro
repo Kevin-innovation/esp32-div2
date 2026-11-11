@@ -1,6 +1,5 @@
 ---
 import LearnLayout from '../../layouts/LearnLayout.astro';
-import Evidence from '../../components/Evidence.astro';
 import Think from '../../components/learn/Think.astro';
 import TermLink from '../../components/learn/TermLink.astro';
 import { Stepper } from '../../components/learn/Stepper';
@@ -17,7 +16,7 @@ import wifiLogo from '../../assets/learning/wifi-official.webp';
   sources={['espScan', 'espBle', 'espDatasheet', 'hardware', 'rfcDhcp', 'rfcDns', 'rfcTcp', 'rfcUdp', 'rfcTls', 'rfcHttp', 'rfcIp', 'rfcArp', 'rfcNat']}
 >
   <div class="callout callout--warn">
-    <p>이 기기의 Wi-Fi와 BLE 기능은 아직 실행해 확인하지 못했습니다. <Evidence kind="unverified" /> 이 장은 일반 원리를 설명하고, 메뉴 동작은 <a href={url('/guide/wifi/')}>기능 가이드</a>의 공식 문서 기준을 봅니다.</p>
+    <p>이 기기의 Wi-Fi와 BLE 기능은 아직 실행해 확인하지 못했습니다. 이 장은 일반 원리를 설명하고, 메뉴 동작은 <a href={url('/guide/wifi/')}>기능 가이드</a>의 공식 문서 기준을 봅니다.</p>
   </div>
 
   <nav class="chapter-map" aria-label="이 장의 순서">
