@@ -1,0 +1,6 @@
+---
+// 교안 글자의 `코드` 부분만 <code>로 보여 준다(마크다운 대신 백틱 하나만 해석).
+interface Props { text: string }
+const parts = Astro.props.text.split('`');
+---
+{parts.map((p, i) => (i % 2 ? <code>{p}</code> : p))}

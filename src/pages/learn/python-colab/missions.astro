@@ -1,0 +1,174 @@
+---
+// 8차시: 13개 미션 코드 지도와 고유 계산 과제, 함수 사전, 통합·전이 과제, 졸업 체크.
+// 영역·과제·확인 값은 data/pythonMissions.ts가 실제 미션 코드와 9장 실행 결과에서 만들고, check-python-course.ts가 실행해 대조한다.
+import LearnLayout from '../../../layouts/LearnLayout.astro';
+import CodeBlock from '../../../components/CodeBlock.astro';
+import CourseNav from '../../../components/learn/CourseNav.astro';
+import { BUILT_TASKS, DICT, GRADUATION, INTEGRATED, INTEGRATION, MAPS, NFC_CALC, TRANSFER } from '../../../data/pythonMissions';
+import { taskFiles, transferFiles } from '../../../data/pythonFiles';
+import { checkCode } from '../../../data/pythonCourse';
+import { stepHref } from '../../../data/pythonCourseMap';
+import { MISSIONS } from '../../../data/missionCode';
+import out from '../../../data/python-course-output.json';
+import { url } from '../../../lib/url';
+
+const runs = out as Record<string, { out: string; err: string | null }>;
+const code = (id: string) => MISSIONS.find((m) => m.id === id)!.code.split('\n');
+const ELSEWHERE: Record<string, { text: string; links: string[] }> = {
+  nfc: { text: '이 미션의 고유 계산은 6차시 관통 프로젝트에서 빈 셀부터 직접 다시 만들고, 결과를 9장 검증용 JSON과 대조합니다.', links: ['project#count', 'project#table', 'project#function'] },
+  'wpa-pmf': { text: '규칙 함수와 범주 세기는 7차시 독해 묶음의 예측·수정 과제로 다룹니다.', links: ['mission-code#wpa-category', 'mission-code#wpa-count'] },
+  csv: { text: '원본·가명본 비교는 7차시 독해 묶음의 실행 예제와 수정 과제로 다룹니다.', links: ['mission-code#csv-cols', 'mission-code#csv-pairs'] },
+};
+const tf = transferFiles();
+const usedText = (u: string[]) => {
+  const ms = u.filter((x) => x !== '노트북');
+  const head = ms.length >= 13 ? '모든 미션' : ms.length >= 5 ? `미션 ${ms.length}개` : ms.join(', ');
+  return u.includes('노트북') ? (head ? `${head} · 노트북` : '노트북') : head;
+};
+const { start: okLine, end: distEnd } = NFC_CALC;
+---
+<LearnLayout
+  title="8차시 미션별 코드 지도와 졸업 과제"
+  heading="8차시 미션별 코드 지도와 졸업 과제"
+  lead="13개 미션 코드의 모든 줄을 영역으로 나눠 어디서 배웠는지 잇고, 미션마다 다른 고유 계산을 빈 셀에서 다시 씁니다. 마지막으로 예제 없이 BLE 분석을 설계해 과정을 마칩니다."
+  description="Python·pandas·Colab 과정 8차시: ESP32-DIV 13개 미션 Colab 코드의 영역별 코드 지도, 10개 미션 고유 계산 과제, 함수 사전, NFC 원문 통합 과제, BLE 전이 과제와 졸업 체크."
+  toc={[['how', '이 차시'], ['maps', '미션별 코드 지도'], ['dict', '함수 사전'], ['integration', '통합 과제'], ['transfer', '전이 과제'], ['graduate', '졸업 체크'], ['h-course-end', '마쳤다면']]}
+  sourcesChecked="2026-11-11"
+  sources={['pandasGroupby', 'pandasCrosstab', 'pythonRe', 'mplBar']}
+>
+  <CourseNav n={8} where="top" />
+
+  <section id="how" aria-labelledby="h-how">
+    <h2 id="h-how">이 차시</h2>
+    <dl class="facts">
+      <div><dt>소요</dt><dd>약 90분. 코드 지도와 내 미션 과제 45분, 통합·전이 과제와 졸업 체크 45분</dd></div>
+      <div><dt>먼저 할 것</dt><dd>1~6차시, 7차시 미션 코드 읽기</dd></div>
+      <div><dt>산출물</dt><dd>내 미션의 고유 계산 과제와 BLE 전이 과제 통과, 졸업 문장 4개</dd></div>
+    </dl>
+    <p>미션 코드가 긴 이유는 분석 한 줄을 위해 주변 도구가 많기 때문입니다. 13개 미션 코드는 같은 틀(자료 고르기 → 공통 도구 → 검사 함수 → 불러오기 → 거르기 → 검사 적용 → 개수 → <strong>고유 계산과 그래프</strong> → 출력)이고, 미션마다 달라지는 곳은 굵게 쓴 영역 하나와 검사 규칙입니다. 아래 지도에서 내 미션을 펼쳐 영역마다 배운 차시를 확인하고, 고유 계산을 직접 써 봅니다.</p>
+    <p class="small muted">영역 표의 줄 번호는 각 미션 9장 코드의 줄 번호입니다. 표지 줄로 자동으로 나누므로 미션 코드가 바뀌면 이 페이지의 빌드가 멈춰 지도와 원문이 어긋나지 않습니다.</p>
+  </section>
+
+  <section id="maps" aria-labelledby="h-maps">
+    <h2 id="h-maps">미션별 코드 지도</h2>
+    {MAPS.map((m) => {
+      const t = BUILT_TASKS.find((x) => x.id === m.id);
+      const f = t && taskFiles(t);
+      const e = ELSEWHERE[m.id];
+      const uniq = code(m.id).slice(m.unique.start - 1, m.unique.end).join('\n');
+      return (
+        <article class="read-block mission-map" id={`m-${m.id}`} aria-labelledby={`h-m-${m.id}`}>
+          <h3 id={`h-m-${m.id}`}>{m.n} {m.title} <span class="small muted">· 코드 {m.lines}줄</span></h3>
+          <p><strong>고유 계산:</strong> {m.logic}</p>
+          <dl class="facts mission-map__facts">
+            <div><dt>입력 열</dt><dd><code>{m.need.join(', ')}</code></dd></div>
+            <div><dt>검사 규칙</dt><dd>{m.rules.length ? <ul>{m.rules.map((r) => <li>{r}</li>)}</ul> : '—'}</dd></div>
+            {m.states.length > 0 && <div><dt>상태·허용 값</dt><dd><code>{m.states.join(', ')}</code></dd></div>}
+            <div><dt>묶는 열</dt><dd><code>{m.group}</code>{m.cross !== '—' && <> · crosstab <code>{m.cross}</code></>}</dd></div>
+            <div><dt>분모</dt><dd>{m.denom}</dd></div>
+            <div><dt>단위</dt><dd>{m.units.length ? m.units.join(', ') : '—'}</dd></div>
+            <div><dt>그래프</dt><dd>{m.chart} · 세로축 <code>{m.ylabel}</code></dd></div>
+            <div><dt>말할 수 없는 것</dt><dd>{m.limit}</dd></div>
+          </dl>
+          <details class="mission-map__regions">
+            <summary>영역 {m.regions.length}개와 배우는 곳 (1~{m.lines}줄 전체)</summary>
+            <div class="table-wrap" tabindex="0" role="region" aria-label={`${m.n} ${m.title} 코드 영역`}>
+              <table>
+                <thead><tr><th scope="col">원문 줄</th><th scope="col">영역</th><th scope="col">배우는 곳</th></tr></thead>
+                <tbody>
+                  {m.regions.map((r) => (
+                    <tr class={r.key === 'unique' ? 'is-unique' : undefined}><td>{r.start === r.end ? r.start : `${r.start}~${r.end}`}</td><th scope="row">{r.label}</th><td>{r.learn.map((l, i) => <>{i > 0 && ' · '}<a href={url(l.href)}>{l.label}</a></>)}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </details>
+
+          {t && f ? (
+            <div class="read-task">
+              <p><strong class="read-task__kind">고유 계산 과제</strong> {t.title}. {t.q}</p>
+              <p class="small">준비 셀은 <a href={url(t.href)}>{t.n} 미션 9장</a> 코드의 1~{t.setupLines}줄(고유 계산 바로 앞까지)입니다. 9장 코드에서 복사하거나 아래 학생용 파일을 씁니다. 결과는 my 딕셔너리에 미션과 같은 이름표로 담고, 확인 셀이 9장 검증용 JSON의 값과 대조합니다.</p>
+              <CodeBlock code={checkCode(t.check)} file={`${f.name}-check.py`} label="확인 셀" />
+              <details>
+                <summary>학생용 틀(준비 셀 포함, 그대로는 실행 안 됨)</summary>
+                <CodeBlock code={f.student} file={`${f.name}-student.py`} label={`${f.name}-student.py`} />
+              </details>
+              <details>
+                <summary>정답 예, 출력, 이유</summary>
+                <CodeBlock code={t.answer} file={`${f.name}-solution.py`} label="정답 예(준비 셀 뒤에 실행)" />
+                <CodeBlock kind="output" code={runs[`missions/${t.id}/write`].out} file="output" label="실행 결과" />
+                <p>{t.reason}</p>
+                <CodeBlock code={f.teacher} file={`${f.name}-teacher.py`} label={`${f.name}-teacher.py · 교사용 완성본`} />
+              </details>
+              <details>
+                <summary>원문의 고유 계산과 비교(과제를 마친 뒤)</summary>
+                <CodeBlock code={uniq} file={`${m.id}-colab.py`} label={`${m.id}-colab.py 원문`} start={m.unique.start} save={false} />
+              </details>
+            </div>
+          ) : (
+            <>
+              <p>{e.text} {e.links.map(stepHref).map((l, i) => <>{i > 0 && ' · '}<a href={url(l.href)}>{l.label}</a></>)}</p>
+              <CodeBlock code={uniq} file={`${m.id}-colab.py`} label={`${m.id}-colab.py 원문 · 고유 계산`} start={m.unique.start} save={false} />
+            </>
+          )}
+          <p class="read-back"><a href={url(m.href)}>{m.n} {m.title} 9장의 전체 코드로 →</a></p>
+        </article>
+      );
+    })}
+  </section>
+
+  <section id="dict" aria-labelledby="h-dict">
+    <h2 id="h-dict">함수 사전: 미션 코드에서 부르는 이름 {DICT.length}개 전부</h2>
+    <p>13개 미션 코드와 NFC 노트북에서 실제로 부르는 함수·메서드·키워드·속성을 모두 모았습니다. 미션 코드에 새 이름이 생기거나 사전 항목이 쓰이지 않게 되면 빌드가 멈춥니다. ‘노트북 전용 · 읽기’ 항목은 그림을 꾸미는 고급 기능이라 혼자 새로 쓰는 목표는 아니고, 뜻과 같은 일을 하는 쉬운 코드로 읽습니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="미션 코드 함수 사전">
+      <table class="read-syntax dict-table">
+        <thead><tr><th scope="col">이름</th><th scope="col">쓰는 곳</th><th scope="col">배우는 곳</th><th scope="col">뜻</th></tr></thead>
+        <tbody>
+          {DICT.map((d) => (
+            <tr><th scope="row"><code>{d.label}</code></th><td class="small">{usedText(d.used)}</td><td>{d.learn ? <a href={url(d.learn.href)}>{d.learn.label}</a> : '읽기만'}</td><td>{d.note}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="integration" aria-labelledby="h-integration">
+    <h2 id="h-integration">통합 과제: 배운 블록을 모아 NFC 원문 다시 세우기</h2>
+    <p>NFC 미션 9장 코드를 영역 {INTEGRATION.length}개로 나눴습니다. 각 영역 앞에 배운 차시를 주석으로 단 파일을 내려받아 한 셀에 붙여 실행하면, 출력이 9장의 예상 출력과 한 글자도 다르지 않아야 합니다(검사 스크립트가 실행해 대조). 이어서 영역마다 내가 6차시에 쓴 코드의 어느 단계와 같은지 표에 적습니다.</p>
+    <ol class="integration-list">
+      {INTEGRATION.map((r) => <li><strong>{r.start === r.end ? r.start : `${r.start}~${r.end}`}줄</strong> {r.label} · {r.learn.map((l, i) => <>{i > 0 && ' · '}<a href={url(l.href)}>{l.label}</a></>)}</li>)}
+    </ol>
+    <CodeBlock code={INTEGRATED} file="lesson-8-integration-nfc.py" label="lesson-8-integration-nfc.py · 영역 주석을 단 NFC 원문" />
+    <CodeBlock kind="output" code={runs['missions/integration'].out} file="output" label="실행 결과 = NFC 9장 예상 출력" />
+    <div class="read-task">
+      <p><strong class="read-task__kind">통합 과제</strong> 위 파일에서 <code>data['ok'] = </code> 줄({okLine}줄)부터 거리 반복문 끝({distEnd}줄)까지를 지우고, 그 자리에 6차시 7·8단계에서 내가 쓴 코드를 넣어 실행합니다. 출력의 ‘3. 계산 결과’가 그대로면 내 코드가 원문과 같은 일을 합니다.</p>
+      <details><summary>해설</summary><p>원문 {okLine}~{distEnd}줄은 6차시 7단계(조건별 성공/시도)와 8단계(거리별)와 같은 일을 합니다. 6차시는 <code>data = data[reasons == ''].copy()</code>로 복사해 두지만 결과는 같습니다. 그래프 영역은 oks와 fails를 쓰므로 7단계에서 두 리스트를 꼭 채워야 합니다. 값이 달라졌다면 분모(len(rs))나 조건 순서(RANK)를 먼저 봅니다.</p></details>
+    </div>
+  </section>
+
+  <section id="transfer" aria-labelledby="h-transfer">
+    <h2 id="h-transfer">전이 과제: 예제 없이 BLE 광고 관찰률 분석 설계</h2>
+    <p>06 BLE 광고 미션의 골든 데이터만 주어집니다. 미션 코드를 보지 않고, 먼저 설계 질문에 답을 적은 뒤 코드를 씁니다. 결과는 my 딕셔너리에 미션과 같은 이름표로 담고 확인 셀이 BLE 9장 검증용 JSON과 대조합니다.</p>
+    <dl class="facts facts--stack">{TRANSFER.plan.map(([k, q]) => <div><dt>{k}</dt><dd>{q}</dd></div>)}</dl>
+    <CodeBlock code={TRANSFER.setup} file="lesson-8-transfer-setup.py" label="주어진 준비 셀(골든 데이터)" />
+    <CodeBlock code={checkCode(TRANSFER.check)} file="lesson-8-transfer-check.py" label="확인 셀" />
+    <CodeBlock code={tf.student} file={`${tf.name}-student.py`} label={`${tf.name}-student.py · 학생용 틀(실행 안 됨)`} />
+    <details>
+      <summary>정답 예, 출력, 원문과 다른 점</summary>
+      <CodeBlock code={TRANSFER.answer} file={`${tf.name}-solution.py`} label="정답 예(준비 셀 뒤에 실행)" />
+      <CodeBlock kind="output" code={runs['missions/transfer/write'].out} file="output" label="실행 결과" />
+      <p>{TRANSFER.note}</p>
+      <CodeBlock code={tf.teacher} file={`${tf.name}-teacher.py`} label={`${tf.name}-teacher.py · 교사용 완성본`} />
+    </details>
+  </section>
+
+  <section id="graduate" aria-labelledby="h-graduate">
+    <h2 id="h-graduate">졸업 체크</h2>
+    <p>공책에 내 말로 답을 쓴 뒤 해설과 비교합니다. 네 가지를 모두 설명할 수 있고 전이 과제가 확인 통과했다면 과정을 마친 것입니다.</p>
+    <ol class="read-check">
+      {GRADUATION.map(([k, q, a]) => <li><p><strong>{k}</strong> {q}</p><details><summary>해설 보기</summary><p>{a}</p></details></li>)}
+    </ol>
+  </section>
+
+  <CourseNav n={8} where="bottom" />
+</LearnLayout>

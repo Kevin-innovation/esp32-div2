@@ -1,6 +1,7 @@
 // 상단 메뉴의 세 묶음. 링크는 모두 실제 페이지나 그 안의 앵커이며, 입문처럼 한 페이지인 것은 앵커로만 나눈다.
 // 메뉴에 없는 페이지(기능 가이드의 묶음 8개)는 허브 /guide/에서 이어진다. 홈은 사이트 이름, 404는 제외.
 import { LEARNING_PATH } from './learn';
+import { COURSE } from './pythonCourseMap';
 
 export interface NavLink { href: string; label: string; n?: string; note?: string; sub?: NavLink[] }
 export interface NavGroup { id: string; title: string; hint?: string; links: NavLink[]; feature?: boolean }
@@ -25,15 +26,10 @@ export const NAV: NavSection[] = [
         { href: '/start/#sd', label: 'SD 카드' },
         { href: '/learn/device/#reader', label: 'Card Reader로 태그 읽기' },
       ] },
-      { id: 'python', title: '선수 학습 · 선택', feature: true, hint: '미션 8장(브라우저 분석)을 마치고 9장 Colab 분석 전에 ①, ② 순서로 봅니다.', links: [
-        { href: '/learn/python-colab/', n: '①', label: 'Python·pandas·Colab 입문', sub: [
-          { href: '/learn/python-colab/#colab', label: 'Colab 실행 환경' },
-          { href: '/learn/python-colab/#syntax', label: 'Python 최소 문법' },
-          { href: '/learn/python-colab/#csv', label: 'pandas 데이터 분석' },
-          { href: '/learn/python-colab/#errors', label: '오류 해결' },
-        ] },
-        { href: '/learn/mission-code/', n: '②', label: '미션 코드 읽기', note: 'NFC·WPA-PMF·CSV 실제 코드 해설과 과제' },
-      ] },
+      { id: 'python', title: 'Python 과정 · 선택', feature: true, hint: '미션 8장을 마치고 9장 Colab 코드를 혼자 쓰고 싶을 때. 기초(1~5) → 직접 작성(6) → 미션별 응용(7~8).', links: COURSE.map((c) => ({
+        href: c.href, n: String(c.n), label: c.title,
+        note: c.n === 1 ? 'Colab 실행, 셀 8개 맛보기' : c.n === 6 ? '미션 9장 결과와 같게 직접 작성' : c.n === 8 ? '13개 미션 고유 계산·졸업 과제' : undefined,
+      })) },
     ],
   },
   {

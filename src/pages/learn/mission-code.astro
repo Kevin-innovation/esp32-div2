@@ -3,6 +3,7 @@
 // 예제 출력은 scripts/check-python-intro.ts가 실행해 mission-code-output.json과 대조한다.
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
+import CourseNav from '../../components/learn/CourseNav.astro';
 import { BLOCK_GROUPS, CHECKLIST, MISSIONS, OTHER, SYNTAX_TABLE } from '../../data/missionCode';
 import out from '../../data/mission-code-output.json';
 import colab from '../../lib/workbooks/colab-output.json';
@@ -16,17 +17,19 @@ const BLOCK_NAME: Record<string, string> = Object.fromEntries(BLOCK_GROUPS.flatM
 ---
 <LearnLayout
   title="미션 코드 읽기"
-  heading="미션 코드 읽기: 13개 미션의 Colab 코드를 내 말로 설명하기"
+  heading="7차시 미션 코드 읽기: 13개 미션의 Colab 코드를 내 말로 설명하기"
   lead="NFC, WPA-PMF, CSV 미션의 실제 코드를 줄 묶음으로 잘라 입력, 처리, 중간 출력, 이유, 주의 순으로 읽습니다. 묶음마다 작게 실행해 보고, 예측 문제와 수정 미션으로 바꿔 봅니다."
   description="ESP32-DIV 실습 미션 9장의 실제 Python·pandas 코드를 줄 묶음별로 해설하고, 실행 예제와 예측·수정 과제로 코드를 스스로 읽고 고치게 돕는 선택 학습입니다."
   toc={[['goal', '목표와 순서'], ['syntax', '문법 대조표'], ['flow', '입력에서 그래프까지'], ...BLOCK_GROUPS.map((g) => [`read-${g.id}`, g.title.split(':')[0]] as [string, string]), ['others', '나머지 미션'], ['check', '독해 완료 체크']]}
   sourcesChecked="2026-11-11"
   sources={['pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'pandasCrosstab', 'pythonTutorial', 'mplBar']}
 >
+  <CourseNav n={7} where="top" />
+
   <section id="goal" aria-labelledby="h-goal">
     <h2 id="h-goal">목표와 순서</h2>
     <div class="callout">
-      <p><strong>선수 학습 2단계 중 두 번째입니다.</strong> <a href={url('/learn/python-colab/')}>Python·pandas·Colab 입문</a>의 셀 1~8을 먼저 따라 하고, 이 페이지를 본 뒤 각 미션의 9장 Colab 분석으로 갑니다. 브라우저 분석(8장)만으로 미션을 마칠 수 있으니 선택입니다.</p>
+      <p><strong>Python·pandas·Colab 과정의 7차시입니다.</strong> 1~6차시에서 문법을 직접 쓰고 NFC 분석을 빈 셀부터 다시 만든 뒤, 여기서 세 대표 미션의 원문을 줄 묶음으로 읽습니다. 다음 <a href={url('/learn/python-colab/missions/')}>8차시</a>에서 나머지 10개 미션의 고유 계산을 직접 씁니다. 코드를 읽기만 하려면 <a href={url('/learn/python-colab/')}>1차시</a> 다음에 바로 와도 됩니다. 브라우저 분석(8장)만으로 미션을 마칠 수 있으니 선택입니다.</p>
     </div>
     <p>이 페이지를 마치면 어느 미션의 코드를 열어도 다음 일곱 가지를 찾아 설명할 수 있어야 합니다.</p>
     <ol class="read-goals">{CHECKLIST.map(([k]) => <li>{k}</li>)}</ol>
@@ -129,4 +132,6 @@ const BLOCK_NAME: Record<string, string> = Object.fromEntries(BLOCK_GROUPS.flatM
     <p>마지막 과제: <a href={url('/lab/nfc/#ch-9')}>NFC 미션 9장</a>의 코드에서 <code>data['condition'] == c</code>를 찾아 몇 번째 줄인지 적고, 이 줄을 <code>data['d'] == d</code>로 바꾸면 무엇을 비교하게 되는지 설명합니다.</p>
     <details><summary>해설 보기</summary><p>원문 {nfcCode.split('\n').findIndex((l) => l.includes("rs = data[data['condition'] == c]")) + 1}번째 줄입니다. 조건(단독·지갑·가방)별로 행을 고르는 줄이라, 거리 d로 바꾸면 거리별 성공/시도를 세게 됩니다. 원문은 바로 아래 두 번째 반복문에서 거리별 값을 따로 셉니다. 두 변수가 함께 바뀐 기록이면 한쪽 결과만으로 그 변수의 효과라고 쓰지 않습니다.</p></details>
   </section>
+
+  <CourseNav n={7} where="bottom" />
 </LearnLayout>

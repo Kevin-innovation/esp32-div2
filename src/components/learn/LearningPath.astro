@@ -14,7 +14,7 @@ const next = LEARNING_PATH[index + 1];
 const name = (s: { n: number; title: string }) => `${s.n}단계: ${s.title}`;
 const mission = path.startsWith('/lab/');
 const catalog = path === '/lab/';
-const prereq = ['/learn/python-colab/', '/learn/mission-code/'].includes(path);
+const prereq = path.startsWith('/learn/python-colab/') || path === '/learn/mission-code/';
 const labels = ['배경', '기기 준비', '첫 태그', 'NFC 원리', 'Wi-Fi', '보안', '실험·보고서'];
 ---
 {where === 'top' && (step ? (

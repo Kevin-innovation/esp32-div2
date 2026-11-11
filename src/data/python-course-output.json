@@ -1,0 +1,630 @@
+{
+ "basics/values/example": {
+  "out": "1 <class 'str'>\n3.0 <class 'float'>\nFalse True True\n2.5 2 67",
+  "err": null
+ },
+ "basics/values/filled": {
+  "out": "72.0\nTrue",
+  "err": null
+ },
+ "basics/values/write": {
+  "out": "90\n확인 통과",
+  "err": null
+ },
+ "basics/values/pitfall": {
+  "out": "",
+  "err": "TypeError: can only concatenate str (not \"int\") to str"
+ },
+ "basics/values/variant": {
+  "out": "0 2",
+  "err": null
+ },
+ "basics/lists/example": {
+  "out": "단독 가방 ['지갑', '가방'] 3\n['단독', '지갑', '가방', '상자']\n1 3\n{'기록 행': '30'}\n' -48",
+  "err": null
+ },
+ "basics/lists/filled": {
+  "out": "G3\n{'성공': '20', '실패': '10'}",
+  "err": null
+ },
+ "basics/lists/write": {
+  "out": "[9, 6, 5] 3\n확인 통과",
+  "err": null
+ },
+ "basics/lists/pitfall": {
+  "out": "",
+  "err": "KeyError: '상자'"
+ },
+ "basics/lists/variant": {
+  "out": "=SUM(A1) '",
+  "err": null
+ },
+ "basics/loops/example": {
+  "out": "성공 3 / 시도 5\n['G1', 'G2', 'G3']\nG1 = 단독\nG2 = 지갑\nG3 = 가방\n   기록 행: 30\n   성공: 20",
+  "err": null
+ },
+ "basics/loops/filled": {
+  "out": "[2, 1]",
+  "err": null
+ },
+ "basics/loops/write": {
+  "out": "[1, 2]\n확인 통과",
+  "err": null
+ },
+ "basics/loops/pitfall": {
+  "out": "",
+  "err": "IndentationError: expected an indented block after 'for' statement on line 1"
+ },
+ "basics/loops/variant": {
+  "out": "[2, 3]",
+  "err": null
+ },
+ "basics/conditions/example": {
+  "out": "True\nFalse True\nTrue\nFalse\nreal",
+  "err": null
+ },
+ "basics/conditions/filled": {
+  "out": "거리는 0~100cm입니다",
+  "err": null
+ },
+ "basics/conditions/write": {
+  "out": "[True, False, False]\n확인 통과",
+  "err": null
+ },
+ "basics/conditions/pitfall": {
+  "out": "",
+  "err": "SyntaxError: invalid syntax. Maybe you meant '==' or ':=' instead of '='?"
+ },
+ "basics/conditions/variant": {
+  "out": "True False",
+  "err": null
+ },
+ "basics/fstrings/example": {
+  "out": "지갑 성공/시도: 3/8\n0.4 38%\n2 4 3\n3",
+  "err": null
+ },
+ "basics/fstrings/filled": {
+  "out": "거리 3cm 성공/시도: 6/10\n인식률 60%",
+  "err": null
+ },
+ "basics/fstrings/write": {
+  "out": "13% 12\n확인 통과",
+  "err": null
+ },
+ "basics/fstrings/pitfall": {
+  "out": "",
+  "err": "ValueError: Invalid format specifier '.1f%' for object of type 'float'"
+ },
+ "basics/fstrings/variant": {
+  "out": "12 62",
+  "err": null
+ },
+ "file/basics/teacher": {
+  "out": "72.0\nTrue\n90\n확인 통과\nG3\n{'성공': '20', '실패': '10'}\n[9, 6, 5] 3\n확인 통과\n[2, 1]\n[1, 2]\n확인 통과\n거리는 0~100cm입니다\n[True, False, False]\n확인 통과\n거리 3cm 성공/시도: 6/10\n인식률 60%\n13% 12\n확인 통과",
+  "err": null
+ },
+ "functions/def/example": {
+  "out": "-53dBm\n1~5cm\n값 없음 2.5 3",
+  "err": null
+ },
+ "functions/def/filled": {
+  "out": "3/4 계산 불가 3/4회",
+  "err": null
+ },
+ "functions/def/write": {
+  "out": "22.0 None\n확인 통과",
+  "err": null
+ },
+ "functions/def/pitfall": {
+  "out": "",
+  "err": "NameError: name 'double' is not defined"
+ },
+ "functions/def/variant": {
+  "out": "nan",
+  "err": null
+ },
+ "functions/checker/example": {
+  "out": "''\n'RSSI는 -120~0 정수입니다(0보다 크면 단위나 부호를 잘못 적은 것)'\n'신호 못 찾음·미측정 행에는 RSSI를 비웁니다'\n'관찰 상태 값이 다릅니다'",
+  "err": null
+ },
+ "functions/checker/filled": {
+  "out": "'success는 0 또는 1입니다'\n'조건이 비었습니다'\n''",
+  "err": null
+ },
+ "functions/checker/write": {
+  "out": "'위치는 실내·창가·야외 중 하나입니다'\n확인 통과",
+  "err": null
+ },
+ "functions/checker/pitfall": {
+  "out": "None",
+  "err": null
+ },
+ "functions/checker/variant": {
+  "out": "success 이유 / 거리 이유",
+  "err": null
+ },
+ "functions/compact/example": {
+  "out": "['가방', '단독', '상자', '지갑']\n['단독', '지갑', '가방', '상자']\n['condition'] True\nnfc-experiment.csv\n['G1', 'G2', 'G3']",
+  "err": null
+ },
+ "functions/compact/filled": {
+  "out": "['rssi_dbm']",
+  "err": null
+ },
+ "functions/compact/write": {
+  "out": "['uid', 'room']\n확인 통과",
+  "err": null
+ },
+ "functions/compact/pitfall": {
+  "out": "",
+  "err": "StopIteration"
+ },
+ "functions/compact/variant": {
+  "out": "['상자', '단독', '지갑', '가방']",
+  "err": null
+ },
+ "functions/errors/example": {
+  "out": "'3' → 3.0\n'3.5' → 3.5\n'셋' → 거리가 숫자가 아닙니다\n'' → 거리가 숫자가 아닙니다\n멈춤: 없는 열: ['success']",
+  "err": null
+ },
+ "functions/errors/filled": {
+  "out": "-48.0 None",
+  "err": null
+ },
+ "functions/errors/write": {
+  "out": "'단위 없는 숫자는 쓰지 않습니다' '에너지 값이 숫자가 아닙니다'\n확인 통과",
+  "err": null
+ },
+ "functions/errors/pitfall": {
+  "out": "거리가 숫자가 아닙니다",
+  "err": null
+ },
+ "functions/regex/example": {
+  "out": "-48 True\n-48.5 False\n48dBm False\n64 True True\nTrue\n'지갑'\nTrue False\nTrue False",
+  "err": null
+ },
+ "functions/regex/filled": {
+  "out": "True False False",
+  "err": null
+ },
+ "functions/regex/write": {
+  "out": "True False\n확인 통과",
+  "err": null
+ },
+ "functions/regex/pitfall": {
+  "out": "",
+  "err": "ValueError: invalid literal for int() with base 10: '-4.8'"
+ },
+ "functions/regex/variant": {
+  "out": "설치 검토 가능\nFalse",
+  "err": null
+ },
+ "functions/files/example": {
+  "out": "nfc-experiment.csv 'trial,success\\n1,1\\n'\n'trial,success\\n1,1\\n'\ntrial,success\n{\"성공\": \"1\"} {\"\\uc131\\uacf5\": \"1\"}",
+  "err": null
+ },
+ "functions/files/filled": {
+  "out": "검증용 JSON: {\"기록 행\": \"30\", \"단독 성공/시도\": \"9/10\"}",
+  "err": null
+ },
+ "functions/files/write": {
+  "out": "'uid\\nA\\n' 'uid_alias\\n열1-1\\n'\n확인 통과",
+  "err": null
+ },
+ "functions/files/pitfall": {
+  "out": "'\\ufefftrial' False",
+  "err": null
+ },
+ "functions/files/variant": {
+  "out": "{\"\\uc131\\uacf5\": \"1\"} True",
+  "err": null
+ },
+ "file/functions/teacher": {
+  "out": "3/4 계산 불가 3/4회\n22.0 None\n확인 통과\n'success는 0 또는 1입니다'\n'조건이 비었습니다'\n''\n'위치는 실내·창가·야외 중 하나입니다'\n확인 통과\n['rssi_dbm']\n['uid', 'room']\n확인 통과\n-48.0 None\n'단위 없는 숫자는 쓰지 않습니다' '에너지 값이 숫자가 아닙니다'\n확인 통과\nTrue False False\nTrue False\n확인 통과\n검증용 JSON: {\"기록 행\": \"30\", \"단독 성공/시도\": \"9/10\"}\n'uid\\nA\\n' 'uid_alias\\n열1-1\\n'\n확인 통과",
+  "err": null
+ },
+ "table/frame/example": {
+  "out": "(6, 6) ['trial', 'condition', 'distance_cm', 'success', 'note', 'data_type']\n  trial condition distance_cm success note data_type\n0     1        단독           1       1           demo\n1     2        단독           3       1           demo\n2     3        지갑           1       0           demo\nSeries DataFrame\n[1.0, 1.0, 0.0, nan, 1.0, 1.0]\n['1', '1', '0', '', '1', '1']",
+  "err": null
+ },
+ "table/frame/filled": {
+  "out": "'' '1'",
+  "err": null
+ },
+ "table/frame/write": {
+  "out": "(6, 2) 6\n확인 통과",
+  "err": null
+ },
+ "table/frame/pitfall": {
+  "out": "0 개가 글자 1과 같음",
+  "err": null
+ },
+ "table/frame/variant": {
+  "out": "nan",
+  "err": null
+ },
+ "table/mask/example": {
+  "out": "[True, True, True, True, True, False]\n6 5\n['1', '2', '5']\n['1', '2', '5', '1']\n['4']",
+  "err": null
+ },
+ "table/mask/filled": {
+  "out": "['1', '3']",
+  "err": null
+ },
+ "table/mask/write": {
+  "out": "['1', '2', '3', '5']\n확인 통과",
+  "err": null
+ },
+ "table/mask/pitfall": {
+  "out": "0 행",
+  "err": null
+ },
+ "table/mask/variant": {
+  "out": "0",
+  "err": null
+ },
+ "table/loc/example": {
+  "out": "[0, 1, 2, 3, 4]\n['1', '1']\n기록 못 함\n[3]\n단독 가방",
+  "err": null
+ },
+ "table/loc/filled": {
+  "out": "['1', '3', '1', '셋']",
+  "err": null
+ },
+ "table/loc/write": {
+  "out": "5 1\n확인 통과",
+  "err": null
+ },
+ "table/loc/pitfall": {
+  "out": "",
+  "err": "KeyError: 5"
+ },
+ "table/loc/variant": {
+  "out": "dBm\nKeyError 0",
+  "err": null
+ },
+ "table/convert/example": {
+  "out": "[1, 0, 0, 1]\n[1.0, 0.0, nan, 1.0]\n[1, 0, 0, 1]\n0.667 0.5",
+  "err": null
+ },
+ "table/convert/filled": {
+  "out": "[1.0, 3.0, 1.0, 3.0, 1.0] 1.0",
+  "err": null
+ },
+ "table/convert/write": {
+  "out": "[1, 1, 0, 1, 1] 80.0\n확인 통과",
+  "err": null
+ },
+ "table/convert/pitfall": {
+  "out": "",
+  "err": "ValueError: could not convert string to float: '셋'"
+ },
+ "table/convert/variant": {
+  "out": "요약(빈 칸 뺌): 60.0\n그래프(replace('', '0')): 30.0",
+  "err": null
+ },
+ "table/apply/example": {
+  "out": "[['-48', '=1+1'], ['-50', \"it's\"]]\n['같은 방 1m', '벽 너머 5m']",
+  "err": null
+ },
+ "table/apply/filled": {
+  "out": "['같은 방 1m', '벽 너머 5m']\n['', '멀다']",
+  "err": null
+ },
+ "table/apply/write": {
+  "out": "['단독', '단독', '지갑', '지갑', '가방', '단독'] [1, 1, 0, 0, 1, 1]\n확인 통과",
+  "err": null
+ },
+ "table/apply/pitfall": {
+  "out": "",
+  "err": "KeyError: 'distance_m'"
+ },
+ "table/apply/variant": {
+  "out": "False True",
+  "err": null
+ },
+ "file/table/teacher": {
+  "out": "'' '1'\n(6, 2) 6\n확인 통과\n['1', '3']\n['1', '2', '3', '5']\n확인 통과\n['1', '3', '1', '셋']\n5 1\n확인 통과\n[1.0, 3.0, 1.0, 3.0, 1.0] 1.0\n[1, 1, 0, 1, 1] 80.0\n확인 통과\n['같은 방 1m', '벽 너머 5m']\n['', '멀다']\n['단독', '단독', '지갑', '지갑', '가방', '단독'] [1, 1, 0, 0, 1, 1]\n확인 통과",
+  "err": null
+ },
+ "group/count/example": {
+  "out": "3 행 관찰됨\n['같은 방', '벽 너머'] 2\n[-50.0, -48.0, -79.0] -50.0 -79.0 -48.0\n{'observed': 3, 'not-observed': 2, 'unchecked': 1}",
+  "err": null
+ },
+ "group/count/filled": {
+  "out": "1\n3",
+  "err": null
+ },
+ "group/count/write": {
+  "out": "-50.0 2\n확인 통과",
+  "err": null
+ },
+ "group/count/pitfall": {
+  "out": "",
+  "err": "ValueError: could not convert string to float: ''"
+ },
+ "group/count/variant": {
+  "out": "-59.0 -50.0",
+  "err": null
+ },
+ "group/groupby/example": {
+  "out": "같은 방 3 행, 관찰됨 2\n벽 너머 3 행, 관찰됨 1\n같은 방 3\n벽 너머 3",
+  "err": null
+ },
+ "group/groupby/filled": {
+  "out": "1 ['-50', '-48']\n3 ['']\n5 ['-79', '', '']",
+  "err": null
+ },
+ "group/groupby/write": {
+  "out": "{'같은 방 1m': '2/2', '같은 방 3m': '0/1', '벽 너머 5m': '1/3'}\n확인 통과",
+  "err": null
+ },
+ "group/groupby/pitfall": {
+  "out": "['지갑', ' 지갑', '단독']",
+  "err": null
+ },
+ "group/groupby/variant": {
+  "out": "['지갑', '단독'] ['단독', '지갑']",
+  "err": null
+ },
+ "group/denominator/example": {
+  "out": "같은 방 2/3 | 행 수로 나누면 2/3\n벽 너머 1/2 | 행 수로 나누면 1/3",
+  "err": null
+ },
+ "group/denominator/filled": {
+  "out": "1/2 계산 불가",
+  "err": null
+ },
+ "group/denominator/write": {
+  "out": "{'실내': '1/2', '야외': '2/2'}\n확인 통과",
+  "err": null
+ },
+ "group/denominator/pitfall": {
+  "out": "1/3",
+  "err": null
+ },
+ "group/denominator/variant": {
+  "out": "1/1",
+  "err": null
+ },
+ "group/reshape/example": {
+  "out": "           sum  count\ncondition            \n단독           3      3\n지갑           2      3\n  condition  시도  성공\n0        단독   3   3\n1        지갑   3   2\ndistance_cm  1.0  3.0\ncondition            \n단독             2    1\n지갑             1    2\ndistance_cm  1.0  3.0\ncondition            \n단독           1.0  1.0\n지갑           1.0  0.5\n가방           NaN  NaN",
+  "err": null
+ },
+ "group/reshape/filled": {
+  "out": "pmf         capable  disabled  required\nconfigured                             \nmixed             2         0         0\nwpa2              0         1         0\nwpa3              0         0         1",
+  "err": null
+ },
+ "group/reshape/write": {
+  "out": "distance_cm  1.0  3.0\ncondition            \n단독           2.0  1.0\n지갑           1.0  1.0\n가방           NaN  NaN\n확인 통과",
+  "err": null
+ },
+ "group/reshape/pitfall": {
+  "out": "distance_cm  1.0  3.0\ncondition            \n단독           1.0  1.0\n지갑           1.0  0.5\n가방           0.0  0.0",
+  "err": null
+ },
+ "group/reshape/variant": {
+  "out": "DataFrameGroupBy ['단독', '지갑']\n[3, 2]\n           시도  성공\ncondition        \n단독          3   3\n지갑          3   2\n한 줄과 같다: True",
+  "err": null
+ },
+ "group/plot/example": {
+  "out": "  그림 G1 = 단독\n  그림 G2 = 지갑\n  그림 G3 = 가방\n막대 높이(시도): [10, 10, 10]\nWi-Fi 막대 높이(dBm + 120): [76.0, 56.0, 42.0]",
+  "err": null
+ },
+ "group/plot/filled": {
+  "out": "[10, 10]",
+  "err": null
+ },
+ "group/plot/write": {
+  "out": "[76.0, 56.0, 42.0] 거실\n확인 통과",
+  "err": null
+ },
+ "group/plot/pitfall": {
+  "out": "[('G1', '단독'), ('G2', '지갑')]",
+  "err": null
+ },
+ "file/group/teacher": {
+  "out": "1\n3\n-50.0 2\n확인 통과\n1 ['-50', '-48']\n3 ['']\n5 ['-79', '', '']\n{'같은 방 1m': '2/2', '같은 방 3m': '0/1', '벽 너머 5m': '1/3'}\n확인 통과\n1/2 계산 불가\n{'실내': '1/2', '야외': '2/2'}\n확인 통과\npmf         capable  disabled  required\nconfigured                             \nmixed             2         0         0\nwpa2              0         1         0\nwpa3              0         0         1\ndistance_cm  1.0  3.0\ncondition            \n단독           2.0  1.0\n지갑           1.0  1.0\n가방           NaN  NaN\n확인 통과\n[10, 10]\n[76.0, 56.0, 42.0] 거실\n확인 통과",
+  "err": null
+ },
+ "project/records/filled": {
+  "out": "31 행\n[1, '단독', '없음', 1, '평행', 1, '가상 값', 'demo']\n[1, '단독', '없음', 1, '평행', 2, 'BAD-1 결과 칸에 2를 잘못 적음', 'demo']\n확인 통과",
+  "err": null
+ },
+ "project/records/pitfall": {
+  "out": "",
+  "err": "ValueError: not enough values to unpack (expected 4, got 2)"
+ },
+ "project/csv/filled": {
+  "out": "trial,condition,contents,distance_cm,orientation,success,note,data_type\n1,단독,없음,1,평행,1\n32 줄을 nfc-experiment.csv로 저장\n확인 통과",
+  "err": null
+ },
+ "project/csv/pitfall": {
+  "out": "",
+  "err": "TypeError: sequence item 0: expected str instance, int found"
+ },
+ "project/csv/variant": {
+  "out": "['1', '단독', '가상', ' 연습', 'demo']",
+  "err": null
+ },
+ "project/read/filled": {
+  "out": "(31, 8)\n  trial condition contents distance_cm orientation success  note data_type\n0     1        단독       없음           1          평행       1  가상 값      demo\n1     2        단독       없음           1          평행       1  가상 값      demo\n2     3        단독       없음           1          평행       1  가상 값      demo\n['1', '0', '2']\n확인 통과",
+  "err": null
+ },
+ "project/read/pitfall": {
+  "out": "0 행이 글자 1",
+  "err": null
+ },
+ "project/columns/filled": {
+  "out": "없는 열: [] / 조건: ['단독', '지갑', '가방']\n확인 통과",
+  "err": null
+ },
+ "project/columns/pitfall": {
+  "out": "",
+  "err": "ValueError: NFC 관찰 CSV가 아닙니다. 없는 열: ['trial', 'condition', 'contents', 'distance_cm', 'orientation', 'success', 'note', 'data_type']"
+ },
+ "project/mode/filled": {
+  "out": "1. 불러오기: demo 관찰 31행, 다른 구분 0행 제외\n확인 통과",
+  "err": null
+ },
+ "project/mode/pitfall": {
+  "out": "0 행",
+  "err": null
+ },
+ "project/invalid/filled": {
+  "out": "   제외한 행: 단독 1회차 BAD-1 결과 칸에 2를 잘못 적음 - success는 1(읽힘) 또는 0(안 읽힘)만 씁니다\n2. 검사: 분석에 쓰는 행 30, 잘못된 행 1\n확인 통과",
+  "err": null
+ },
+ "project/invalid/pitfall": {
+  "out": "0 행 남음",
+  "err": null
+ },
+ "project/count/filled": {
+  "out": "{'기록 행': '30', '성공': '20', '실패': '10', '단독 성공/시도': '9/10', '단독 인식률': '90%', '지갑 성공/시도': '6/10', '지갑 인식률': '60%', '가방 성공/시도': '5/10', '가방 인식률': '50%'}\n확인 통과",
+  "err": null
+ },
+ "project/count/pitfall": {
+  "out": "9/30",
+  "err": null
+ },
+ "project/count/variant": {
+  "out": "['가방', '단독', '지갑']",
+  "err": null
+ },
+ "project/table/filled": {
+  "out": "           시도  성공  인식률\ncondition             \n단독         10   9  90%\n지갑         10   6  60%\n가방         10   5  50%\n13/15 7/15\n확인 통과",
+  "err": null
+ },
+ "project/table/pitfall": {
+  "out": "           시도  성공\ncondition        \n가방         10   5\n단독         10   9\n지갑         10   6",
+  "err": null
+ },
+ "project/plot/filled": {
+  "out": "  그림 G1 = 단독\n  그림 G2 = 지갑\n  그림 G3 = 가방\n확인 통과",
+  "err": null
+ },
+ "project/plot/pitfall": {
+  "out": "",
+  "err": "ValueError: shape mismatch: objects cannot be broadcast to a single shape.  Mismatch is between arg 0 with shape (3,) and arg 1 with shape (2,)."
+ },
+ "project/function/filled": {
+  "out": "7·8단계 summary와 같다: True\n검증용 JSON: {\"기록 행\": \"30\", \"성공\": \"20\", \"실패\": \"10\", \"단독 성공/시도\": \"9/10\", \"단독 인식률\": \"90%\", \"지갑 성공/시도\": \"6/10\", \"지갑 인식률\": \"60%\", \"가방 성공/시도\": \"5/10\", \"가방 인식률\": \"50%\", \"거리 1cm 성공/시도\": \"13/15\", \"거리 1cm 인식률\": \"87%\", \"거리 3cm 성공/시도\": \"7/15\", \"거리 3cm 인식률\": \"47%\"}\n확인 통과",
+  "err": null
+ },
+ "project/function/pitfall": {
+  "out": "",
+  "err": "SystemExit: 분석할 행이 없습니다. SOURCE와 data_type, 입력 기록을 확인하세요."
+ },
+ "project/function/variant": {
+  "out": "Series\nDataFrame",
+  "err": null
+ },
+ "project/upload/filled": {
+  "out": "   기록 행: 30\n   성공: 20\n   실패: 10\n   단독 성공/시도: 9/10\n   단독 인식률: 90%\n   지갑 성공/시도: 6/10\n   지갑 인식률: 60%\n   가방 성공/시도: 5/10\n   가방 인식률: 50%\n   거리 1cm 성공/시도: 13/15\n   거리 1cm 인식률: 87%\n   거리 3cm 성공/시도: 7/15\n   거리 3cm 인식률: 47%\n확인 통과",
+  "err": null
+ },
+ "project/upload/pitfall": {
+  "out": "",
+  "err": "SystemExit: 분석할 행이 없습니다. SOURCE와 data_type, 입력 기록을 확인하세요."
+ },
+ "file/project/teacher": {
+  "out": "31 행\n[1, '단독', '없음', 1, '평행', 1, '가상 값', 'demo']\n[1, '단독', '없음', 1, '평행', 2, 'BAD-1 결과 칸에 2를 잘못 적음', 'demo']\n확인 통과\ntrial,condition,contents,distance_cm,orientation,success,note,data_type\n1,단독,없음,1,평행,1\n32 줄을 nfc-experiment.csv로 저장\n확인 통과\n(31, 8)\n  trial condition contents distance_cm orientation success  note data_type\n0     1        단독       없음           1          평행       1  가상 값      demo\n1     2        단독       없음           1          평행       1  가상 값      demo\n2     3        단독       없음           1          평행       1  가상 값      demo\n['1', '0', '2']\n확인 통과\n없는 열: [] / 조건: ['단독', '지갑', '가방']\n확인 통과\n1. 불러오기: demo 관찰 31행, 다른 구분 0행 제외\n확인 통과\n   제외한 행: 단독 1회차 BAD-1 결과 칸에 2를 잘못 적음 - success는 1(읽힘) 또는 0(안 읽힘)만 씁니다\n2. 검사: 분석에 쓰는 행 30, 잘못된 행 1\n확인 통과\n{'기록 행': '30', '성공': '20', '실패': '10', '단독 성공/시도': '9/10', '단독 인식률': '90%', '지갑 성공/시도': '6/10', '지갑 인식률': '60%', '가방 성공/시도': '5/10', '가방 인식률': '50%'}\n확인 통과\n           시도  성공  인식률\ncondition             \n단독         10   9  90%\n지갑         10   6  60%\n가방         10   5  50%\n13/15 7/15\n확인 통과\n  그림 G1 = 단독\n  그림 G2 = 지갑\n  그림 G3 = 가방\n확인 통과\n7·8단계 summary와 같다: True\n검증용 JSON: {\"기록 행\": \"30\", \"성공\": \"20\", \"실패\": \"10\", \"단독 성공/시도\": \"9/10\", \"단독 인식률\": \"90%\", \"지갑 성공/시도\": \"6/10\", \"지갑 인식률\": \"60%\", \"가방 성공/시도\": \"5/10\", \"가방 인식률\": \"50%\", \"거리 1cm 성공/시도\": \"13/15\", \"거리 1cm 인식률\": \"87%\", \"거리 3cm 성공/시도\": \"7/15\", \"거리 3cm 인식률\": \"47%\"}\n확인 통과\n   기록 행: 30\n   성공: 20\n   실패: 10\n   단독 성공/시도: 9/10\n   단독 인식률: 90%\n   지갑 성공/시도: 6/10\n   지갑 인식률: 60%\n   가방 성공/시도: 5/10\n   가방 인식률: 50%\n   거리 1cm 성공/시도: 13/15\n   거리 1cm 인식률: 87%\n   거리 3cm 성공/시도: 7/15\n   거리 3cm 인식률: 47%\n확인 통과",
+  "err": null
+ },
+ "missions/wifi-rssi/write": {
+  "out": "거실 막대 높이(dBm + 120): 76.0\n내 방 막대 높이(dBm + 120): 56.0\n현관 막대 높이(dBm + 120): 42.0\n{'거실 유효 n': '5', '거실 중앙값': '-44dBm', '거실 범위': '-47~-42dBm', '내 방 유효 n': '5', '내 방 중앙값': '-64dBm', '내 방 범위': '-68~-61dBm', '현관 유효 n': '3', '현관 중앙값': '-78dBm', '현관 범위': '-81~-76dBm'}\n확인 통과",
+  "err": null
+ },
+ "file/task-wifi-rssi/teacher": {
+  "out": "1. 불러오기: demo 관찰 16행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - RSSI는 -120~0 정수입니다(0보다 크면 단위나 부호를 잘못 적은 것)\n2. 검사: 분석에 쓰는 행 15, 잘못된 행 1\n거실 막대 높이(dBm + 120): 76.0\n내 방 막대 높이(dBm + 120): 56.0\n현관 막대 높이(dBm + 120): 42.0\n{'거실 유효 n': '5', '거실 중앙값': '-44dBm', '거실 범위': '-47~-42dBm', '내 방 유효 n': '5', '내 방 중앙값': '-64dBm', '내 방 범위': '-68~-61dBm', '현관 유효 n': '3', '현관 중앙값': '-78dBm', '현관 범위': '-81~-76dBm'}\n확인 통과",
+  "err": null
+ },
+ "missions/ssid-map/write": {
+  "out": "ssid_alias\nSSID-A    4\nSSID-B    1\nName: bssid_alias, dtype: int64\n{'SSID-A 서로 다른 BSSID 별칭 수': '4', 'SSID-B 서로 다른 BSSID 별칭 수': '1'}\n확인 통과",
+  "err": null
+ },
+ "file/task-ssid-map/teacher": {
+  "out": "1. 불러오기: demo 관찰 8행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 7, 잘못된 행 1\nssid_alias\nSSID-A    4\nSSID-B    1\nName: bssid_alias, dtype: int64\n{'SSID-A 서로 다른 BSSID 별칭 수': '4', 'SSID-B 서로 다른 BSSID 별칭 수': '1'}\n확인 통과",
+  "err": null
+ },
+ "missions/channel/write": {
+  "out": "아침 ['4', '3', '5']\n저녁 ['11', '9', '12']\n{'아침 AP 수 중앙값': '4개', '저녁 AP 수 중앙값': '11개'}\n확인 통과",
+  "err": null
+ },
+ "file/task-channel/teacher": {
+  "out": "1. 불러오기: demo 관찰 8행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 7, 잘못된 행 1\n아침 ['4', '3', '5']\n저녁 ['11', '9', '12']\n{'아침 AP 수 중앙값': '4개', '저녁 AP 수 중앙값': '11개'}\n확인 통과",
+  "err": null
+ },
+ "missions/ble-ad/write": {
+  "out": "{'같은 방 1m RSSI 중앙값': '-49dBm', '같은 방 3m RSSI 중앙값': '-61dBm', '벽 너머 5m RSSI 중앙값': '-78dBm', '휴대폰과 연결 중 1m RSSI 중앙값': '값 없음'}\n확인 통과",
+  "err": null
+ },
+ "file/task-ble-ad/teacher": {
+  "out": "1. 불러오기: demo 관찰 14행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 13, 잘못된 행 1\n{'같은 방 1m RSSI 중앙값': '-49dBm', '같은 방 3m RSSI 중앙값': '-61dBm', '벽 너머 5m RSSI 중앙값': '-78dBm', '휴대폰과 연결 중 1m RSSI 중앙값': '값 없음'}\n확인 통과",
+  "err": null
+ },
+ "missions/ble-pair/write": {
+  "out": "{'just-works': 2, 'numeric': 1, 'passkey': 1, 'unchecked': 1}\n{'페어링 방식: Just Works': '2', '페어링 방식: Passkey 입력': '1', '페어링 방식: Numeric Comparison 숫자 비교': '1', '페어링 방식: 미확인(unknown)': '1', '해제 후 재연결 확인': '3', '재연결 실패 확인': '1'}\n확인 통과",
+  "err": null
+ },
+ "file/task-ble-pair/teacher": {
+  "out": "1. 불러오기: demo 관찰 7행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 6, 잘못된 행 1\n{'just-works': 2, 'numeric': 1, 'passkey': 1, 'unchecked': 1}\n{'페어링 방식: Just Works': '2', '페어링 방식: Passkey 입력': '1', '페어링 방식: Numeric Comparison 숫자 비교': '1', '페어링 방식: 미확인(unknown)': '1', '해제 후 재연결 확인': '3', '재연결 실패 확인': '1'}\n확인 통과",
+  "err": null
+ },
+ "missions/interference/write": {
+  "out": "{'기준, 전자레인지 꺼짐 화면 관찰': '3/3', '기준, 전자레인지 꺼짐 단위 있는 수치': '-82~-82dBm', '전자레인지 작동, 1m 화면 관찰': '2/3', '전자레인지 작동, 1m 단위 있는 수치': '-55~-55dBm', '전자레인지 작동, 4m 화면 관찰': '2/2', '전자레인지 작동, 4m 단위 있는 수치': '-70~-70dBm'}\n확인 통과",
+  "err": null
+ },
+ "file/task-interference/teacher": {
+  "out": "1. 불러오기: demo 관찰 10행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 9, 잘못된 행 1\n{'기준, 전자레인지 꺼짐 화면 관찰': '3/3', '기준, 전자레인지 꺼짐 단위 있는 수치': '-82~-82dBm', '전자레인지 작동, 1m 화면 관찰': '2/3', '전자레인지 작동, 1m 단위 있는 수치': '-55~-55dBm', '전자레인지 작동, 4m 화면 관찰': '2/2', '전자레인지 작동, 4m 단위 있는 수치': '-70~-70dBm'}\n확인 통과",
+  "err": null
+ },
+ "missions/ir/write": {
+  "out": "{'전원 정면 1m 수신 비율': '3/3', '전원 정면 1m 명령 별칭 종류': '1', '전원 정면 3m 수신 비율': '2/3', '전원 정면 3m 명령 별칭 종류': '1', '전원 옆 45도 3m 수신 비율': '1/3', '전원 옆 45도 3m 명령 별칭 종류': '1', '전원 손으로 가림 1m 수신 비율': '0/2', '전원 손으로 가림 1m 명령 별칭 종류': '0', '음량 올림 정면 1m 수신 비율': '3/3', '음량 올림 정면 1m 명령 별칭 종류': '1'}\n확인 통과",
+  "err": null
+ },
+ "file/task-ir/teacher": {
+  "out": "1. 불러오기: demo 관찰 16행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 15, 잘못된 행 1\n{'전원 정면 1m 수신 비율': '3/3', '전원 정면 1m 명령 별칭 종류': '1', '전원 정면 3m 수신 비율': '2/3', '전원 정면 3m 명령 별칭 종류': '1', '전원 옆 45도 3m 수신 비율': '1/3', '전원 옆 45도 3m 명령 별칭 종류': '1', '전원 손으로 가림 1m 수신 비율': '0/2', '전원 손으로 가림 1m 명령 별칭 종류': '0', '음량 올림 정면 1m 수신 비율': '3/3', '음량 올림 정면 1m 명령 별칭 종류': '1'}\n확인 통과",
+  "err": null
+ },
+ "missions/subghz/write": {
+  "out": "code_basis     manual  screen  unchecked\ncode_method                             \ndocument-only       1       0          0\nfixed               2       0          0\nrolling             1       0          0\nunchecked           0       1          1\n{'코드 방식: 설명서에서 고정 코드 확인': '2', '코드 방식: 설명서에서 롤링 코드 확인': '1', '코드 방식: 문서를 읽었지만 방식 확정 못 함': '1', '코드 방식: 문서·방식 미확인': '2', '설명서 명시 항목으로 판단': '4'}\n확인 통과",
+  "err": null
+ },
+ "file/task-subghz/teacher": {
+  "out": "1. 불러오기: demo 관찰 7행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 6, 잘못된 행 1\ncode_basis     manual  screen  unchecked\ncode_method                             \ndocument-only       1       0          0\nfixed               2       0          0\nrolling             1       0          0\nunchecked           0       1          1\n{'코드 방식: 설명서에서 고정 코드 확인': '2', '코드 방식: 설명서에서 롤링 코드 확인': '1', '코드 방식: 문서를 읽었지만 방식 확정 못 함': '1', '코드 방식: 문서·방식 미확인': '2', '설명서 명시 항목으로 판단': '4'}\n확인 통과",
+  "err": null
+ },
+ "missions/gps/write": {
+  "out": "{'실내 fix 성공': '1/3', '실내 fix까지 대기 중앙값': '240초', '실내 위성 수 범위': '2~4개', '실내 타임아웃': '2', '창가 fix 성공': '2/3', '창가 fix까지 대기 중앙값': '107.5초', '창가 위성 수 범위': '4~6개', '창가 타임아웃': '1', '야외 fix 성공': '3/3', '야외 fix까지 대기 중앙값': '35초', '야외 위성 수 범위': '8~10개', '야외 타임아웃': '0'}\n확인 통과",
+  "err": null
+ },
+ "file/task-gps/teacher": {
+  "out": "1. 불러오기: demo 관찰 11행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 10, 잘못된 행 1\n{'실내 fix 성공': '1/3', '실내 fix까지 대기 중앙값': '240초', '실내 위성 수 범위': '2~4개', '실내 타임아웃': '2', '창가 fix 성공': '2/3', '창가 fix까지 대기 중앙값': '107.5초', '창가 위성 수 범위': '4~6개', '창가 타임아웃': '1', '야외 fix 성공': '3/3', '야외 fix까지 대기 중앙값': '35초', '야외 위성 수 범위': '8~10개', '야외 타임아웃': '0'}\n확인 통과",
+  "err": null
+ },
+ "missions/firmware/write": {
+  "out": "원문 decision과 같다: True\n alias          mine\nFile-A  설치 보류: 근거 부족\nFile-B      설치 검토 가능\nFile-C 설치 중단: 해시 불일치\nFile-D  설치 보류: 근거 부족\nFile-E         판정 보류\n{'판단: 설치 검토 가능': '1', '판단: 설치 보류: 근거 부족': '2', '판단: 설치 중단: 해시 불일치': '1', '판단: 판정 보류': '1'}\n확인 통과",
+  "err": null
+ },
+ "file/task-firmware/teacher": {
+  "out": "1. 불러오기: demo 관찰 6행, 다른 구분 0행 제외\n   제외한 행: BAD-1 - 관찰 상태 값이 다릅니다\n2. 검사: 분석에 쓰는 행 5, 잘못된 행 1\n원문 decision과 같다: True\n alias          mine\nFile-A  설치 보류: 근거 부족\nFile-B      설치 검토 가능\nFile-C 설치 중단: 해시 불일치\nFile-D  설치 보류: 근거 부족\nFile-E         판정 보류\n{'판단: 설치 검토 가능': '1', '판단: 설치 보류: 근거 부족': '2', '판단: 설치 중단: 해시 불일치': '1', '판단: 판정 보류': '1'}\n확인 통과",
+  "err": null
+ },
+ "missions/transfer/write": {
+  "out": "뺀 행: ['BAD-1']\n{'기록 행': '13', '관찰됨': '8', '관찰되지 않음': '4', '측정하지 못함': '1', '같은 방 1m 광고 관찰 비율': '4/4', '같은 방 3m 광고 관찰 비율': '3/4', '벽 너머 5m 광고 관찰 비율': '1/3', '휴대폰과 연결 중 1m 광고 관찰 비율': '0/1'}\n확인 통과",
+  "err": null
+ },
+ "file/transfer/teacher": {
+  "out": "뺀 행: ['BAD-1']\n{'기록 행': '13', '관찰됨': '8', '관찰되지 않음': '4', '측정하지 못함': '1', '같은 방 1m 광고 관찰 비율': '4/4', '같은 방 3m 광고 관찰 비율': '3/4', '벽 너머 5m 광고 관찰 비율': '1/3', '휴대폰과 연결 중 1m 광고 관찰 비율': '0/1'}\n확인 통과",
+  "err": null
+ },
+ "missions/integration": {
+  "out": "1. 불러오기: demo 관찰 31행, 다른 구분 0행 제외\n   제외한 행: 단독 1회차 BAD-1 결과 칸에 2를 잘못 적음 - success는 1(읽힘) 또는 0(안 읽힘)만 씁니다\n2. 검사: 분석에 쓰는 행 30, 잘못된 행 1\n  그림 G1 = 단독\n  그림 G2 = 지갑\n  그림 G3 = 가방\n3. 계산 결과\n   기록 행: 30\n   성공: 20\n   실패: 10\n   단독 성공/시도: 9/10\n   단독 인식률: 90%\n   지갑 성공/시도: 6/10\n   지갑 인식률: 60%\n   가방 성공/시도: 5/10\n   가방 인식률: 50%\n   거리 1cm 성공/시도: 13/15\n   거리 1cm 인식률: 87%\n   거리 3cm 성공/시도: 7/15\n   거리 3cm 인식률: 47%\n검증용 JSON: {\"기록 행\": \"30\", \"성공\": \"20\", \"실패\": \"10\", \"단독 성공/시도\": \"9/10\", \"단독 인식률\": \"90%\", \"지갑 성공/시도\": \"6/10\", \"지갑 인식률\": \"60%\", \"가방 성공/시도\": \"5/10\", \"가방 인식률\": \"50%\", \"거리 1cm 성공/시도\": \"13/15\", \"거리 1cm 인식률\": \"87%\", \"거리 3cm 성공/시도\": \"7/15\", \"거리 3cm 인식률\": \"47%\"}",
+  "err": null
+ },
+ "missions/integration-swap": {
+  "out": "1. 불러오기: demo 관찰 31행, 다른 구분 0행 제외\n   제외한 행: 단독 1회차 BAD-1 결과 칸에 2를 잘못 적음 - success는 1(읽힘) 또는 0(안 읽힘)만 씁니다\n2. 검사: 분석에 쓰는 행 30, 잘못된 행 1\n{'기록 행': '30', '성공': '20', '실패': '10', '단독 성공/시도': '9/10', '단독 인식률': '90%', '지갑 성공/시도': '6/10', '지갑 인식률': '60%', '가방 성공/시도': '5/10', '가방 인식률': '50%'}\n           시도  성공  인식률\ncondition             \n단독         10   9  90%\n지갑         10   6  60%\n가방         10   5  50%\n13/15 7/15\n  그림 G1 = 단독\n  그림 G2 = 지갑\n  그림 G3 = 가방\n3. 계산 결과\n   기록 행: 30\n   성공: 20\n   실패: 10\n   단독 성공/시도: 9/10\n   단독 인식률: 90%\n   지갑 성공/시도: 6/10\n   지갑 인식률: 60%\n   가방 성공/시도: 5/10\n   가방 인식률: 50%\n   거리 1cm 성공/시도: 13/15\n   거리 1cm 인식률: 87%\n   거리 3cm 성공/시도: 7/15\n   거리 3cm 인식률: 47%\n검증용 JSON: {\"기록 행\": \"30\", \"성공\": \"20\", \"실패\": \"10\", \"단독 성공/시도\": \"9/10\", \"단독 인식률\": \"90%\", \"지갑 성공/시도\": \"6/10\", \"지갑 인식률\": \"60%\", \"가방 성공/시도\": \"5/10\", \"가방 인식률\": \"50%\", \"거리 1cm 성공/시도\": \"13/15\", \"거리 1cm 인식률\": \"87%\", \"거리 3cm 성공/시도\": \"7/15\", \"거리 3cm 인식률\": \"47%\"}",
+  "err": null
+ }
+}

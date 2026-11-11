@@ -1,0 +1,59 @@
+---
+// Python·pandas·Colab 과정 1~8차시의 위치(위)와 완료 조건·이전/다음(아래). 메뉴, 미션 9장과 같은 순서다.
+import { COURSE } from '../../data/pythonCourseMap';
+import { url } from '../../lib/url';
+
+interface Props { n: number; where: 'top' | 'bottom' }
+const { n, where } = Astro.props;
+const now = COURSE.find((c) => c.n === n)!;
+const prev = COURSE.find((c) => c.n === n - 1);
+const next = COURSE.find((c) => c.n === n + 1);
+const STAGES = ['기초', '직접 작성', '미션별 응용'] as const;
+---
+{where === 'top' ? (
+  <nav class="course-nav" aria-label="Python·pandas·Colab 과정 차시">
+    <p class="course-nav__head"><strong>Python·pandas·Colab 과정 {n}/8차시</strong> <span class="small muted">· {now.stage} · 약 {now.minutes}분</span></p>
+    <ol class="course-nav__list">
+      {STAGES.map((st) => (
+        <li class="course-nav__stage">
+          <span class="course-nav__label">{st}</span>
+          <ol>
+            {COURSE.filter((c) => c.stage === st).map((c) => (
+              <li><a href={url(c.href)} aria-current={c.n === n ? 'page' : undefined}><span class="course-nav__n">{c.n}</span>{c.title}</a></li>
+            ))}
+          </ol>
+        </li>
+      ))}
+    </ol>
+  </nav>
+) : (
+  <section class="course-end" aria-labelledby="h-course-end">
+    <h2 id="h-course-end">{n}차시를 마쳤다면</h2>
+    <p><strong>산출물:</strong> {now.product}</p>
+    <ul class="course-end__done">{now.done.map((d) => <li>{d}</li>)}</ul>
+    <div class="path-next__links">
+      {prev ? (
+        <a class="path-link path-link--prev" href={url(prev.href)}>
+          <small><svg class="path-link__arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M20 12H5M11 6l-6 6 6 6" /></svg>이전 차시</small>
+          <span>{prev.n}차시 {prev.title}</span>
+        </a>
+      ) : (
+        <a class="path-link path-link--prev" href={url('/learn/')}>
+          <small>과정 밖으로</small><span>학습 안내</span>
+        </a>
+      )}
+      {next ? (
+        <a class="path-link path-link--next" href={url(next.href)}>
+          <small>다음 차시</small>
+          <span>{next.n}차시 {next.title}</span>
+          <span class="small">{next.short}</span>
+        </a>
+      ) : (
+        <div class="path-link path-link--end">
+          <small>과정의 마지막 차시입니다</small>
+          <span>내 미션의 <a href={url('/lab/')}>9장 Colab 분석</a>으로 갑니다</span>
+        </div>
+      )}
+    </div>
+  </section>
+)}

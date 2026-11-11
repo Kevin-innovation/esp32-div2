@@ -91,7 +91,7 @@ code, pre, .mono { font-family: var(--font-outlier); font-size: 0.92em; font-var
 .nav-col__sub { margin: var(--space-2xs) 0 0 !important; padding-left: var(--space-sm) !important; border-left: var(--rule-hair) solid var(--color-rule); }
 .nav-col__sub a { padding-block: 3px; font-size: var(--text-xs); }
 .nav-col--feature .nav-col__title { border-top-color: var(--color-accent); }
-.nav-col--feature > ul > li > a { color: var(--color-ink); font-size: var(--text-md); font-weight: 600; }
+.nav-col--feature > ul > li > a { color: var(--color-ink); font-weight: 600; }
 
 .switch { display: none; flex-shrink: 0; align-items: center; gap: var(--space-xs); min-height: 44px; padding: 0 var(--space-2xs); border: 0; background: none; color: var(--color-ink-2); font-size: var(--text-sm); cursor: pointer; }
 .js .switch { display: inline-flex; }
@@ -390,6 +390,40 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .read-check > li + li { margin-top: var(--space-md); }
 .read-check details, .read-check + details { margin-top: var(--space-2xs); }
 @media (max-width: 40rem) { .read-goals { columns: 1; } .read-task { padding: var(--space-sm) var(--space-md); } }
+
+/* Python 과정 차시 */
+.course-nav { margin-bottom: var(--space-xl); padding: var(--space-sm) 0 var(--space-md); border-top: 2px solid var(--color-accent); border-bottom: var(--rule-hair) solid var(--color-rule); }
+.course-nav__head { margin-bottom: var(--space-xs); }
+.course-nav__list { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(0, 1.1fr) minmax(0, 1.4fr); gap: var(--space-md) var(--space-lg); list-style: none; padding: 0; }
+.course-nav__stage:first-child ol { columns: 2; column-gap: var(--space-lg); }
+.course-nav__stage li { break-inside: avoid; }
+.course-nav__label { display: block; margin-bottom: var(--space-2xs); color: var(--color-muted); font-size: var(--text-xs); font-weight: 700; letter-spacing: 0.04em; }
+.course-nav__stage ol { list-style: none; padding: 0; }
+.course-nav__stage li + li { margin-top: 2px; }
+.course-nav__stage a { display: flex; gap: var(--space-2xs); align-items: baseline; padding: 2px 0; color: var(--color-ink); font-size: var(--text-sm); text-decoration: none; }
+.course-nav__stage a:hover { color: var(--color-accent); text-decoration: underline; }
+.course-nav__stage a[aria-current="page"] { color: var(--color-accent); font-weight: 700; }
+.course-nav__n { flex: none; min-width: 1.3em; font-variant-numeric: tabular-nums; color: var(--color-muted); }
+.course-nav__stage a[aria-current="page"] .course-nav__n { color: inherit; }
+.course-end { margin-top: var(--space-2xl); padding-top: var(--space-md); border-top: 2px solid var(--color-ink); }
+.course-end > * + * { margin-top: var(--space-sm); }
+.course-end .path-next__links { margin-top: var(--space-lg); }
+.course-table th[scope="row"] { white-space: normal; min-width: 11em; }
+.lesson-step__fold { margin-top: var(--space-xs) !important; }
+.lesson-step__fold > * + * { margin-top: var(--space-sm); }
+.lesson-ref + .lesson-ref { margin-top: var(--space-md); }
+.lesson-ref > * + * { margin-top: var(--space-2xs); }
+.mission-map__facts code { overflow-wrap: anywhere; }
+.mission-map__facts ul { padding-left: 1.1em; }
+.mission-map__regions > * + * { margin-top: var(--space-sm); }
+.mission-map tr.is-unique th, .mission-map tr.is-unique td { background: var(--color-paper-2); font-weight: 700; }
+.dict-table td:last-child { min-width: 16em; }
+.dict-table td:nth-child(2) { min-width: 7.5em; }
+.dict-table th[scope="row"] code { white-space: nowrap; overflow-wrap: normal; }
+.integration-list { columns: 2; column-gap: var(--space-xl); font-size: var(--text-sm); }
+.integration-list li { break-inside: avoid; }
+@media (max-width: 60rem) { .course-nav__list { grid-template-columns: 1fr 1fr; } .course-nav__stage:first-child { grid-column: 1 / -1; } }
+@media (max-width: 40rem) { .course-nav__list { grid-template-columns: 1fr; } .course-nav__stage:first-child ol { columns: 1; } .integration-list { columns: 1; } }
 .cb__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2xs) var(--space-sm); padding: var(--space-xs) var(--space-sm) var(--space-xs) var(--space-md); border-bottom: var(--rule-hair) solid var(--color-rule); background: var(--color-paper); font-size: var(--text-sm); }
 .cb__name { font-family: var(--font-outlier); font-weight: 600; color: var(--color-ink); }
 .cb__meta { color: var(--color-muted); font-size: var(--text-xs); }

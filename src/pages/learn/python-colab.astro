@@ -3,6 +3,8 @@
 // 따라 하기 셀과 예상 출력은 data/pythonColab.ts와 scripts/check-python-intro.ts가 실제 실행 결과로 맞춘다.
 import LearnLayout from '../../layouts/LearnLayout.astro';
 import CodeBlock from '../../components/CodeBlock.astro';
+import CourseNav from '../../components/learn/CourseNav.astro';
+import { COURSE } from '../../data/pythonCourseMap';
 import { CELLS, PRACTICE_CSV, TROUBLES, fullScript } from '../../data/pythonColab';
 import output from '../../data/python-colab-output.json';
 import { url } from '../../lib/url';
@@ -13,17 +15,19 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
 ---
 <LearnLayout
   title="Python·Colab 입문"
-  heading="Python·Colab 입문: 미션 9장 코드를 읽고 돌리기"
-  lead="웹 워크북의 계산을 Colab에서 다시 확인하려는 학생을 위한 선택 학습의 첫 페이지입니다. 짧은 가상 CSV로 셀 8개를 따라 하며 Colab, Python, pandas의 기초를 익히고, 다음 페이지에서 실제 미션 코드를 읽습니다."
+  heading="1차시 Python·Colab 입문: Colab 첫 실행과 맛보기"
+  lead="미션 9장의 Colab 코드를 혼자 쓰고 고칠 수 있게 되는 8차시 과정의 첫 차시입니다. 짧은 가상 CSV로 셀 8개를 따라 하며 Colab, Python, pandas가 무엇을 하는지 맛보고, 2차시부터 문법을 하나씩 직접 씁니다."
   description="고등학생 비전공자를 위한 Google Colab, Python 최소 문법, pandas로 CSV 세기, matplotlib 그래프 읽기, 오류 해결과 미션 코드 읽기 안내입니다."
-  toc={[['when', '언제 보나'], ['colab', 'Colab 쓰는 법'], ['syntax', '최소 문법'], ['csv', 'CSV와 DataFrame'], ['group', '세고 나누기'], ['plot', '그래프 읽기'], ['source', 'sample에서 upload로'], ['full', '전체 코드'], ['errors', '오류 해결'], ['mission', '다음: 미션 코드 읽기']]}
+  toc={[['when', '언제 보나'], ['course', '과정 8차시'], ['colab', 'Colab 쓰는 법'], ['syntax', '최소 문법'], ['csv', 'CSV와 DataFrame'], ['group', '세고 나누기'], ['plot', '그래프 읽기'], ['source', 'sample에서 upload로'], ['full', '전체 코드'], ['errors', '오류 해결'], ['mission', '다음: 2차시']]}
   sourcesChecked="2026-11-11"
   sources={['colabFaq', 'colabFiles', 'pandasReadCsv', 'pandasMissing', 'pandasGroupby', 'mplBar']}
 >
+  <CourseNav n={1} where="top" />
+
   <section id="when" aria-labelledby="h-when">
     <h2 id="h-when">언제 보나</h2>
     <div class="callout">
-      <p><strong>기본 분석은 브라우저, Colab은 선택입니다.</strong> 0~6단계와 각 미션의 1~8장은 이 페이지 없이 마칠 수 있습니다. 미션 8장(브라우저 분석)을 마친 뒤, 9장 Colab 분석을 하기 전에 <strong>① 이 입문 → ② <a href={url('/learn/mission-code/')}>미션 코드 읽기</a></strong> 순서로 봅니다.</p>
+      <p><strong>기본 분석은 브라우저, Colab은 선택입니다.</strong> 0~6단계와 각 미션의 1~8장은 이 페이지 없이 마칠 수 있습니다. 미션 8장(브라우저 분석)을 마친 뒤 9장 Colab 분석을 혼자 하고 싶을 때 아래 8차시를 차례로 봅니다. 9장 코드를 붙여 넣고 돌려 보기만 할 거라면 1차시와 <a href={url('/learn/mission-code/')}>7차시 미션 코드 읽기</a>만으로도 됩니다.</p>
     </div>
     <div class="table-wrap" tabindex="0" role="region" aria-label="브라우저 분석과 Colab 분석 비교">
       <table>
@@ -36,6 +40,22 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
         </tbody>
       </table>
     </div>
+  </section>
+
+  <section id="course" aria-labelledby="h-course">
+    <h2 id="h-course">과정 8차시: 기초 → 직접 작성 → 미션별 응용</h2>
+    <p>Python을 처음 쓰는 고등학생을 기준으로 나눴습니다. 2~5차시는 미션 코드에 실제로 나오는 문법만 다루고, 단계마다 예제 → 빈칸 → 빈 셀에 직접 작성 → 미션 원문 순서로 진행합니다. 6차시에 NFC 분석을 빈 셀부터 끝까지 다시 만들어 미션 9장 결과와 대조하고, 7·8차시에 13개 미션 코드 전체로 넓힙니다.</p>
+    <div class="table-wrap" tabindex="0" role="region" aria-label="Python·pandas·Colab 과정 차시표">
+      <table class="course-table">
+        <thead><tr><th scope="col">차시</th><th scope="col">내용</th><th scope="col">소요</th><th scope="col">마치면 남는 것</th></tr></thead>
+        <tbody>
+          {COURSE.map((c) => (
+            <tr><th scope="row"><a href={url(c.href)}>{c.n}. {c.title}</a><span class="small muted"> · {c.stage}</span></th><td>{c.short}</td><td>{c.minutes}분</td><td>{c.product}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="small muted">각 차시는 앞 차시를 마쳤다고 가정합니다. 90분 차시는 45분 두 번으로 나눠도 됩니다. 이 과정은 선택이며 미션은 8장의 브라우저 분석만으로 마칠 수 있습니다.</p>
   </section>
 
   <section id="colab" aria-labelledby="h-colab">
@@ -141,7 +161,9 @@ const n = (id: string) => CELLS.findIndex((c) => c.id === id) + 1;
   </section>
 
   <section id="mission" aria-labelledby="h-mission">
-    <h2 id="h-mission">다음: 미션 코드 읽기</h2>
-    <p>셀 1~8을 따라 했다면 선수 학습의 두 번째 페이지 <a href={url('/learn/mission-code/')}>미션 코드 읽기</a>로 갑니다. NFC, WPA-PMF, CSV 미션의 실제 코드를 줄 묶음으로 잘라 입력, 처리, 중간 출력을 실행해 보고, 예측 문제와 수정 미션으로 13개 미션 코드를 스스로 읽는 연습을 합니다.</p>
+    <h2 id="h-mission">다음: 2차시 값, 반복, 조건</h2>
+    <p>셀 1~8은 따라 하기였습니다. 2차시부터는 같은 문법을 하나씩 떼어 빈칸을 채우고 빈 셀에 직접 씁니다. 미션 코드를 바로 읽어 보고 싶다면 <a href={url('/learn/mission-code/')}>7차시 미션 코드 읽기</a>를 먼저 봐도 됩니다.</p>
   </section>
+
+  <CourseNav n={1} where="bottom" />
 </LearnLayout>

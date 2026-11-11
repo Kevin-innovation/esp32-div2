@@ -7,6 +7,7 @@ import Base from '../../layouts/Base.astro';
 import WorkbookScene from './WorkbookScene.astro';
 import CodeBlock from '../CodeBlock.astro';
 import { url } from '../../lib/url';
+import { MAPS } from '../../data/pythonMissions';
 import type { GuideBody } from '../../lib/workbooks/types';
 import type { Table } from '../../lib/workbooks/render';
 
@@ -37,7 +38,11 @@ const chapters = [
 ] as const;
 const n = (id: string) => chapters.findIndex(([c]) => c === id) + 1;
 const pad = (i: number) => String(i).padStart(2, '0');
-const pyFile = `${Astro.url.pathname.split('/').filter(Boolean).pop()}-colab.py`;
+const missionId = Astro.url.pathname.split('/').filter(Boolean).pop()!;
+const pyFile = `${missionId}-colab.py`;
+const codeMap = MAPS.find((m) => m.id === missionId);
+if (!codeMap) throw new Error(`코드 지도가 없는 미션: ${missionId}`);
+const uniqueLearn = codeMap.unique.learn.filter((l) => !l.href.includes('/missions/'));
 const order = `실습 ${pad(scene + 1)}`;
 const has = (name: string) => Astro.slots.has(name);
 ---
@@ -190,7 +195,7 @@ const has = (name: string) => Astro.slots.has(name);
         <section class="wb-ch" id={`ch-${n('colab')}`} aria-labelledby="h-colab">
           <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('colab'))}</span><div><h2 id="h-colab"><span class="sr">{n('colab')}장. </span>{chapters[8][1]}</h2><p class="wb-ch__aim">{chapters[8][2]}</p></div></header>
           <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
-            <p class="wb-prereq"><strong>선수 학습(선택):</strong> Colab이 처음이거나 아래 코드가 낯설면 먼저 <a href={url('/learn/python-colab/')}>① Python·Colab 입문</a>에서 셀 실행, CSV 올리기, pandas로 세고 나누기, 그래프 읽기를 따라 하고, <a href={url('/learn/mission-code/')}>② 미션 코드 읽기</a>에서 이 장의 코드를 줄 묶음별로 실행하며 읽습니다. 이 장은 선택이며 8장의 브라우저 계산만으로도 미션을 마칠 수 있습니다.</p>
+            <p class="wb-prereq"><strong>선수 학습(선택):</strong> 아래 코드를 혼자 쓰고 고치려면 <a href={url('/learn/python-colab/#course')}>Python·pandas·Colab 과정 8차시</a>를 차례로 봅니다. 이 미션의 고유 계산({codeMap.unique.start}~{codeMap.unique.end}줄)은 {uniqueLearn.map((l, i) => <>{i > 0 && ', '}<a href={url(l.href)}>{l.label}</a></>)}에서 배우고, <a href={url(`/learn/python-colab/missions/#m-${missionId}`)}>8차시 이 미션의 코드 지도와 과제</a>에서 모든 줄이 어느 차시에서 나오는지 확인합니다. 붙여 넣고 돌려 보기만 할 때는 <a href={url('/learn/python-colab/')}>1차시 입문</a>과 <a href={url('/learn/mission-code/')}>7차시 미션 코드 읽기</a>로 충분합니다. 이 장은 선택이며 8장의 브라우저 계산만으로도 미션을 마칠 수 있습니다.</p>
             <ol>
               <li><a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer">Google Colab</a>에서 새 노트를 엽니다. Google 계정이 필요한 외부 서비스입니다. 쓰기 어렵다면 8장의 브라우저 계산으로 충분합니다.</li>
               <li>아래 코드를 한 셀에 붙여 넣고 그대로 실행합니다. 첫 줄이 <code>SOURCE = 'sample'</code>이면 골든 데이터를 분석하며, 출력이 아래 예상 출력과 같아야 합니다.</li>
