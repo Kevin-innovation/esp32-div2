@@ -1,0 +1,37 @@
+---
+// 목차가 있는 모든 페이지의 현재 위치 추적(src/lib/tocSpy.ts)을 켜고, 모바일(60rem 이하)에는 44px 절 바 하나를 붙인다.
+// 절 바는 JS로 목차를 복제해 만든다. JS가 꺼지면 본문 위 정적 목차가 그대로 남는다. Python 과정은 CourseBar가 같은 일을 한다.
+---
+<script>
+  import { onToc, settleHash, wireMenu } from '../lib/tocSpy';
+
+  const toc = document.querySelector<HTMLElement>('[data-toc]');
+  if (toc && !document.querySelector('[data-course-bar]')) {
+    const name = toc.querySelector('h2')?.textContent?.trim() || '목차';
+    const bar = document.createElement('nav');
+    bar.className = 'toc-bar';
+    bar.setAttribute('aria-label', `${name} 목차와 지금 읽는 절`);
+    bar.innerHTML = `<div class="wrap"><details class="toc-bar__menu"><summary class="toc-bar__toggle"><span class="toc-bar__name"></span><span class="toc-bar__now"><span class="toc-bar__now-label">지금</span> <span data-now-text></span></span><span class="sr">· 목차 열기</span></summary><div class="toc-bar__panel"><p class="toc-bar__label"></p><ol class="toc-bar__list"></ol></div></details></div>`;
+    bar.querySelector('.toc-bar__name')!.textContent = name;
+    bar.querySelector('.toc-bar__label')!.textContent = `${name} 목차`;
+    const list = bar.querySelector('ol')!;
+    const copies = new Map<HTMLAnchorElement, HTMLAnchorElement>();
+    toc.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((a) => {
+      const li = document.createElement('li');
+      const copy = a.cloneNode(true) as HTMLAnchorElement;
+      li.append(copy);
+      list.append(li);
+      copies.set(a, copy);
+    });
+    const top = document.querySelector('main > .path-top');
+    if (top) top.after(bar); else document.querySelector('main')?.prepend(bar);
+    document.documentElement.classList.add('has-toc-bar');
+    wireMenu(bar.querySelector('details')!, bar, bar.querySelector<HTMLElement>('.toc-bar__panel')!);
+    const nowText = bar.querySelector<HTMLElement>('[data-now-text]')!;
+    onToc((k, items) => {
+      items.forEach((it, j) => { const c = copies.get(it.link); if (c) j === k ? c.setAttribute('aria-current', 'location') : c.removeAttribute('aria-current'); });
+      nowText.textContent = k < 0 ? '첫머리' : items[k].label;
+    });
+  }
+  if (toc) settleHash();
+</script>

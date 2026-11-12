@@ -59,64 +59,44 @@ const arrow = (d: string) => `<svg viewBox="0 0 24 24" width="18" height="18" ar
 </nav>
 
 <script>
+  // 지금 절 계산과 패널 닫기는 사이트 공통 모듈(src/lib/tocSpy.ts)을 쓴다. 여기서는 절 목록 복제, 바 글자, 읽은 위치 선만 맡는다.
+  import { onToc, wireMenu } from '../../lib/tocSpy';
+
   const bar = document.querySelector<HTMLElement>('[data-course-bar]');
   const menu = bar?.querySelector<HTMLDetailsElement>('[data-course-menu]');
   if (bar && menu) {
-    const summary = menu.querySelector('summary')!;
-    const toc = [...document.querySelectorAll<HTMLAnchorElement>('.doc__aside.toc a[href^="#"]')];
     const box = bar.querySelector<HTMLElement>('[data-sections-box]')!;
     const list = bar.querySelector<HTMLOListElement>('[data-sections]')!;
     const nowBox = bar.querySelector<HTMLElement>('[data-now]')!;
     const nowText = bar.querySelector<HTMLElement>('[data-now-text]')!;
     const progress = bar.querySelector<HTMLElement>('[data-progress]')!;
-    // 절 목록: 문서의 목차 링크와 같은 앵커. 대상이 실제로 있는 것만.
-    const items = toc.flatMap((a) => {
-      const target = document.getElementById(decodeURIComponent(a.hash.slice(1)));
-      if (!target) return [];
-      const li = document.createElement('li');
-      const copy = document.createElement('a');
-      copy.href = a.hash;
-      copy.textContent = a.textContent;
-      li.append(copy);
-      list.append(li);
-      return [{ target, links: [a, copy], label: a.textContent!.trim() }];
+    const copies: HTMLAnchorElement[] = [];
+    let built = false;
+    onToc((k, items) => {
+      if (!built) {
+        // 절 목록: 문서 목차와 같은 앵커(대상이 실제로 있는 것만)
+        built = true;
+        items.forEach((it) => {
+          const li = document.createElement('li');
+          const copy = document.createElement('a');
+          copy.href = it.link.hash;
+          copy.textContent = it.label;
+          li.append(copy);
+          list.append(li);
+          copies.push(copy);
+        });
+        box.hidden = nowBox.hidden = items.length === 0;
+        document.documentElement.classList.add('has-course-bar');
+      }
+      copies.forEach((c, j) => (j === k ? c.setAttribute('aria-current', 'location') : c.removeAttribute('aria-current')));
+      nowText.textContent = k < 0 ? '차시 첫머리' : items[k].label;
     });
-    box.hidden = items.length === 0;
-    nowBox.hidden = items.length === 0;
-    document.documentElement.classList.add('has-course-bar');
-
-    let current = -2;
-    const update = () => {
-      const edge = bar.getBoundingClientRect().bottom + 24;
-      let k = -1;
-      items.forEach((it, j) => { if (it.target.getBoundingClientRect().top <= edge) k = j; });
+    const line = () => {
       const max = document.documentElement.scrollHeight - innerHeight;
       progress.style.transform = `scaleX(${max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0})`;
-      if (k === current) return;
-      current = k;
-      items.forEach((it, j) => it.links.forEach((l) => (j === k ? l.setAttribute('aria-current', 'location') : l.removeAttribute('aria-current'))));
-      nowText.textContent = k < 0 ? '차시 첫머리' : items[k].label;
     };
-    let queued = false;
-    const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(() => { queued = false; update(); }); } };
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(schedule, { rootMargin: '0px 0px -40% 0px' });
-      items.forEach((it) => io.observe(it.target));
-    }
-    addEventListener('scroll', schedule, { passive: true });
-    addEventListener('resize', schedule);
-    addEventListener('hashchange', schedule);
-    addEventListener('load', schedule);
-    update();
-
-    // 패널: Escape·밖 클릭·초점이 나가면 닫고, 패널 안 절 링크를 누르면 닫는다.
-    // 열 때 패널을 바 아래부터 화면 끝까지로 맞춘다(바가 아직 붙지 않은 맨 위에서도 화면 밖으로 나가지 않게).
-    const panel = bar.querySelector<HTMLElement>('.course-bar__panel')!;
-    menu.addEventListener('toggle', () => { if (menu.open) panel.style.maxHeight = `${Math.max(160, innerHeight - bar.getBoundingClientRect().bottom - 12)}px`; });
-    const close = (focus: boolean) => { if (!menu.open) return; menu.open = false; if (focus) summary.focus(); };
-    menu.addEventListener('keydown', (e) => { if (e.key === 'Escape') { e.preventDefault(); close(true); } });
-    document.addEventListener('click', (e) => { if (!menu.contains(e.target as Node)) close(false); });
-    menu.addEventListener('focusout', (e) => { const to = e.relatedTarget as Node | null; if (to && !menu.contains(to)) close(false); });
-    list.addEventListener('click', (e) => { if ((e.target as Element).closest('a')) close(false); });
+    addEventListener('scroll', line, { passive: true });
+    line();
+    wireMenu(menu, bar, bar.querySelector<HTMLElement>('.course-bar__panel')!);
   }
 </script>

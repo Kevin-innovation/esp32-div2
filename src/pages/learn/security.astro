@@ -83,6 +83,15 @@ const stories: Story[] = [
   },
 ];
 
+/** 실험 연계 행에 적는 도착 페이지 이름 */
+const dest: Record<string, string> = {
+  '/learn/projects/': '실험과 개발 기술노트',
+  '/learn/network/': '4단계 Wi-Fi와 네트워크',
+  '/lab/nfc/': '01 NFC 실습 워크북',
+  '/update/': '업데이트·문제 해결',
+};
+for (const s of stories) for (const [h] of s.links) if (!dest[h.split('#')[0]]) throw new Error(`실험 연계 도착 이름 없음: ${h}`);
+
 const wifiRoles = [
   ['WPA2 (AES)', '무선 구간의 내용을 암호화', 'WPA2 비밀번호가 약하면 추측 위험이 남습니다.'],
   ['WPA3 (SAE)', '비밀번호 추측에 더 강한 인증', '기기가 지원해야 합니다. 약한 비밀번호까지 해결하지는 않습니다.'],
@@ -165,7 +174,9 @@ const csf = [
         <div><dt>공격 개념</dt><dd>{s.attack}</dd></div>
         <div><dt>방어 기술</dt><dd>{s.defense}</dd></div>
         <div><dt>방어의 한계</dt><dd>{s.limit}</dd></div>
-        <div><dt>실험 연계</dt><dd>{s.links.map(([h, l], i) => <>{i > 0 && ', '}<a href={url(h)}>{l}</a></>)}</dd></div>
+        <div><dt>실험 연계</dt><dd><ul class="go-list">{s.links.map(([h, l]) => (
+          <li><a class="go-link" href={url(h)}><span class="go-link__where">{dest[h.split('#')[0]]}</span><span class="go-link__title">{l}</span><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false"><path d="M4 12h15M13 6l6 6-6 6" /></svg></a></li>
+        ))}</ul></dd></div>
       </dl>
       {s.id === 'wifi' && (
         <div class="table-wrap" tabindex="0" role="region" aria-label="Wi-Fi 보호 기술의 역할">

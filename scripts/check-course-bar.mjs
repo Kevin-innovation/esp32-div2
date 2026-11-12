@@ -60,7 +60,14 @@ for (const w of [375, 768, 1280]) for (const scheme of ['light', 'dark']) {
       const stuck = w > 960 ? Math.abs(s.top - 64) <= 1 : (frac === 0 ? s.top >= 0 && s.bottom <= 260 : Math.abs(s.top) <= 1);
       ok(stuck && s.h <= (w > 640 ? 56 : 64), `${tag} ${name}: 바 위치·높이 ${s.top}~${s.bottom} (높이 ${s.h})`);
       ok(s.ow <= 0, `${tag} ${name}: 가로 넘침 ${s.ow}`);
-      const expected = await p.evaluate((ids) => { const edge = document.querySelector('[data-course-bar]').getBoundingClientRect().bottom + 24; let k = -1; ids.forEach((id, j) => { const el = document.getElementById(id.slice(1)); if (el && el.getBoundingClientRect().top <= edge) k = j; }); return k < 0 ? null : ids[k]; }, tocIds);
+      // 기준선 아래 끝 + 24 위로 올라간 마지막 절. 페이지 끝에서는 화면에 보이는 마지막 절(src/lib/tocSpy.ts와 같은 규칙).
+      const expected = await p.evaluate((ids) => {
+        const edge = document.querySelector('[data-course-bar]').getBoundingClientRect().bottom + 24;
+        const tops = ids.map((id) => document.getElementById(id.slice(1))?.getBoundingClientRect().top ?? Infinity);
+        let k = -1; tops.forEach((t, j) => { if (t <= edge) k = j; });
+        if (scrollY >= document.documentElement.scrollHeight - innerHeight - 2) for (let j = tops.length - 1; j > k; j--) if (tops[j] < innerHeight) { k = j; break; }
+        return k < 0 ? null : ids[k];
+      }, tocIds);
       ok(expected === null ? s.cur.length === 0 && s.now === '차시 첫머리' : s.cur.length === 1 && s.cur[0] === expected && s.panel[0] === expected, `${tag} ${name}: 지금 절 ${s.cur} / 기대 ${expected} / 바 "${s.now}"`);
       if (SHOTS && scheme === (w === 375 ? 'dark' : 'light') && w !== 768) await p.screenshot({ path: `${SHOTS}/${lesson.href.replace(/\//g, '_')}-${w}-${scheme}-${name}.png` });
     }

@@ -3,6 +3,7 @@ import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import '../styles/global.css';
 import LearningPath from '../components/learn/LearningPath.astro';
 import SiteNav from '../components/SiteNav.astro';
+import TocBar from '../components/TocBar.astro';
 import { CHECKED } from '../data/sources';
 
 interface Props {
@@ -52,6 +53,7 @@ const showPath = path !== '/' && path !== '/learn/' && path !== '/learn/glossary
       <slot />
       {showPath && <LearningPath where="bottom" path={path} />}
     </main>
+    <TocBar />
     <footer class="site-foot">
       <div class="wrap">
         <p class="site-foot__statement">CiferTech의 공식 사이트가 아닙니다. 이 기기에서는 부팅, 메뉴 표시, NFC 태그 읽기까지 확인했고 다른 기능은 미검증입니다.</p>

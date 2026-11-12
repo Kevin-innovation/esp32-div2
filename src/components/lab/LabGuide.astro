@@ -77,7 +77,7 @@ const has = (name: string) => Astro.slots.has(name);
     </section>
 
     <div class="wb-body">
-      <nav class="wb-toc" aria-labelledby="wb-toc-h">
+      <nav class="wb-toc" data-toc aria-labelledby="wb-toc-h">
         <h2 id="wb-toc-h">장 목차</h2>
         <ol>{chapters.map(([, title], i) => <li><a href={`#ch-${i + 1}`}><span class="wb-toc__n">{pad(i + 1)}</span><span>{title}</span></a></li>)}</ol>
       </nav>

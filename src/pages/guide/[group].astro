@@ -89,7 +89,7 @@ const lab = group.features.filter((f): f is Lab => f.kind === 'lab');
 
         <Sources ids={['deviceScreens', 'codeMenu', 'readme', 'wiki', 'manual', ...(group.slug === 'nfc' ? (['nfcOverview', 'nfcReader'] as const) : [])]} />
       </div>
-      <nav class="doc__aside toc" aria-label={`${group.title} 기능 목차`}>
+      <nav class="doc__aside toc" data-toc aria-label={`${group.title} 기능 목차`}>
         <h2>이 묶음의 기능</h2>
         <ol>
           {observe.map((f) => <li><a href={`#${f.id}`}>{f.ko}</a></li>)}

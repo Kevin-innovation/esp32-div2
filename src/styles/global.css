@@ -10,18 +10,41 @@
 /* Hallmark · polish 2026-11-11 · workbook hero (equal-width action pair, status as two ruled rows), evidence tags as square hairline marks, part tabs (2px ink over the label, hairline over the body), lab cards (4/12 picture, display numeral, plain topics), green kept for checks and verified only */
 /* Hallmark · dismissed 73 · the covered text is code inside a capped scrolling pre; it scrolls under its own box, not under the heading */
 /* Hallmark · answered fonts · Pretendard is the user's chosen Korean face and Epilogue has no Hangul, so one family carries display and body */
+/* Hallmark · amend 2026-11-12 · body links (class-less a in the reading column) take the green with a solid underline, and the reading position in every table of contents is the green soft fill and 3px rule; hover is a grey fill only. Elsewhere green stays for checks and verified */
 @import url("./tokens.css");
 @import url("./base.css");
 
 /* 바탕 */
-html { -webkit-text-size-adjust: 100%; scroll-padding-top: 8rem; }
+/* --toc-offset: 붙어 있는 머리글·학습 바·진행바·절 바의 실측 높이(src/lib/tocSpy.ts). JS가 없으면 기존 8rem과 4.5rem이 된다. */
+html { -webkit-text-size-adjust: 100%; scroll-padding-top: calc(var(--toc-offset, 7rem) + var(--space-md)); }
 body { line-height: 1.7; word-break: keep-all; overflow-wrap: break-word; font-synthesis: none; color: var(--color-ink-2); }
 ::selection { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); }
 a { color: var(--color-ink); font-weight: 600; text-decoration-color: var(--color-rule); text-decoration-thickness: 1px; text-underline-offset: 0.22em; transition: text-decoration-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
 a:hover { text-decoration-color: var(--color-accent); color: var(--color-ink); }
-.term-link { color: inherit; text-decoration: underline dotted; text-decoration-color: currentColor; text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; }
-.term-link:hover, .term-link:focus-visible { color: var(--color-accent-strong, var(--color-ink)); text-decoration-style: solid; }
-.term-link__hint { display: inline-block; margin-inline-start: 0.22em; color: var(--color-ink-2); font-size: 0.72em; vertical-align: 0.12em; }
+/* 본문 링크: 본문 문맥의 class 없는 a만. 처음부터 초록 글자와 실선 밑줄(색만으로 구분하지 않음), 굵기 500으로 strong(먹 600, 밑줄 없음)과 구별.
+   단추, 상단 메뉴, 목차, 그림 핀, 카드, 용어 링크는 class가 있어 각자 규칙을 쓴다. */
+:root { --color-link: var(--color-accent); --color-link-line: color-mix(in oklch, var(--color-link) 55%, transparent); }
+:where(.doc__main, .wb-main, .path-link--end) a:not([class]) { color: var(--color-link); font-weight: 500; text-decoration-line: underline; text-decoration-color: var(--color-link-line); text-decoration-thickness: 1px; }
+:where(.doc__main, .wb-main, .path-link--end) a:not([class]):hover { color: var(--color-link); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+:where(.doc__main, .wb-main, .path-link--end) a:not([class]):active { color: var(--color-ink); }
+/* 본문 속 외부 링크만 ↗. 출처 목록과 근거 자료 목록은 제목이 맥락이라 붙이지 않는다. */
+:where(.doc__main, .wb-main) a[href^="http"]:not([class]):not(:where(.sources, .wb-refs) a)::after { content: "↗" / " 외부 사이트"; display: inline-block; margin-inline-start: 0.12em; font-size: 0.78em; font-weight: 400; text-decoration: none; vertical-align: 0.1em; }
+.term-link { color: inherit; text-decoration: underline dotted; text-decoration-color: currentColor; text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; border-radius: 3px; }
+.term-link:hover, .term-link:focus-visible { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); text-decoration-style: solid; }
+.term-link__hint { display: inline-block; margin-inline-start: 0.22em; color: var(--color-accent); font-size: 0.72em; font-weight: 700; vertical-align: 0.12em; }
+.term-link:hover .term-link__hint, .term-link:focus-visible .term-link__hint { color: inherit; }
+/* 관련 실습 행: 도착 페이지 이름, 제목, 화살표. 한 행 전체가 누름 영역(44px 이상). */
+.go-list { margin: 0; padding: 0; list-style: none; }
+.go-list > li { margin: 0; }
+.go-list > li + li { border-top: var(--rule-hair) solid var(--color-rule-2); }
+.go-link { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 0 var(--space-sm); min-height: 52px; margin-inline: calc(-1 * var(--space-xs)); padding: var(--space-xs); border-radius: var(--radius-control); color: var(--color-ink); font-weight: 400; text-decoration: none; }
+.go-link__where { grid-column: 1; color: var(--color-muted); font-size: var(--text-xs); line-height: 1.4; }
+.go-link__title { grid-column: 1; color: var(--color-link); font-weight: 600; line-height: 1.45; text-decoration: underline; text-decoration-color: var(--color-link-line); text-underline-offset: 0.22em; }
+.go-link svg { grid-column: 2; grid-row: 1 / span 2; color: var(--color-link); fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform var(--dur-short) var(--ease-out); }
+.go-link:hover { background: var(--color-paper-2); color: var(--color-ink); text-decoration: none; }
+.go-link:hover .go-link__title { text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+.go-link:hover svg, .go-link:focus-visible svg { transform: translateX(3px); }
+.go-link:active { background: var(--color-paper-3); }
 h1, h2, h3, h4 { margin: 0; color: var(--color-ink); font-family: var(--font-display); font-weight: var(--display-weight); letter-spacing: var(--tracking-display); overflow-wrap: break-word; min-width: 0; text-wrap: balance; }
 h1 { font-size: var(--text-display-s); line-height: 1.15; max-width: 22ch; }
 h2 { font-size: var(--text-section); line-height: 1.2; max-width: 28ch; }
@@ -214,8 +237,11 @@ a.pin:hover { background: var(--color-pin-ink); color: var(--color-pin); border-
 .toc h2 { font-size: var(--text-sm); letter-spacing: 0; color: var(--color-muted); font-weight: 400; }
 .toc ol { margin-top: var(--space-xs); padding: 0; list-style: none; border-top: var(--rule-hair) solid var(--color-ink); }
 .toc li { margin: 0; border-bottom: var(--rule-hair) solid var(--color-rule-2); }
-.toc a { display: flex; align-items: center; min-height: 40px; padding-block: var(--space-2xs); color: var(--color-ink-2); font-weight: 400; line-height: 1.4; text-decoration: none; }
-.toc a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); }
+.toc a { display: flex; align-items: center; min-height: 40px; padding: var(--space-2xs) var(--space-xs) var(--space-2xs) var(--space-sm); color: var(--color-ink-2); font-weight: 400; line-height: 1.4; text-decoration: none; }
+/* 목차 상태: hover는 회색 바탕만, 지금 읽는 절은 초록 옅은 바탕·왼쪽 3px 초록 선·굵게. focus는 공통 외곽선. */
+.toc a:hover, .wb-toc a:hover, .toc-bar__list a:hover { background: var(--color-paper-2); color: var(--color-ink); text-decoration: none; }
+.toc a[aria-current="location"], .wb-toc a[aria-current="location"], .toc-bar__list a[aria-current="location"] { background: var(--color-accent-soft); color: var(--color-accent-soft-ink); font-weight: 700; box-shadow: inset 3px 0 0 var(--color-accent); }
+.wb-toc a[aria-current="location"] .wb-toc__n, .toc-bar__list a[aria-current="location"] .wb-toc__n { color: inherit; }
 
 .facts { margin: 0; border-top: var(--rule-hair) solid var(--color-ink); }
 .facts > div { display: grid; grid-template-columns: 8rem minmax(0, 1fr); gap: var(--space-sm); padding-block: var(--space-sm); border-bottom: var(--rule-hair) solid var(--color-rule); }
@@ -426,10 +452,32 @@ a.course-bar__go:hover { background: var(--color-paper-2); color: var(--color-in
 .course-bar__lessons a[aria-current="page"] .course-bar__n, .course-bar__lessons a[aria-current="page"] .course-bar__meta { color: inherit; }
 .course-bar__sections { margin-top: var(--space-xs); }
 .course-bar__foot { margin-top: var(--space-md); padding-top: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule); }
-.toc a[aria-current="location"] { color: var(--color-ink); font-weight: 700; box-shadow: inset 3px 0 0 var(--color-accent); padding-left: var(--space-sm); }
 @media (max-width: 60rem) {
   .course-bar__panel { max-height: calc(100dvh - 72px - var(--space-md)); }
   .has-course-bar .doc__aside { display: none; }
+}
+
+/* 모바일 절 바(TocBar): 60rem 이하에서 목차 페이지에 붙는 하나뿐인 고정 줄. 학습 바는 이 페이지에서 제자리에 둔다. */
+.toc-bar { display: none; }
+@media (max-width: 60rem) {
+  .toc-bar { position: sticky; top: 0; z-index: var(--z-sticky); display: block; border-image: linear-gradient(to top, var(--color-rule) var(--rule-hair), var(--color-paper) var(--rule-hair)) fill 0 / 0 / 0 100vmax; }
+  .toc-bar > .wrap { position: relative; z-index: 1; }
+  .has-toc-bar .path-top { position: relative; top: auto; }
+  .has-toc-bar .doc__aside, .has-toc-bar .wb-toc { display: none; }
+  .toc-bar__toggle { display: flex; align-items: center; gap: var(--space-sm); min-height: 48px; margin: 0; padding: 0; color: var(--color-ink); font-size: var(--text-sm); text-decoration: none; list-style: none; cursor: pointer; }
+  .toc-bar__toggle::-webkit-details-marker { display: none; }
+  .toc-bar__toggle::after { content: ''; flex: none; width: 7px; height: 7px; margin: -3px 0 0 auto; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(45deg); }
+  .toc-bar__menu[open] > .toc-bar__toggle { margin-bottom: 0; }
+  .toc-bar__menu[open] > .toc-bar__toggle::after { margin-top: 4px; transform: rotate(-135deg); }
+  .toc-bar__name { flex: none; padding: 2px var(--space-xs); border-radius: var(--radius-control); background: var(--color-paper-3); color: var(--color-ink); font-weight: 700; white-space: nowrap; }
+  .toc-bar__now { flex: 1 1 auto; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
+  .toc-bar__now-label { color: var(--color-muted); font-weight: 400; }
+  .toc-bar__toggle:hover .toc-bar__now { text-decoration: underline; text-decoration-color: var(--color-ink); }
+  .toc-bar__panel { position: absolute; top: 100%; left: 0; right: 0; z-index: var(--z-sticky-nav); max-height: calc(100dvh - 48px - var(--space-md)); overflow: auto; overscroll-behavior: contain; padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-top: 0; border-radius: 0 0 var(--radius-card) var(--radius-card); background: var(--color-paper); box-shadow: 0 18px 36px oklch(20% 0 0 / 0.1); }
+  .toc-bar__label { padding-bottom: var(--space-2xs); border-bottom: 2px solid var(--color-ink); color: var(--color-ink); font-size: var(--text-sm); font-weight: 700; }
+  .toc-bar__list { margin: var(--space-xs) 0 0; padding: 0; list-style: none; }
+  .toc-bar__list li { margin: 0; }
+  .toc-bar__list a { display: flex; gap: var(--space-xs); align-items: center; min-height: 44px; padding: var(--space-2xs) var(--space-sm); border-radius: var(--radius-control); color: var(--color-ink); font-size: var(--text-sm); font-weight: 400; line-height: 1.4; text-decoration: none; }
 }
 @media (max-width: 40rem) {
   .course-bar__row { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "menu step" "now step"; gap: 0 var(--space-xs); min-height: 56px; padding-block: 2px; }
@@ -741,7 +789,7 @@ a.path-link--prev:hover .path-link__arrow { transform: translateX(-3px); }
   .site-head { position: static; }
   .site-head__row { flex-wrap: wrap; gap: 0 var(--space-md); padding-top: var(--space-xs); justify-content: space-between; }
   .nav { order: 3; flex: 0 0 100%; justify-content: flex-start; margin-inline: calc(-1 * var(--space-sm)); }
-  html { scroll-padding-top: 4.5rem; }
+  html { scroll-padding-top: calc(var(--toc-offset, 3.5rem) + var(--space-md)); }
   .path-top { top: 0; }
   .ledger > li { grid-template-columns: 5rem minmax(0, 1fr); }
   .ledger > li > p { grid-column: 2; }
@@ -842,8 +890,7 @@ a.path-link--prev:hover .path-link__arrow { transform: translateX(-3px); }
 .wb-toc h2 { font-size: var(--text-sm); font-weight: 600; color: var(--color-muted); }
 .wb-toc ol { margin: var(--space-xs) 0 0; padding: 0; list-style: none; border-top: var(--rule-hair) solid var(--color-ink); }
 .wb-toc li { margin: 0; border-bottom: var(--rule-hair) solid var(--color-rule-2); }
-.wb-toc a { display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; min-height: 44px; padding-block: var(--space-2xs); color: var(--color-ink-2); font-size: var(--text-sm); line-height: 1.4; text-decoration: none; }
-.wb-toc a:hover { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); }
+.wb-toc a { display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: center; min-height: 44px; padding: var(--space-2xs) var(--space-xs) var(--space-2xs) var(--space-sm); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 400; line-height: 1.4; text-decoration: none; }
 .wb-toc__n { color: var(--color-ink); font-weight: 700; font-variant-numeric: tabular-nums; }
 .wb-main { min-width: 0; max-width: 52rem; }
 .wb-ch { scroll-margin-top: var(--space-md); }
