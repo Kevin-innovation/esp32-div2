@@ -24,9 +24,9 @@ a:hover { text-decoration-color: var(--color-accent); color: var(--color-ink); }
 /* 본문 링크: 본문 문맥의 class 없는 a만. 처음부터 초록 글자와 실선 밑줄(색만으로 구분하지 않음), 굵기 500으로 strong(먹 600, 밑줄 없음)과 구별.
    단추, 상단 메뉴, 목차, 그림 핀, 카드, 용어 링크는 class가 있어 각자 규칙을 쓴다. */
 :root { --color-link: var(--color-accent); --color-link-line: color-mix(in oklch, var(--color-link) 55%, transparent); }
-:where(.doc__main, .wb-main, .path-link--end) a:not([class]) { color: var(--color-link); font-weight: 500; text-decoration-line: underline; text-decoration-color: var(--color-link-line); text-decoration-thickness: 1px; }
-:where(.doc__main, .wb-main, .path-link--end) a:not([class]):hover { color: var(--color-link); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
-:where(.doc__main, .wb-main, .path-link--end) a:not([class]):active { color: var(--color-ink); }
+:where(.doc__main, .wb-main, .path-link--end, .path-end) a:not([class]) { color: var(--color-link); font-weight: 500; text-decoration-line: underline; text-decoration-color: var(--color-link-line); text-decoration-thickness: 1px; }
+:where(.doc__main, .wb-main, .path-link--end, .path-end) a:not([class]):hover { color: var(--color-link); text-decoration-color: currentColor; text-decoration-thickness: 2px; }
+:where(.doc__main, .wb-main, .path-link--end, .path-end) a:not([class]):active { color: var(--color-ink); }
 /* 본문 속 외부 링크만 ↗. 출처 목록과 근거 자료 목록은 제목이 맥락이라 붙이지 않는다. */
 :where(.doc__main, .wb-main) a[href^="http"]:not([class]):not(:where(.sources, .wb-refs) a)::after { content: "↗" / " 외부 사이트"; display: inline-block; margin-inline-start: 0.12em; font-size: 0.78em; font-weight: 400; text-decoration: none; vertical-align: 0.1em; }
 .term-link { color: inherit; text-decoration: underline dotted; text-decoration-color: currentColor; text-underline-offset: 0.2em; text-decoration-thickness: 1.5px; border-radius: 3px; }
@@ -735,6 +735,14 @@ html:not(.js) .explorer__panel + .explorer__panel { margin-top: var(--space-lg);
 .path-steps a > strong { font-weight: 700; }
 .path-next { padding-block: var(--space-2xl); border-top: var(--rule-hair) solid var(--color-ink); }
 .path-next__done { max-width: var(--measure); margin-bottom: var(--space-lg); }
+/* 마지막 단계의 마무리: 큰 카드 대신 읽기 폭의 글과 단추 하나, 선택 확장은 구분선 아래 작게. */
+.path-end > * { max-width: var(--measure); }
+.path-end > * + * { margin-top: var(--space-md); }
+.path-end h2 { font-size: var(--text-2xl); }
+.path-end__cheer { color: var(--color-accent-soft-ink); font-weight: 600; }
+.path-end__more { padding-top: var(--space-md); border-top: var(--rule-hair) solid var(--color-rule); }
+.path-end__more h3 { font-size: var(--text-md); }
+.path-end__more > * + * { margin-top: var(--space-2xs); }
 .path-next__links { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--space-md); }
 .path-link { display: grid; align-content: center; gap: var(--space-2xs); min-height: 88px; padding: var(--space-md) var(--space-lg); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); background: var(--color-paper-2); color: var(--color-ink); font-weight: 400; text-decoration: none; transition: border-color var(--dur-micro) var(--ease-out), background-color var(--dur-micro) var(--ease-out); }
 a.path-link:hover { border-color: var(--color-ink); color: var(--color-ink); text-decoration: none; }
