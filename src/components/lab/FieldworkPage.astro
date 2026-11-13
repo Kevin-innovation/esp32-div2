@@ -1,7 +1,8 @@
 ---
 // 현장 기록형 워크북 한 권: 주제 본문(Guide)과 입력 도구를 LabGuide의 장에 꽂는다.
 import LabGuide from './LabGuide.astro';
-import { FieldAnalysis, FieldData, FieldNotes, FieldRecord, FieldReport } from './FieldworkLab';
+import { FieldAnalysis, FieldData, FieldInterview, FieldNotes, FieldRecord, FieldReport } from './FieldworkLab';
+import { INTERVIEW } from '../../lib/workbooks/interview';
 import { fieldworkColab } from '../../lib/colab';
 import { summaryRows, type Kind, type Row } from '../../lib/fieldwork';
 import { fieldTable, noteFields, noteLabels } from '../../lib/workbooks/render';
@@ -20,6 +21,6 @@ const pick = (...keys: string[]) => noteFields(guide, keys);
   <FieldNotes slot="interpret" client:load kind={kind} fields={pick('interpretation', 'conclusion')} />
   <FieldNotes slot="defense" client:load kind={kind} fields={pick('defense', 'limits')} />
   <FieldNotes slot="application" client:load kind={kind} fields={pick('application')} />
-  <FieldNotes slot="explain" client:load kind={kind} fields={pick('explain')} />
+  <FieldInterview slot="interview" client:load kind={kind} title={guide.title} questions={INTERVIEW[kind]} explain={pick('explain')[0]} />
   <FieldReport slot="report" client:load kind={kind} title={guide.title} labels={noteLabels(guide)} />
 </LabGuide>

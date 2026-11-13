@@ -4,6 +4,8 @@ import { buildCsvReport, csvSummary, defaultActions, pseudonymize, readSource, t
 import { persisted } from './labStore';
 import { NotesEditor, type NoteGuide } from './NotesEditor';
 import { SummaryTable } from './SummaryTable';
+import { InterviewPrep, type InterviewProps } from './InterviewPrep';
+import { IV_KEYS } from '../../lib/interview';
 
 type Mode = 'real' | 'demo';
 const KEYS = ['question', 'hypothesis', 'controls', 'interpretation', 'conclusion', 'defense', 'limits', 'application', 'explain'];
@@ -25,7 +27,7 @@ const store = persisted<State>(KEY, { work: { real: blank(), demo: blank() }, mo
     for (const [k, v] of Object.entries(w.notes ?? {})) {
       if (typeof v !== 'string' || v.length > 4000) throw new Error('서술');
       const key = LEGACY[k] ?? k;
-      if (KEYS.includes(key)) work[m].notes[key] = work[m].notes[key] ? `${work[m].notes[key]}\n${v}` : v;
+      if (KEYS.includes(key) || IV_KEYS.includes(key)) work[m].notes[key] = work[m].notes[key] ? `${work[m].notes[key]}\n${v}` : v;
     }
     work[m] = { ...work[m], original: w.original, actions: w.actions, checked: w.checked };
   }
@@ -153,4 +155,18 @@ export function CsvReportPart({ title, labels }: { title: string; labels: Record
       <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
     </div>
   );
+}
+
+/** CSV 가명처리는 직접 준비한 자료와 데모의 서술을 따로 둔다. 근거는 직접 준비한 자료의 대조 결과뿐이다. */
+export function CsvInterview(props: InterviewProps) {
+  const { current, source, output, state, ready } = useCsv();
+  const mode = state.mode, n = current.notes;
+  const own = mode === 'real' && source ? source.rows.length : 0;
+  const name = mode === 'real' ? '직접 준비한 자료' : '가상 데모';
+  return <InterviewPrep {...props} values={n} disabled={!ready} modeLabel={name} file={`csv-${mode}-interview.md`}
+    set={(patch) => save((s) => ({ ...s, work: { ...s.work, [s.mode]: { ...s.work[s.mode], notes: { ...s.work[s.mode].notes, ...patch } } } }))} ctx={{
+      mode, storage: `${name}의 서술(이 브라우저, 다른 구분과 따로 저장)`, realCount: own, viewCount: source?.rows.length ?? 0, gap: '',
+      summary: [['탐구 질문', n.question ?? ''], ['가설', n.hypothesis ?? ''], ['열별 처리 기준', n.controls ?? ''], ['결론', n.conclusion ?? ''], ['한계', n.limits ?? '']],
+      calc: own && output && source ? csvSummary(source, output) : [],
+    }} />;
 }

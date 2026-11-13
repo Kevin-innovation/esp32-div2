@@ -4,7 +4,7 @@ import {
   CSV_FILENAME,
   EMPTY_NOTE,
   MAX_BYTES,
-  NOTE_KEYS,
+  NOTE_KEYS_ALL,
   ORIENTATIONS,
   aggregate,
   buildReport,
@@ -26,7 +26,8 @@ import {
 } from '../../lib/nfc';
 import { NotesEditor, type NoteGuide } from './NotesEditor';
 import { SummaryTable } from './SummaryTable';
-import { addTrial, clearDemo, clearReal, download, importNotes, importTrials, loadDemo, removeTrial, restoreTrial, setNote, setView, useLab, visibleTrials } from './store';
+import { addTrial, clearDemo, clearReal, download, importNotes, importTrials, loadDemo, removeTrial, restoreTrial, setNote, setNotes, setView, useLab, visibleTrials } from './store';
+import { InterviewPrep, type InterviewProps } from './InterviewPrep';
 
 const MAX_LIST = 200;
 const MAX_GROUPS = 30;
@@ -341,7 +342,7 @@ export function CsvPanel() {
       return;
     }
     try {
-      setPending(importCsv(await file.text(), NOTE_KEYS));
+      setPending(importCsv(await file.text(), NOTE_KEYS_ALL));
     } catch {
       setPending({ kind: 'invalid', errors: [{ line: 0, message: '파일을 읽지 못했습니다. 다시 골라 주세요.' }] });
     }
@@ -464,25 +465,18 @@ export function Report({ sources }: { sources: { title: string; url: string }[] 
   );
 }
 
-/* 자소서·면접 -------------------------------------------------------------- */
+/* 14장 면접 준비 ------------------------------------------------------------ */
 
-export function Interview({ guides }: { guides: NoteGuide[] }) {
+/** NFC 서술은 실제와 데모가 함께 쓴다. 근거와 계산값은 보고 있는 자료와 상관없이 실제 기록에서만 읽는다. */
+export function NfcInterview(props: InterviewProps) {
   const s = useLab();
   const real = s.trials.filter((t) => t.dataType === 'real');
-  const groups = aggregate(real, 'condition');
-  const low = groups.length > 1 ? [...groups].sort((a, b) => a.rate - b.rate)[0] : null;
-  const high = groups.length > 1 ? [...groups].sort((a, b) => b.rate - a.rate)[0] : null;
-
-  const items: Record<string, [string, string]> = {
-    q_curiosity: ['왜 이 질문이 궁금했나요? 어떤 장면에서 시작했나요?', '“NFC에 관심이 있었다”보다 직접 겪은 장면을 먼저 쓰세요.'],
-    q_design: ['왜 그 변수를 고르고 나머지는 고정했나요? 반복 횟수는 왜 그만큼인가요?', '다른 방법을 버린 이유까지 말하면 설계를 직접 했다는 점이 드러납니다.'],
-    q_unexpected: [
-      low && high ? `내 기록에서 ${high.key}는 ${percent(high.rate)}(${fraction(high)}), ${low.key}는 ${percent(low.rate)}(${fraction(low)})입니다. 이 차이가 가설과 맞나요? 다르다면 무엇을 먼저 의심했나요?` : '예상과 다른 결과가 나왔다면 무엇을 먼저 의심했나요? 실제 기록을 두 조건 이상 입력하면 이 질문에 내 수치가 들어갑니다.',
-      '예상과 달랐던 결과는 약점이 아니라 가장 좋은 답변 재료입니다.',
-    ],
-    q_verify: ['그 원인 후보를 어떻게 확인했나요? 무엇을 바꿔 다시 실험했나요?', '하지 않은 재실험은 쓰지 말고, 하려던 계획이라고 구분해 쓰세요.'],
-    q_limit: ['이 실험으로 말할 수 없는 것은 무엇인가요? 신용카드 보안에 대해 이 결과로 결론 내릴 수 있나요?', '일반 태그 실험은 EMV 결제 보안을 검증한 것이 아닙니다. 이 구분을 말할 수 있어야 합니다.'],
-  };
-  const fields = guides.map((g) => ({ ...g, help: items[g.key] ? `${items[g.key][0]} ${items[g.key][1]}` : g.help }));
-  return <NotesEditor fields={fields} values={s.notes} onChange={setNote} />;
+  const failed = real.filter((t) => !t.success).length;
+  const n = s.notes;
+  return <InterviewPrep {...props} values={n} set={setNotes} modeLabel="실제와 데모 공통" file="nfc-interview.md" ctx={{
+    mode: s.view, storage: '실제와 데모 공통 서술(이 브라우저)', realCount: real.length, viewCount: visibleTrials(s).length,
+    gap: failed ? `인식 안 됨 ${failed}회` : '',
+    summary: [['탐구 질문', n.question ?? ''], ['가설', n.hypothesis ?? ''], ['설계(바꾼 변수, 고정 조건, 반복)', [n.independent, n.controlled, n.plan].filter((v) => v?.trim()).join(' / ')], ['결론', n.conclusion ?? ''], ['한계', n.limits ?? '']],
+    calc: real.length ? nfcSummaryRows(real) : [],
+  }} />;
 }

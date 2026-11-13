@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type ChangeEvent, type SyntheticEvent } from 'react';
 import { persisted } from './labStore';
+import { InterviewPrep, type InterviewProps } from './InterviewPrep';
 import { NotesEditor, type NoteGuide } from './NotesEditor';
 import { SummaryTable } from './SummaryTable';
 import {
@@ -339,4 +340,17 @@ export function WifiReport({ labels }: { labels: Record<string, string> }) {
     <div className="btn-row"><button className="btn" type="button" onClick={() => download(state.view === 'demo' ? 'wifi-rssi-report-demo.md' : 'wifi-rssi-report.md', report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button><button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button><p className="status" role="status">{message}</p></div>
     <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
   </div>;
+}
+/** Wi-Fi 서술은 실제와 데모가 함께 쓴다. 근거와 계산값은 실제 기록에서만 읽는다. */
+export function WifiInterview(props: InterviewProps) {
+  const { state, ready } = useWifi();
+  const real = state.observations.filter((r) => r.dataType === 'real'), n = state.notes;
+  const lost = real.filter((r) => r.status === 'not-observed').length, skipped = real.filter((r) => r.status === 'unchecked').length;
+  return <InterviewPrep {...props} values={n} disabled={!ready} modeLabel="실제와 데모 공통" file="wifi-rssi-interview.md"
+    set={(patch) => store.set((s) => ({ ...s, notes: { ...s.notes, ...patch } }))} ctx={{
+      mode: state.view, storage: '실제와 데모 공통 서술(이 브라우저)', realCount: real.length, viewCount: state.observations.filter((r) => r.dataType === state.view).length,
+      gap: [lost && `신호 못 찾음 ${lost}건`, skipped && `측정 못 함 ${skipped}건`].filter(Boolean).join(', '),
+      summary: [['탐구 질문', n.question ?? ''], ['가설', n.hypothesis ?? ''], ['고정 조건과 반복', n.controls ?? ''], ['결론', n.conclusion ?? ''], ['한계', n.limits ?? '']],
+      calc: real.length ? wifiSummaryRows(real) : [],
+    }} />;
 }

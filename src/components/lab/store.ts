@@ -1,6 +1,6 @@
 // NFC 실험 상태. 여러 React 섬이 같은 상태를 보고, localStorage에 저장한다.
 import { useSyncExternalStore } from 'react';
-import { DEFAULT_QUESTION, MAX_NOTE_FIELD, NOTE_KEYS, demoTrials, mergeTrials, validateTrial, type DataType, type Notes, type Trial } from '../../lib/nfc';
+import { DEFAULT_QUESTION, MAX_NOTE_FIELD, NOTE_KEYS_ALL, demoTrials, mergeTrials, validateTrial, type DataType, type Notes, type Trial } from '../../lib/nfc';
 
 const KEY = 'esp32div.nfc.v1';
 
@@ -79,7 +79,7 @@ function readStorage(): Pick<LabState, 'trials' | 'notes' | 'loadWarning' | 'sav
     }
     const notes: Notes = { ...EMPTY.notes };
     if (data.notes && typeof data.notes === 'object') {
-      for (const key of NOTE_KEYS) {
+      for (const key of NOTE_KEYS_ALL) {
         const value = (data.notes as Notes)[key];
         if (typeof value === 'string') notes[key] = value.slice(0, MAX_NOTE_FIELD);
       }
@@ -114,6 +114,7 @@ export const useLab = (): LabState => useSyncExternalStore(subscribe, () => stat
 export const visibleTrials = (s: LabState): Trial[] => s.trials.filter((t) => t.dataType === s.view);
 
 export const setNote = (key: string, value: string): void => commit({ notes: { ...state.notes, [key]: value } });
+export const setNotes = (patch: Record<string, string>): void => commit({ notes: { ...state.notes, ...patch } });
 export const addTrial = (t: Trial): void => commit({ trials: [...state.trials, t], view: 'real' });
 export const removeTrial = (id: string): void => commit({ trials: state.trials.filter((t) => t.id !== id) });
 /** 지운 한 건만 되살린다. 그사이 들어온 다른 기록은 그대로 둔다. */

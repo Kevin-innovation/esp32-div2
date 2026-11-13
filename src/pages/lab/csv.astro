@@ -1,6 +1,7 @@
 ---
 import LabGuide from '../../components/lab/LabGuide.astro';
-import { CsvExportPart, CsvNotesPart, CsvReportPart, CsvSourcePart, CsvWorkPart } from '../../components/lab/PseudonymLab';
+import { CsvExportPart, CsvInterview, CsvNotesPart, CsvReportPart, CsvSourcePart, CsvWorkPart } from '../../components/lab/PseudonymLab';
+import { INTERVIEW } from '../../lib/workbooks/interview';
 import { csvColab } from '../../lib/colab';
 import { csvSummary, pseudonymize, readSource } from '../../lib/pseudonym';
 import { csvTable, noteFields, noteLabels } from '../../lib/workbooks/render';
@@ -19,6 +20,6 @@ const pick = (...keys: string[]) => noteFields(guide, keys);
   <CsvNotesPart slot="interpret" client:load fields={pick('interpretation', 'conclusion')} />
   <CsvNotesPart slot="defense" client:load fields={pick('defense', 'limits')} />
   <CsvNotesPart slot="application" client:load fields={pick('application')} />
-  <CsvNotesPart slot="explain" client:load fields={pick('explain')} />
+  <CsvInterview slot="interview" client:load title={guide.title} questions={INTERVIEW.csv} explain={pick('explain')[0]} />
   <CsvReportPart slot="report" client:load title={guide.title} labels={noteLabels(guide)} />
 </LabGuide>

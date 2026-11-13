@@ -1,4 +1,6 @@
 import { csvCell, MAX_BYTES, parseCsv, uncsvText } from './nfc.ts';
+import { ivReportItems } from './interview.ts';
+import { INTERVIEW } from './workbooks/interview.ts';
 export type Action = 'keep' | 'alias' | 'remove';
 export interface CsvSource { header: string[]; rows: string[][]; errors: string[] }
 export function readSource(text: string): CsvSource {
@@ -74,6 +76,7 @@ export function buildCsvReport(title: string, source: CsvSource | null, actions:
     `## 9. ${labels.limits}`, text('limits'),
     `## 10. ${labels.application}`, text('application'),
     `## 11. ${labels.explain}`, text('explain'),
+    '## 12. 면접 준비(14장)', ...ivReportItems(INTERVIEW.csv, notes),
     '## 경계', '가명처리는 익명화가 아닙니다. 대응표와 원본은 공유본에 넣지 않고 따로 보관합니다.',
   ].join('\n\n') + '\n';
 }

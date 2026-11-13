@@ -1,5 +1,5 @@
 ---
-// 실습 워크북 한 권의 틀. 열세 장의 순서와 '설명, 예시, 수행, 확인' 구성을 모든 주제에 똑같이 적용하고,
+// 실습 워크북 한 권의 틀. 열네 장의 순서와 '설명, 예시, 수행, 확인' 구성을 모든 주제에 똑같이 적용하고,
 // 내용은 주제마다 쓴 Guide 데이터와 입력 도구(슬롯)로 채운다.
 // 주제에만 있는 내용은 선택 슬롯(장-부분 이름)에 넣는다. 비어 있으면 아무것도 그리지 않는다.
 // scene은 실습 목록 위치(0이 01 NFC 기본 실습)이며 첫 화면 그림과 번호를 함께 정한다.
@@ -35,7 +35,16 @@ const chapters = [
   ['threats', '위협과 방어', '실생활 위협이 성립하는 조건과 방어, 그 근거와 한계를 정리합니다.'],
   ['industry', '현업 응용과 확장 프로젝트', '같은 원리가 실제 개발과 운영에서 어떻게 쓰이는지 보고 내 프로젝트를 설계합니다.'],
   ['report', '보고서와 평가', '내 입력과 계산 결과로 보고서를 만들고 스스로 평가합니다.'],
+  ['interview', '면접 준비: 내 탐구를 말로 설명하기', '보고서를 바탕으로 원리, 근거, 한계를 정직하게 말하는 연습을 합니다.'],
 ] as const;
+// 14장 확인 질문은 모든 실습에 같다.
+const interviewChecks = [
+  '질문마다 내 기록의 수치나 관찰을 들었고, 기록이 없으면 없다고 말했다.',
+  '직접 본 것과 내 추정을 나눠 말했다.',
+  '이 실험으로 말할 수 없는 것을 한 문장으로 말할 수 있다.',
+  '데모나 예시의 값을 내 결과처럼 말하지 않았다.',
+  '1분 설명을 소리 내어 읽어 60초 안에 끝냈다.',
+];
 const n = (id: string) => chapters.findIndex(([c]) => c === id) + 1;
 const pad = (i: number) => String(i).padStart(2, '0');
 const missionId = Astro.url.pathname.split('/').filter(Boolean).pop()!;
@@ -79,7 +88,7 @@ const has = (name: string) => Astro.slots.has(name);
     <div class="wb-body">
       <nav class="wb-toc" data-toc aria-labelledby="wb-toc-h">
         <h2 id="wb-toc-h">장 목차</h2>
-        <ol>{chapters.map(([, title], i) => <li><a href={`#ch-${i + 1}`}><span class="wb-toc__n">{pad(i + 1)}</span><span>{title}</span></a></li>)}</ol>
+        <ol>{chapters.map(([id, title], i) => <li class={id === 'interview' ? 'wb-toc__after' : undefined}><a href={`#ch-${i + 1}`}><span class="wb-toc__n">{pad(i + 1)}</span><span>{title}</span></a></li>)}</ol>
       </nav>
 
       <div class="wb-main">
@@ -259,12 +268,28 @@ const has = (name: string) => Astro.slots.has(name);
 
         <section class="wb-ch" id={`ch-${n('report')}`} aria-labelledby="h-report">
           <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('report'))}</span><div><h2 id="h-report"><span class="sr">{n('report')}장. </span>{chapters[12][1]}</h2><p class="wb-ch__aim">{chapters[12][2]}</p></div></header>
-          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body"><p>보고서는 앞 장에서 쓴 서술(질문, 가설, 고정 조건, 해석, 결론, 위협과 방어, 한계, 응용 아이디어)과 지금 보고 있는 기록, 8장의 계산 결과로 만들어집니다. 쓰지 않은 항목은 (미작성)으로 남고, 빈 값과 미확인은 0으로 바뀌지 않습니다. 데모를 보고 있으면 보고서 첫 줄에 가상 데모 자료라고 적힙니다.</p></div></div>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body"><p>보고서는 앞 장에서 쓴 서술(질문, 가설, 고정 조건, 해석, 결론, 위협과 방어, 한계, 응용 아이디어)과 지금 보고 있는 기록, 8장의 계산 결과로 만들어집니다. 쓰지 않은 항목은 (미작성)으로 남고, 빈 값과 미확인은 0으로 바뀌지 않습니다. 데모를 보고 있으면 보고서 첫 줄에 가상 데모 자료라고 적힙니다. 14장에서 쓴 면접 준비 답과 1분 설명도 보고서 끝에 붙습니다.</p></div></div>
           <div class="wb-part"><h3 class="wb-part__label">예시</h3><div class="wb-part__body">
             <div class="table-wrap" tabindex="0" role="region" aria-label="평가 체크"><table><caption>제출 전 평가 체크</caption><thead><tr><th scope="col">항목</th><th scope="col">잘 된 보고서의 모습</th></tr></thead><tbody>{g.rubric.map(([a, b]) => <tr><th scope="row">{a}</th><td>{b}</td></tr>)}</tbody></table></div>
           </div></div>
-          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><slot name="explain" /><h4>보고서 미리보기와 내려받기</h4><slot name="report" /></div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body"><h4>보고서 미리보기와 내려받기</h4><slot name="report" /></div></div>
           <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{g.checks.report.map((c) => <li>{c}</li>)}</ul></div></div>
+          <p class="wb-next"><a class="btn btn--quiet" href={`#ch-${n('interview')}`}>보고서를 검토했다면 {n('interview')}장 면접 준비로</a></p>
+        </section>
+
+        <section class="wb-ch wb-ch--interview" id={`ch-${n('interview')}`} aria-labelledby="h-interview">
+          <header class="wb-ch__head"><span class="wb-ch__n" aria-hidden="true">{pad(n('interview'))}</span><div><p class="wb-ch__kicker">보고서 다음 단계</p><h2 id="h-interview"><span class="sr">{n('interview')}장. </span>{chapters[13][1]}</h2><p class="wb-ch__aim">{chapters[13][2]}</p></div></header>
+          <div class="wb-part"><h3 class="wb-part__label">설명</h3><div class="wb-part__body">
+            <p>면접에서는 결과보다 <strong>왜 그렇게 설계했는지, 무엇을 근거로 말하는지, 무엇은 말할 수 없는지</strong>를 묻는 경우가 많습니다. 이 장의 질문 6개는 이 미션의 동기, 원리, 변수와 반복, 내 결과, 보안과 방어, 한계와 현업 응용을 다룹니다. 원리를 확인하고 정직하게 설명하는 연습이며, 모든 면접 질문에 대비된다는 뜻은 아닙니다.</p>
+            <ul>
+              <li>직접 한 것만 말합니다. 하지 않은 재실험은 계획이라고 구분합니다.</li>
+              <li>예시는 모두 가상입니다. 펼쳐 보고 내 기록의 수치와 관찰로 바꿔 씁니다. 데모 값은 내 결과가 아닙니다.</li>
+              <li>답을 쓰면 실제 기록 유무와 스스로 표시한 근거 점검에 맞춘 후속 질문이 열립니다. 점검 표시는 학습 보조이며 점수나 이해 판정이 아닙니다.</li>
+            </ul>
+            <p><strong>종이에 쓸 때:</strong> 입력이 되지 않으면 공책에 질문 번호를 적고, 아래 작성 방향대로 한 문단씩 답합니다. 그다음 후속 질문 예 가운데 내 상황에 맞는 것 하나에 답하고, 질문, 방법, 결과, 한계, 다음 탐구 순서로 1분 설명을 씁니다.</p>
+          </div></div>
+          <div class="wb-part"><h3 class="wb-part__label">수행</h3><div class="wb-part__body" id="interview"><slot name="interview" /></div></div>
+          <div class="wb-part wb-part--check"><h3 class="wb-part__label">확인</h3><div class="wb-part__body"><ul class="wb-checks">{interviewChecks.map((c) => <li>{c}</li>)}</ul></div></div>
         </section>
 
         <section class="wb-refs" aria-labelledby="h-refs">

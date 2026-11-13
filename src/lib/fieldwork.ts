@@ -1,4 +1,6 @@
 import { csvCell, MAX_BYTES, newId, parseCsv, uncsvText } from './nfc.ts';
+import { IV_KEYS, ivReportItems } from './interview.ts';
+import { INTERVIEW } from './workbooks/interview.ts';
 import { CHECKLIST_FIELDS, CHECKLIST_LABELS, CHECKLIST_OPTIONS, fieldMaxLength, isChecklist, validateChecklist, type ChecklistKind } from './checklist.ts';
 
 export type Kind = 'ble-ad' | 'ir' | 'interference' | 'gps' | ChecklistKind;
@@ -17,8 +19,10 @@ export const NOTE_LABELS = {
   explain: '1분 자기 설명',
 };
 export type NoteKey = keyof typeof NOTE_LABELS;
-export type Notes = Record<NoteKey, string>;
+export type Notes = Record<NoteKey, string> & Record<string, string>;
 export const NOTE_KEYS = Object.keys(NOTE_LABELS) as NoteKey[];
+/** 저장, CSV가 받는 전체 서술 항목: 보고서 칸과 14장 면접 준비 칸 */
+export const NOTE_KEYS_ALL: string[] = [...NOTE_KEYS, ...IV_KEYS];
 export const emptyNotes = (): Notes => Object.fromEntries(NOTE_KEYS.map((k) => [k, ''])) as Notes;
 export const FIELDS = {
   ...CHECKLIST_FIELDS,
@@ -93,13 +97,13 @@ export const makeRow = (values: Row, mode: Mode): Row => ({ ...values, id: newId
 export function rowsCsv(kind: Kind, rows: Row[], notes: Record<Mode, Partial<Notes>>) {
   const header = ['schema_version', 'workbook_id', 'record_type', 'observation_id', 'data_type', ...FIELDS[kind], 'note_key', 'note_value'];
   const records = rows.map(r => ['1', kind, 'observation', r.id, r.data_type, ...FIELDS[kind].map(k => r[k]), '', '']);
-  for (const mode of ['real', 'demo'] as const) for (const key of NOTE_KEYS) if (notes[mode][key]) records.push(['1', kind, 'notes', '', mode, ...FIELDS[kind].map(() => ''), key, notes[mode][key]!]);
+  for (const mode of ['real', 'demo'] as const) for (const key of NOTE_KEYS_ALL) if (notes[mode][key]) records.push(['1', kind, 'notes', '', mode, ...FIELDS[kind].map(() => ''), key, notes[mode][key]!]);
   return '﻿' + [header, ...records].map(r => r.map(csvCell).join(',')).join('\r\n') + '\r\n';
 }
 export function readRowsCsv(kind: Kind, text: string) {
   if (new Blob([text]).size > MAX_BYTES) throw new Error('1MB 이하 파일을 선택하세요.');
   const parsed = parseCsv(text), rows: Row[] = [], errors: string[] = [];
-  const notes: Partial<Record<Mode, Partial<Notes>>> = {};
+  const notes: Partial<Record<Mode, Record<string, string>>> = {};
   const header = ['schema_version', 'workbook_id', 'record_type', 'observation_id', 'data_type', ...FIELDS[kind], 'note_key', 'note_value'];
   if (parsed[0]?.cells.join(',') !== header.join(',')) throw new Error('이 워크북에서 내보낸 CSV를 선택하세요.');
   if (parsed.length > 1001) throw new Error('관찰과 서술을 합쳐 1000행까지 가져올 수 있습니다.');
@@ -109,8 +113,8 @@ export function readRowsCsv(kind: Kind, text: string) {
     let error: string | null = null;
     if (line.cells.length !== header.length || raw.schema_version !== '1' || raw.workbook_id !== kind || !['real', 'demo'].includes(raw.data_type)) error = '열·버전·워크북·자료 구분이 맞지 않습니다.';
     else if (raw.record_type === 'notes') {
-      const key = raw.note_key as NoteKey, mode = raw.data_type as Mode;
-      if (!Object.hasOwn(NOTE_LABELS, key) || raw.note_value.length > 4000 || Object.hasOwn(notes[mode] ?? {}, key)) error = '서술 항목·길이 또는 중복을 확인하세요.';
+      const key = raw.note_key, mode = raw.data_type as Mode;
+      if (!NOTE_KEYS_ALL.includes(key) || raw.note_value.length > 4000 || Object.hasOwn(notes[mode] ?? {}, key)) error = '서술 항목·길이 또는 중복을 확인하세요.';
       else { notes[mode] ??= {}; notes[mode]![key] = raw.note_value; }
     } else if (raw.record_type === 'observation') {
       const row: Row = Object.fromEntries(FIELDS[kind].map(k => [k, raw[k]]));
@@ -211,6 +215,7 @@ export function buildFieldReport(kind: Kind, title: string, rows: Row[], notes: 
     `## 9. ${label('limits')}`, text('limits'),
     `## 10. ${label('application')}`, text('application'),
     `## 11. ${label('explain')}`, text('explain'),
+    '## 12. 면접 준비(14장)', ...ivReportItems(INTERVIEW[kind] ?? [], notes),
     '## 실행 경계',
     '이 기기의 해당 기능 실행은 미검증입니다. 관찰 하나만으로 공격, 의도, 인증, 위치 위조를 증명하지 않습니다.',
   ];

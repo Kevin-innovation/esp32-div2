@@ -1,10 +1,11 @@
 ---
-// 01 NFC 기본 실습. 다른 워크북과 같은 열세 장 틀(LabGuide)을 쓰고, NFC에만 있는 실측 골든 케이스,
-// 예비 실험, 분석 노트북, EMV 비교, 면접 질문은 선택 슬롯으로 넣는다. 저장 키와 CSV, 서술 항목은 그대로다.
+// 01 NFC 기본 실습. 다른 워크북과 같은 열네 장 틀(LabGuide)을 쓰고, NFC에만 있는 실측 골든 케이스,
+// 예비 실험, 분석 노트북, EMV 비교는 선택 슬롯으로 넣는다. 14장 면접 준비는 이전 면접 답 키(q_*)를 그대로 잇는다.
 import LabGuide from '../../components/lab/LabGuide.astro';
 import Think from '../../components/learn/Think.astro';
 import TermLink from '../../components/learn/TermLink.astro';
-import { Chart, CsvPanel, Interview, NoteFields, PythonPanel, Records, Report, SaveState, Summary } from '../../components/lab/NfcLab';
+import { Chart, CsvPanel, NfcInterview, NoteFields, PythonPanel, Records, Report, SaveState, Summary } from '../../components/lab/NfcLab';
+import { INTERVIEW } from '../../lib/workbooks/interview';
 import { nfcColab } from '../../lib/colab';
 import { nfcSummaryRows, pythonScript } from '../../lib/nfc';
 import CodeBlock from '../../components/CodeBlock.astro';
@@ -27,7 +28,7 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
       <li><strong>B 원리와 설계(4~5장):</strong> <a href={url('/learn/nfc/')}>NFC 원리</a>와 <a href={url('/learn/security/')}>위협과 방어</a>를 읽고 질문, 가설, 고정 조건, 성공 기준을 씁니다. 예비 실험이 안 되면 실행하지 않은 설계안으로 제출합니다. 질문: 조건 외에 함께 바뀌는 것은 없는가?</li>
       <li><strong>C 관찰과 기록(6장):</strong> 기본 세 조건을 각각 5회 시도하고 기록과 CSV를 남깁니다. 정상 대기에서 시도한 읽기 실패는 결과이고, 시작조차 못 한 시도는 실패 횟수로 꾸미지 않습니다. 질문: 다른 사람이 이 기록으로 시도를 재현할 수 있나?</li>
       <li><strong>D 분석과 방어(7~11장):</strong> 그래프의 성공/시도를 원자료와 대조하고 결론, 한계, 방어를 씁니다. 그래프가 비면 실제와 데모 구분을 확인하고, 기능이 안 되면 공책에서 성공 ÷ 시도 × 100으로 계산합니다. 질문: 이 결과로 말할 수 없는 보안 주장은 무엇인가?</li>
-      <li><strong>E 보고서와 자기 설명(12~13장):</strong> 보고서에 질문, 방법, 자료, 해석, 방어, 한계, 응용을 연결하고 면접 질문에 답합니다. 비어 있는 부분은 해당 장으로 돌아가 보완하고, 재측정할 수 없으면 미완료와 후속 계획을 밝힙니다. 질문: 가장 중요한 근거 한 가지와 다음 실험은 무엇인가?</li>
+      <li><strong>E 보고서와 면접 준비(12~14장):</strong> 13장 보고서에 질문, 방법, 자료, 해석, 방어, 한계, 응용을 연결하고, 14장에서 미션 질문 6개와 1분 설명으로 내 탐구를 말로 설명합니다. 비어 있는 부분은 해당 장으로 돌아가 보완하고, 재측정할 수 없으면 미완료와 후속 계획을 밝힙니다. 질문: 가장 중요한 근거 한 가지와 다음 실험은 무엇인가?</li>
     </ol>
     <h4>자바스크립트 없이 공책으로 완주하기</h4>
     <ol>
@@ -182,11 +183,6 @@ const reportSources = [SOURCES.emvco, SOURCES.ntag, SOURCES.metal, SOURCES.nistC
 
   <div slot="application"><NoteFields client:load fields={pick('application', 'nextQuestions')} /></div>
 
-  <div slot="explain" id="interview">
-    <NoteFields client:load fields={pick('explain')} />
-    <h4>자기소개서와 면접 질문</h4>
-    <p>직접 한 것만 씁니다. 자기소개서 한 문단은 <strong>궁금했던 장면, 내가 고른 설계, 나온 수치, 예상과 달랐던 점, 다시 확인한 방법</strong> 순서로 짜면 흐름이 생깁니다. 답변 메모는 보고서 끝 면접 답변 메모에 들어갑니다.</p>
-    <Interview client:load guides={pick('q_curiosity', 'q_design', 'q_unexpected', 'q_verify', 'q_limit')} />
-  </div>
+  <div slot="interview"><NfcInterview client:load title={guide.title} questions={INTERVIEW.nfc} explain={pick('explain')[0]} /></div>
   <div slot="report" id="report"><Report client:load sources={reportSources} /></div>
 </LabGuide>

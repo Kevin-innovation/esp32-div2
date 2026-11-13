@@ -1,5 +1,7 @@
 // Wi-Fi 첫 수직 슬라이스. NFC 형식은 유지하고 CSV의 안전한 기본 함수만 재사용한다.
 import { MAX_BYTES, csvCell, mdEscape, newId, parseCsv, uncsvText } from './nfc.ts';
+import { IV_KEYS, ivReportItems } from './interview.ts';
+import { INTERVIEW } from './workbooks/interview.ts';
 
 export type WorkbookDataType = 'real' | 'demo';
 export type ObservationStatus = 'observed' | 'not-observed' | 'unchecked';
@@ -30,6 +32,8 @@ export const WIFI_NOTE_KEYS = [
   'question', 'motivation', 'hypothesis', 'controls', 'plan', 'interpretation', 'conclusion',
   'security', 'unexpected', 'followup', 'defense', 'limits', 'interview', 'application', 'explain',
 ] as const;
+/** 저장, 서술 CSV가 받는 전체 항목: 기존 서술 칸과 14장 면접 준비 칸 */
+export const WIFI_NOTE_KEYS_ALL: readonly string[] = [...WIFI_NOTE_KEYS, ...IV_KEYS];
 export const WIFI_DEFAULT_NOTES: WifiNotes = { question: '방마다 Wi-Fi 신호가 다른 이유는 무엇일까?' };
 export const WIFI_MAX_ROWS = 5000;
 export { MAX_BYTES as WORKBOOK_MAX_BYTES };
@@ -79,7 +83,7 @@ export function wifiObservationsToCsv(rows: WifiObservation[]): string {
   return `﻿${[WIFI_CSV_COLUMNS.join(','), ...body].join('\r\n')}\r\n`;
 }
 export function wifiNotesToCsv(notes: WifiNotes): string {
-  return `﻿${[WIFI_NOTE_COLUMNS.join(','), ...WIFI_NOTE_KEYS.filter((key) => notes[key]?.trim()).map((key) => [1, 'wifi-rssi', key, notes[key]].map(csvCell).join(','))].join('\r\n')}\r\n`;
+  return `﻿${[WIFI_NOTE_COLUMNS.join(','), ...WIFI_NOTE_KEYS_ALL.filter((key) => notes[key]?.trim()).map((key) => [1, 'wifi-rssi', key, notes[key]].map(csvCell).join(','))].join('\r\n')}\r\n`;
 }
 export interface WifiImportError { line: number; message: string }
 export type WifiImport =
@@ -103,7 +107,7 @@ export function importWifiCsv(text: string): WifiImport {
     const raw = Object.fromEntries(header.map((h, i) => [h, uncsvText(row.cells[i])]));
     if (raw.schema_version !== '1' || raw.workbook_id !== 'wifi-rssi') return { kind: 'invalid', errors: [{ line: row.line, message: '다른 워크북이나 지원하지 않는 버전입니다. 이 파일은 반영하지 않습니다.' }] };
     if (isNotes) {
-      if (!(WIFI_NOTE_KEYS as readonly string[]).includes(raw.field) || raw.value.length > 4000 || Object.hasOwn(notes, raw.field)) errors.push({ line: row.line, message: '서술 항목이 중복되었거나 허용 항목·4000자 제한에 맞지 않습니다.' });
+      if (!WIFI_NOTE_KEYS_ALL.includes(raw.field) || raw.value.length > 4000 || Object.hasOwn(notes, raw.field)) errors.push({ line: row.line, message: '서술 항목이 중복되었거나 허용 항목·4000자 제한에 맞지 않습니다.' });
       else notes[raw.field] = raw.value;
     } else {
       const result = validateWifiObservation(raw);
@@ -168,7 +172,7 @@ export function restoreWifiState(raw: string): { observations: WifiObservation[]
     else { seenIds.add(checked.id); observations.push(checked); }
   }
   for (const [key, value] of Object.entries(stored.notes)) {
-    if (!(WIFI_NOTE_KEYS as readonly string[]).includes(key) || typeof value !== 'string' || value.length > 4000) dropped++;
+    if (!WIFI_NOTE_KEYS_ALL.includes(key) || typeof value !== 'string' || value.length > 4000) dropped++;
     else notes[key] = value;
   }
   return { observations, notes, dropped };
@@ -198,6 +202,7 @@ export function buildWifiReport(rows: WifiObservation[], notes: WifiNotes, dataT
     `## 5. 계산 결과\n\n${wifiSummaryRows(selected).map(([k, v]) => `- ${mdTableCell(k)}: ${v}`).join('\n') || '(기록 없음)'}\n\n신호 못 찾음과 미측정은 RSSI 계산에서 빼고 따로 셌습니다. RSSI 차이는 속도나 침입을 뜻하지 않습니다.`,
     ...['interpretation', 'conclusion', 'defense', 'limits', 'application', 'explain'].map((k, i) => `## ${6 + i}. ${label(k)}\n\n${mdEscape(note(notes, k))}`),
     legacy ? `## 이전 버전에서 쓴 서술\n\n${legacy}` : '',
+    `## 면접 준비(14장)\n\n${ivReportItems(INTERVIEW['wifi-rssi'], notes).map(mdEscape).join('\n\n')}`,
     '## 원자료와 출처\n\n관찰 CSV와 탐구 서술 CSV를 함께 보관합니다. 이 기기의 Wi-Fi 스캔 실행은 미검증입니다.',
   ];
   return parts.filter(Boolean).join('\n\n') + '\n';

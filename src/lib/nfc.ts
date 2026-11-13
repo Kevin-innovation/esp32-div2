@@ -1,4 +1,6 @@
 // NFC 실험의 순수 로직: CSV, 검증, 집계, 보고서, 파이썬. DOM을 쓰지 않아 node로 바로 검사한다.
+import { IV_KEYS, ivReportItems } from './interview.ts';
+import { INTERVIEW } from './workbooks/interview.ts';
 
 export type DataType = 'real' | 'demo';
 
@@ -38,6 +40,8 @@ export const NOTE_KEYS = [
   'nextQuestions', 'securityAsset', 'threatModel', 'securityFinding', 'defensePlan', 'residualRisk',
   'q_curiosity', 'q_design', 'q_unexpected', 'q_verify', 'q_limit', 'application', 'explain',
 ] as const;
+/** 저장, 서술 CSV가 받는 전체 항목: 기존 서술 칸과 14장 면접 준비 칸 */
+export const NOTE_KEYS_ALL = [...NOTE_KEYS, ...IV_KEYS];
 
 export const MAX_ROWS = 5000;
 export const MAX_BYTES = 1024 * 1024;
@@ -307,8 +311,6 @@ export function nfcSummaryRows(trials: Trial[]): [string, string][] {
   return out;
 }
 
-export const INTERVIEW_LABELS = [['q_curiosity', '궁금한 점'], ['q_design', '설계 이유'], ['q_unexpected', '예상 밖 결과'], ['q_verify', '검증'], ['q_limit', '한계']] as const;
-
 /** 해석을 흐리는 설계 문제를 찾아 문장으로 알려 준다. 결과를 대신 판단하지는 않는다. */
 export function designWarnings(trials: Trial[], minRepeats = 5): string[] {
   if (!trials.length) return [];
@@ -435,8 +437,8 @@ export function buildReport({ trials, notes, dataType, date, sources }: ReportIn
   blocks.push({ type: 'p', text: noteOr(notes, 'application') });
   blocks.push({ type: 'h2', text: '11. 1분 설명' });
   blocks.push({ type: 'p', text: noteOr(notes, 'explain') });
-  blocks.push({ type: 'h2', text: '12. 면접 답변 메모' });
-  blocks.push({ type: 'list', items: INTERVIEW_LABELS.map(([k, label]) => `${label}: ${noteOr(notes, k)}`) });
+  blocks.push({ type: 'h2', text: '12. 면접 준비(14장)' });
+  for (const item of ivReportItems(INTERVIEW.nfc, notes)) blocks.push({ type: 'p', text: item });
 
   if (trials.length) {
     blocks.push({ type: 'h2', text: '부록. 원자료' });

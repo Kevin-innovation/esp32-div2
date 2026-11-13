@@ -1,10 +1,11 @@
 import { useEffect, useId, useState } from 'react';
 import { checklistDraft, fieldMaxLength, isChecklist } from '../../lib/checklist';
-import { buildFieldReport, choices, downloadFile, emptyNotes, FIELDS, groupFields, LABELS, makeRow, NOTE_KEYS, readRowsCsv, rowsCsv, STATUS, summaryRows, validateRow, type Kind, type Mode, type NoteKey, type Notes, type Row } from '../../lib/fieldwork';
+import { buildFieldReport, choices, downloadFile, emptyNotes, FIELDS, groupFields, LABELS, makeRow, NOTE_KEYS, NOTE_KEYS_ALL, readRowsCsv, rowsCsv, STATUS, summaryRows, validateRow, type Kind, type Mode, type NoteKey, type Notes, type Row } from '../../lib/fieldwork';
 import { persisted } from './labStore';
 import { NotesEditor, type NoteGuide } from './NotesEditor';
 import { FileDigest } from './ChecklistLab';
 import { SummaryTable } from './SummaryTable';
+import { InterviewPrep, type InterviewProps } from './InterviewPrep';
 
 interface State { schemaVersion: 1; workbookId: Kind; rows: Row[]; notes: Record<Mode, Notes>; mode: Mode }
 const MAX_ROWS = 900;
@@ -16,7 +17,7 @@ function restore(kind: Kind, raw: string) {
   if (saved?.schemaVersion !== 1 || saved.workbookId !== kind || !Array.isArray(saved.rows) || saved.rows.length > MAX_ROWS) throw new Error('형식');
   for (const r of saved.rows) { if (validateRow(kind, r) || ids.has(r.id)) throw new Error('행'); ids.add(r.id); }
   const notes = { real: emptyNotes(), demo: emptyNotes() };
-  for (const m of ['real', 'demo'] as const) for (const k of NOTE_KEYS) {
+  for (const m of ['real', 'demo'] as const) for (const k of NOTE_KEYS_ALL) {
     const v = saved.notes?.[m]?.[k];
     if (v === undefined) continue; // 이전 버전에는 없던 서술 항목
     if (typeof v !== 'string' || v.length > 4000) throw new Error('서술');
@@ -183,4 +184,20 @@ export function FieldReport({ kind, title, labels }: { kind: Kind; title: string
       <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
     </div>
   );
+}
+
+/** 현장 기록 워크북은 실제와 데모의 서술을 따로 둔다. 데모 서술의 답은 실제 기록을 근거로 삼지 않는다. */
+export function FieldInterview({ kind, ...props }: InterviewProps & { kind: Kind }) {
+  const s = store(kind), { state, ready } = s.use();
+  const mode = state.mode, n = state.notes[mode];
+  const real = state.rows.filter((r) => r.data_type === 'real');
+  const own = mode === 'real' ? real : [];
+  const lost = own.filter((r) => r.observation_status === 'not-observed').length, skipped = own.filter((r) => r.observation_status === 'unchecked').length;
+  return <InterviewPrep {...props} values={n} disabled={!ready} modeLabel={modeName(mode)} file={`${kind}-${mode}-interview.md`}
+    set={(patch) => s.set((st) => ({ ...st, notes: { ...st.notes, [st.mode]: { ...st.notes[st.mode], ...patch } } }))} ctx={{
+      mode, storage: `${modeName(mode)}의 서술(이 브라우저, 다른 구분과 따로 저장)`, realCount: own.length, viewCount: state.rows.filter((r) => r.data_type === mode).length,
+      gap: [lost && `관찰되지 않음 ${lost}건`, skipped && `측정하지 못함 ${skipped}건`].filter(Boolean).join(', '),
+      summary: [['탐구 질문', n.question], ['가설', n.hypothesis], ['고정 조건과 반복', n.controls], ['결론', n.conclusion], ['한계', n.limits]],
+      calc: own.length ? summaryRows(kind, own) : [],
+    }} />;
 }

@@ -1,6 +1,7 @@
 ---
 import LabGuide from '../../components/lab/LabGuide.astro';
-import { WifiChart, WifiData, WifiNotes, WifiRecord, WifiReport } from '../../components/lab/WifiRssiLab';
+import { WifiChart, WifiData, WifiInterview, WifiNotes, WifiRecord, WifiReport } from '../../components/lab/WifiRssiLab';
+import { INTERVIEW } from '../../lib/workbooks/interview';
 import { wifiColab } from '../../lib/colab';
 import { wifiSummaryRows } from '../../lib/workbook';
 import { noteFields, noteLabels, wifiTable } from '../../lib/workbooks/render';
@@ -17,6 +18,6 @@ const pick = (...keys: string[]) => noteFields(guide, keys);
   <WifiNotes slot="interpret" client:load fields={pick('interpretation', 'conclusion')} />
   <WifiNotes slot="defense" client:load fields={pick('defense', 'limits')} />
   <WifiNotes slot="application" client:load fields={pick('application')} />
-  <WifiNotes slot="explain" client:load fields={pick('explain')} />
+  <WifiInterview slot="interview" client:load title={guide.title} questions={INTERVIEW['wifi-rssi']} explain={pick('explain')[0]} />
   <WifiReport slot="report" client:load labels={noteLabels(guide)} />
 </LabGuide>

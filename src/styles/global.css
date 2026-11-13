@@ -961,6 +961,28 @@ a.path-link--prev:hover .path-link__arrow { transform: translateX(-3px); }
 .note-example[open] { padding-bottom: var(--space-md); border-bottom: var(--rule-hair) dashed var(--color-rule); }
 .note-example > * + * { margin-top: var(--space-xs); }
 .note-example__text { white-space: pre-wrap; }
+/* 14장 면접 준비: 보고서 다음 단계라는 것을 목차 구분선과 장 머리 색으로 보인다. */
+.wb-toc li.wb-toc__after { margin-top: var(--space-sm); border-top: 2px solid var(--color-accent); }
+.wb-ch--interview .wb-ch__head { border-top-color: var(--color-accent); }
+.wb-ch--interview .wb-ch__n, .wb-ch__kicker { color: var(--color-accent); }
+.wb-ch__kicker { margin-bottom: var(--space-2xs); font-size: var(--text-sm); font-weight: 700; }
+.wb-next { display: flex; justify-content: flex-end; }
+.iv > * + * { margin-top: var(--space-xl); }
+.iv-block > * + * { margin-top: var(--space-sm); }
+.iv-list { list-style: none; padding-left: 0 !important; }
+.iv-q { padding-top: var(--space-lg); border-top: var(--rule-hair) solid var(--color-rule); }
+.iv-q > * + * { margin-top: var(--space-sm); }
+.iv-q__topic { color: var(--color-accent-soft-ink); font-size: var(--text-sm); font-weight: 700; }
+.iv-follow { padding-left: var(--space-md); border-left: 3px solid var(--color-rule); }
+.iv-follow__ask { font-weight: 600; }
+.iv-check { margin: 0; padding: 0; border: 0; min-width: 0; }
+.iv-check legend { font-size: var(--text-sm); font-weight: 600; }
+.iv-check legend .field__help { display: block; font-weight: 400; }
+.iv-check label { display: flex; gap: var(--space-xs); align-items: flex-start; min-height: 44px; padding-block: var(--space-2xs); font-size: var(--text-sm); }
+.iv-check input { flex: none; width: 1.1rem; height: 1.1rem; margin-top: 0.2em; }
+.iv-warn { margin: 0; padding-left: 1.25rem; color: var(--color-warn); font-size: var(--text-sm); }
+.iv-summary dd, .iv-pitch__preview { white-space: pre-wrap; overflow-wrap: anywhere; }
+.iv-pitch__preview { padding: var(--space-sm); border-radius: var(--radius-control); background: var(--color-paper-2); }
 .report-preview { max-height: 34rem; overflow: auto; margin: 0; padding: var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-control); background: var(--color-paper-2); font-family: var(--font-body); font-size: var(--text-sm); line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere; }
 .summary-table__value { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .summary-table__bar { width: 8rem; }
