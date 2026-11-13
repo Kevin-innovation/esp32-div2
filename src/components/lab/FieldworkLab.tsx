@@ -106,7 +106,7 @@ export function FieldRecord({ kind, golden, help = {} }: { kind: Kind; golden: R
           <thead><tr><th scope="col">순서</th>{FIELDS[kind].map((k) => <th scope="col" key={k}>{LABELS[k]}</th>)}<th scope="col"><span className="sr">정리</span></th></tr></thead>
           <tbody>
             {rows.length ? rows.map((r, i) => (
-              <tr key={r.id}><td>{i + 1}</td>{FIELDS[kind].map((k) => <td key={k}>{choices(kind, k)?.[r[k]] ?? (r[k] || '빈 값')}</td>)}<td><button className="btn btn--quiet btn--small" type="button" onClick={() => { if (window.confirm('이 기록 한 행을 지울까요? 먼저 CSV 백업을 권장합니다.')) s.set((st) => ({ ...st, rows: st.rows.filter((v) => v.id !== r.id) })); }}>지우기</button></td></tr>
+              <tr key={r.id}><td>{i + 1}</td>{FIELDS[kind].map((k) => <td key={k}>{choices(kind, k)?.[r[k]] ?? (r[k] || '빈 값')}</td>)}<td><button className="btn btn--danger btn--small" type="button" onClick={() => { if (window.confirm('이 기록 한 행을 지울까요? 먼저 CSV 백업을 권장합니다.')) s.set((st) => ({ ...st, rows: st.rows.filter((v) => v.id !== r.id) })); }}>지우기</button></td></tr>
             )) : <tr><td colSpan={FIELDS[kind].length + 2}>아직 기록이 없습니다. 위 양식으로 첫 관찰을 적거나 골든 데이터로 데모를 시작하세요.</td></tr>}
           </tbody>
         </table>
@@ -174,13 +174,15 @@ export function FieldReport({ kind, title, labels }: { kind: Kind; title: string
   const empty = NOTE_KEYS.filter((k) => !state.notes[state.mode][k]?.trim()).length;
   return (
     <div className="lab-tool">
-      <ModeSwitch kind={kind} />
-      <p className="field__help">미작성 {empty}개 항목은 보고서에 (미작성)으로 표시됩니다. 데모 보고서는 실제 실험 보고서로 제출하지 않습니다.</p>
-      <div className="btn-row">
-        <button className="btn" type="button" onClick={() => downloadFile(`${kind}-${state.mode}-report.md`, report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button>
-        <button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button>
-        <p className="status" role="status">{message}</p>
+      <div className="report-bar">
+        <ModeSwitch kind={kind} />
+        <div className="btn-row report-bar__actions">
+          <button className="btn" type="button" onClick={() => downloadFile(`${kind}-${state.mode}-report.md`, report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button>
+          <button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button>
+        </div>
       </div>
+      <p className="status" role="status">{message}</p>
+      <p className="field__help">미작성 {empty}개 항목은 보고서에 (미작성)으로 표시됩니다. 데모 보고서는 실제 실험 보고서로 제출하지 않습니다.</p>
       <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
     </div>
   );

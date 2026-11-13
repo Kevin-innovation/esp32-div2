@@ -127,14 +127,20 @@ code, pre, .mono { font-family: var(--font-outlier); font-size: 0.92em; font-var
 .switch:active .switch__thumb { transform: scale(0.9); }
 .switch[aria-checked='true']:active .switch__thumb { transform: translateX(20px) scale(0.9); }
 
-/* 단추: 먹 채움과 테두리 한 쌍 */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: 48px; padding: 0 var(--space-lg); border: var(--rule-hair) solid var(--color-ink); border-radius: var(--radius-control); background: var(--color-ink); color: var(--color-paper); font-weight: 600; line-height: 1.3; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
-.btn:hover { background: var(--color-ink-2); border-color: var(--color-ink-2); color: var(--color-paper); text-decoration: none; }
+/* 단추 한 벌(높이 44px, 모서리 8px, 글자 16/15px). 주요 실행은 숲 초록 채움, 보조는 중립 테두리, 지우기만 오류 색.
+   상태: hover 한 단계 색, active 1px 눌림, focus는 공통 외곽선, disabled는 흐림+금지 커서+속성. */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--space-xs); min-height: var(--control-h); padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-accent); border-radius: var(--radius-control); background: var(--color-accent); color: var(--color-accent-ink); font-size: 1rem; font-weight: 600; line-height: 1.3; text-decoration: none; white-space: nowrap; cursor: pointer; touch-action: manipulation; transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.btn:hover { background: var(--color-accent-hover); border-color: var(--color-accent-hover); color: var(--color-accent-ink); text-decoration: none; }
 .btn:active { transform: translateY(1px); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-.btn--quiet { background: var(--color-paper-2); border-color: var(--color-rule); color: var(--color-ink); }
-.btn--quiet:hover { background: var(--color-paper-3); border-color: var(--color-ink); color: var(--color-ink); }
-.btn--small { min-height: 44px; padding: 0 var(--space-md); font-size: var(--text-sm); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.btn:disabled:hover { background: var(--color-accent); border-color: var(--color-accent); }
+.btn--quiet, .btn--danger { background: var(--color-paper); border-color: var(--color-control-line); color: var(--color-ink); }
+.btn--quiet:hover { background: var(--color-paper-2); border-color: var(--color-ink-2); color: var(--color-ink); }
+.btn--quiet:active, .btn--danger:active { background: var(--color-paper-3); }
+.btn--quiet:disabled:hover { background: var(--color-paper); border-color: var(--color-control-line); }
+.btn--danger { color: var(--color-error); }
+.btn--danger:hover { background: var(--color-paper-2); border-color: var(--color-error); color: var(--color-error); }
+.btn--small { padding: 0 var(--space-sm); font-size: var(--text-sm); }
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-sm); align-items: center; }
 /* 첫 화면 단추 한 쌍: 같은 폭, 같은 높이. 열이 두 단추를 담지 못하면 줄바꿈 대신 같은 폭으로 세로로 쌓는다. */
 .btn-row--pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 11.5rem), 1fr)); max-width: 25rem; }
@@ -362,13 +368,19 @@ fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
 .fields--grid { grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); }
 .span-all { grid-column: 1 / -1; }
 
-.seg { display: flex; flex-wrap: wrap; gap: var(--space-2xs); margin-top: var(--space-2xs); }
+/* 자료와 방식 고르기: 실행 단추와 구별되는 한 줄 레일. 고른 칸만 표면색으로 올리고 초록 테두리와 굵기로 표시한다. */
+.seg { display: inline-flex; flex-wrap: wrap; gap: var(--space-3xs); max-width: 100%; margin-top: var(--space-2xs); padding: var(--space-3xs); border-radius: var(--radius-control); background: var(--color-paper-3); }
 .seg input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-.seg label { display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-md); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-pill); background: var(--color-paper); color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 400; cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out); }
-.seg label:hover { border-color: var(--color-ink); color: var(--color-ink); }
-.seg input:checked + label { background: var(--color-ink); border-color: var(--color-ink); color: var(--color-paper); font-weight: 600; }
-.seg input:focus-visible + label { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+.seg label { display: inline-flex; align-items: center; justify-content: center; min-height: var(--control-h); padding: 0 var(--space-sm); border: var(--rule-hair) solid transparent; border-radius: 6px; color: var(--color-ink-2); font-size: var(--text-sm); font-weight: 500; text-align: center; cursor: pointer; transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out); }
+.seg label:hover { background: var(--color-paper-2); color: var(--color-ink); }
+.seg input:checked + label { background: var(--color-paper); border-color: var(--color-accent); box-shadow: inset 0 0 0 1px var(--color-accent); color: var(--color-ink); font-weight: 700; }
+.seg input:focus-visible + label { outline: 2px solid var(--color-focus); outline-offset: 1px; }
 .seg input:disabled + label { opacity: .55; cursor: not-allowed; }
+/* 보고서 도구줄: 자료 고르기는 왼쪽, 파일 단추는 오른쪽. 폭이 모자라면 두 줄(자료, 단추)로 왼쪽 정렬된다. */
+.report-bar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--space-sm) var(--space-lg); }
+.report-bar > fieldset { min-width: 0; margin: 0; }
+.report-bar__actions { gap: var(--space-xs); }
+.report-bar + .status:empty { min-height: 0; margin-top: 0; }
 
 .status { min-height: 1.6em; font-size: var(--text-sm); color: var(--color-muted); }
 .status--error { color: var(--color-error); font-weight: 600; }
@@ -826,7 +838,6 @@ a.path-link--prev:hover .path-link__arrow { transform: translateX(-3px); }
   .art-front { --art-h: 360px; --stage-pad: var(--space-lg); }
   .pin { width: 24px; height: 24px; font-size: 0.75rem; border-width: 1px; }
   .chart th { width: 4.5rem; }
-  .seg label { padding: 0 var(--space-sm); }
   .btn { white-space: normal; text-align: center; }
 }
 @media (max-width: 24rem) {

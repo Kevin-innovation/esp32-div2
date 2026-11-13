@@ -125,7 +125,7 @@ export function CsvExportPart() {
         <button className="btn" type="button" disabled={!output || !current.checked} onClick={() => output && downloadFile(`csv-${state.mode}-pseudonymized.csv`, output.csv)}>가명본 내려받기</button>
       </div>
       <p className="field__help">원본 사본은 선택한 내용 그대로입니다. 가명본은 수식처럼 보이는 글 앞에 작은따옴표를 붙여 저장합니다. 가명 대응표는 어떤 파일에도 넣지 않으므로, 가명본만으로 원래 값을 되살릴 수 없습니다.</p>
-      <button className="btn btn--quiet btn--small" type="button" onClick={() => { if (!window.confirm('이 워크북의 브라우저 저장 자료를 지울까요? 내려받은 파일은 남습니다.')) return; try { Object.keys(localStorage).filter((k) => k === KEY || k.startsWith(`${KEY}.broken.`)).forEach((k) => localStorage.removeItem(k)); save(() => ({ work: { real: blank(), demo: blank() }, mode: 'real' })); setNote('브라우저 저장 자료를 지웠습니다.'); } catch { setNote('저장 자료를 지우지 못했습니다. 브라우저 설정에서 이 사이트 저장 자료를 확인하세요.'); } }}>이 워크북의 브라우저 저장 지우기(공용 PC)</button>
+      <button className="btn btn--danger btn--small" type="button" onClick={() => { if (!window.confirm('이 워크북의 브라우저 저장 자료를 지울까요? 내려받은 파일은 남습니다.')) return; try { Object.keys(localStorage).filter((k) => k === KEY || k.startsWith(`${KEY}.broken.`)).forEach((k) => localStorage.removeItem(k)); save(() => ({ work: { real: blank(), demo: blank() }, mode: 'real' })); setNote('브라우저 저장 자료를 지웠습니다.'); } catch { setNote('저장 자료를 지우지 못했습니다. 브라우저 설정에서 이 사이트 저장 자료를 확인하세요.'); } }}>이 워크북의 브라우저 저장 지우기(공용 PC)</button>
       <p className="status" role="status">{note}</p>
     </div>
   );
@@ -145,13 +145,15 @@ export function CsvReportPart({ title, labels }: { title: string; labels: Record
   const empty = KEYS.filter((k) => !current.notes[k]?.trim()).length;
   return (
     <div className="lab-tool">
-      <ModeSwitch />
-      <p className="field__help">미작성 {empty}개 항목은 보고서에 (미작성)으로 표시됩니다. 데모 보고서는 실제 활동 보고서로 제출하지 않습니다.</p>
-      <div className="btn-row">
-        <button className="btn" type="button" onClick={() => downloadFile(`csv-${state.mode}-report.md`, report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button>
-        <button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button>
-        <p className="status" role="status">{message}</p>
+      <div className="report-bar">
+        <ModeSwitch />
+        <div className="btn-row report-bar__actions">
+          <button className="btn" type="button" onClick={() => downloadFile(`csv-${state.mode}-report.md`, report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button>
+          <button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button>
+        </div>
       </div>
+      <p className="status" role="status">{message}</p>
+      <p className="field__help">미작성 {empty}개 항목은 보고서에 (미작성)으로 표시됩니다. 데모 보고서는 실제 활동 보고서로 제출하지 않습니다.</p>
       <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
     </div>
   );

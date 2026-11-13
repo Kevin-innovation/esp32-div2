@@ -202,7 +202,7 @@ export function Records() {
                   <td>{t.success ? '인식됨' : '안 됨'}</td>
                   <td>{t.note}</td>
                   <td>
-                    <button className="btn btn--quiet btn--small" type="button" onClick={() => remove(t)} aria-label={`${t.condition} ${t.distanceCm}cm ${t.trial}회차 지우기`}>지우기</button>
+                    <button className="btn btn--danger btn--small" type="button" onClick={() => remove(t)} aria-label={`${t.condition} ${t.distanceCm}cm ${t.trial}회차 지우기`}>지우기</button>
                   </td>
                 </tr>
               ))}
@@ -213,13 +213,13 @@ export function Records() {
 
       <div className="btn-row">
         {s.trials.some((t) => t.dataType === 'demo') ? (
-          <button className="btn btn--quiet btn--small" type="button" onClick={clearDemo}>데모 자료 지우기</button>
+          <button className="btn btn--danger btn--small" type="button" onClick={clearDemo}>데모 자료 지우기</button>
         ) : (
           <button className="btn btn--quiet btn--small" type="button" onClick={loadDemo}>가상 골든 데이터 30행으로 데모 시작</button>
         )}
         {realCount > 0 && (
           <button
-            className="btn btn--quiet btn--small"
+            className="btn btn--danger btn--small"
             type="button"
             onClick={() => {
               if (window.confirm(`실제 기록 ${realCount}건을 모두 지울까요? 되돌릴 수 없으니 먼저 CSV로 백업하세요.`)) clearReal();
@@ -453,10 +453,12 @@ export function Report({ sources }: { sources: { title: string; url: string }[] 
   const blocks = buildReport({ trials, notes: s.notes, dataType: s.view, date, sources });
   return (
     <div className="fields">
-      <ViewSwitch />
-      <div className="btn-row">
-        <button className="btn" type="button" onClick={() => download(s.view === 'demo' ? 'nfc-report-demo.md' : 'nfc-report.md', reportToMarkdown(blocks), 'text/markdown;charset=utf-8')}>Markdown 내려받기</button>
-        <button className="btn btn--quiet" type="button" onClick={() => window.print()}>인쇄하기</button>
+      <div className="report-bar">
+        <ViewSwitch />
+        <div className="btn-row report-bar__actions">
+          <button className="btn" type="button" onClick={() => download(s.view === 'demo' ? 'nfc-report-demo.md' : 'nfc-report.md', reportToMarkdown(blocks), 'text/markdown;charset=utf-8')}>Markdown 내려받기</button>
+          <button className="btn btn--quiet" type="button" onClick={() => window.print()}>인쇄하기</button>
+        </div>
       </div>
       <article className="report" aria-label="보고서 미리보기">
         <RenderBlocks blocks={blocks} />

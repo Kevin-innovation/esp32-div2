@@ -23,7 +23,10 @@
   --font-body: "Pretendard Variable", Pretendard, system-ui, -apple-system, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-display: var(--font-body);
   --font-outlier: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --radius-card: 12px; --radius-control: 10px; --radius-pill: 999px; --rule-hair: 1px;
+  --radius-card: 12px; --radius-control: 8px; --radius-pill: 999px; --rule-hair: 1px;
+  /* 컨트롤 한 벌: 높이 하나(44px 터치), 주요 실행의 눌림 색, 보조 단추와 레일 테두리(바탕 대비 3:1 이상) */
+  --control-h: 44px;
+  --color-accent-hover: oklch(37% 0.09 155); --color-control-line: oklch(62% 0 0);
   --shadow-card: 0 20px 40px oklch(20% 0 0 / 0.16);
   --tracking-display: -0.03em; --display-weight: 700;
 }
@@ -35,6 +38,7 @@
   --color-ink: oklch(96% 0.003 100); --color-ink-2: oklch(87% 0.003 100); --color-muted: oklch(72% 0 0);
   --color-rule: oklch(33% 0 0); --color-rule-2: oklch(27% 0 0);
   --color-accent: oklch(80% 0.13 155); --color-accent-ink: oklch(17% 0 0); --color-accent-soft: oklch(31% 0.05 155); --color-accent-soft-ink: oklch(92% 0.05 155);
+  --color-accent-hover: oklch(87% 0.11 155); --color-control-line: oklch(55% 0 0);
   --color-focus: oklch(80% 0.13 155);
   --color-error: oklch(76% 0.13 27); --color-success: oklch(80% 0.13 155);
   --color-warn: oklch(84% 0.1 80); --color-warn-soft: oklch(28% 0.035 75);
@@ -49,6 +53,7 @@
     --color-ink: oklch(96% 0.003 100); --color-ink-2: oklch(87% 0.003 100); --color-muted: oklch(72% 0 0);
     --color-rule: oklch(33% 0 0); --color-rule-2: oklch(27% 0 0);
     --color-accent: oklch(80% 0.13 155); --color-accent-ink: oklch(17% 0 0); --color-accent-soft: oklch(31% 0.05 155); --color-accent-soft-ink: oklch(92% 0.05 155);
+    --color-accent-hover: oklch(87% 0.11 155); --color-control-line: oklch(55% 0 0);
     --color-focus: oklch(80% 0.13 155);
     --color-error: oklch(76% 0.13 27); --color-success: oklch(80% 0.13 155);
     --color-warn: oklch(84% 0.1 80); --color-warn-soft: oklch(28% 0.035 75);

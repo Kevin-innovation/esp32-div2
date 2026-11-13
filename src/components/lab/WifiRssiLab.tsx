@@ -201,7 +201,7 @@ function RecordPanel({ observations, view, setView, setObservations }: RecordPan
             <tbody>{rows.slice(-MAX_VISIBLE).map((row) => (
               <tr key={row.id}>
                 <td>{row.trial}</td><td>{row.room}</td><td>{row.condition}</td><td>{row.distanceM}m</td><td>{{ observed: '값 관찰됨', 'not-observed': '신호 못 찾음', unchecked: '미측정' }[row.status]}</td><td>{row.rssiDbm === null ? '—' : `${row.rssiDbm}dBm`}</td><td>{row.channel ?? '—'}</td><td>{row.observedAt.replace('T', ' ')}</td><td>{row.ssidAlias || row.bssidAlias ? `${row.ssidAlias}${row.ssidAlias && row.bssidAlias ? ' / ' : ''}${row.bssidAlias}` : '—'}</td><td>{row.note || '—'}</td>
-                <td>{row.dataType === 'real' && <div className="btn-row"><button className="btn btn--quiet btn--small" type="button" onClick={() => edit(row)}>수정</button><button className="btn btn--quiet btn--small" type="button" onClick={() => remove(row)}>지우기</button></div>}</td>
+                <td>{row.dataType === 'real' && <div className="btn-row"><button className="btn btn--quiet btn--small" type="button" onClick={() => edit(row)}>수정</button><button className="btn btn--danger btn--small" type="button" onClick={() => remove(row)}>지우기</button></div>}</td>
               </tr>
             ))}</tbody>
           </table>
@@ -209,8 +209,8 @@ function RecordPanel({ observations, view, setView, setObservations }: RecordPan
       ) : <div className="empty"><p>아직 기록이 없습니다. 같은 공유기를 방·거리·시각별로 관찰해 첫 값을 적어 보세요.</p></div>}
 
       <div className="btn-row">
-        {hasDemo && <button className="btn btn--quiet btn--small" type="button" onClick={() => { setObservations(observations.filter((row) => row.dataType !== 'demo')); setView('real'); }}>데모 자료 지우기</button>}
-        {realCount > 0 && <button className="btn btn--quiet btn--small" type="button" onClick={() => { if (window.confirm(`실제 기록 ${realCount}건을 모두 지울까요? 먼저 CSV로 백업하세요.`)) { setObservations(observations.filter((row) => row.dataType !== 'real')); setEditingId(null); setUndo(null); } }}>실제 기록 전부 지우기</button>}
+        {hasDemo && <button className="btn btn--danger btn--small" type="button" onClick={() => { setObservations(observations.filter((row) => row.dataType !== 'demo')); setView('real'); }}>데모 자료 지우기</button>}
+        {realCount > 0 && <button className="btn btn--danger btn--small" type="button" onClick={() => { if (window.confirm(`실제 기록 ${realCount}건을 모두 지울까요? 먼저 CSV로 백업하세요.`)) { setObservations(observations.filter((row) => row.dataType !== 'real')); setEditingId(null); setUndo(null); } }}>실제 기록 전부 지우기</button>}
       </div>
     </div>
   );
@@ -336,8 +336,11 @@ export function WifiReport({ labels }: { labels: Record<string, string> }) {
   useEffect(() => setDate(new Date().toLocaleDateString('sv')), []);
   const report = buildWifiReport(state.observations, state.notes, state.view, date, labels);
   return <div className="lab-tool">
-    <ViewSwitch view={state.view} setView={(view) => set({ view })} hasDemo={state.observations.some((r) => r.dataType === 'demo')} />
-    <div className="btn-row"><button className="btn" type="button" onClick={() => download(state.view === 'demo' ? 'wifi-rssi-report-demo.md' : 'wifi-rssi-report.md', report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button><button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button><p className="status" role="status">{message}</p></div>
+    <div className="report-bar">
+      <ViewSwitch view={state.view} setView={(view) => set({ view })} hasDemo={state.observations.some((r) => r.dataType === 'demo')} />
+      <div className="btn-row report-bar__actions"><button className="btn" type="button" onClick={() => download(state.view === 'demo' ? 'wifi-rssi-report-demo.md' : 'wifi-rssi-report.md', report, 'text/markdown;charset=utf-8')}>보고서 Markdown 내려받기</button><button className="btn btn--quiet" type="button" onClick={async () => { try { await navigator.clipboard.writeText(report); setMessage('보고서를 복사했습니다.'); } catch { setMessage('복사하지 못했습니다. 파일로 내려받으세요.'); } }}>보고서 복사</button></div>
+    </div>
+    <p className="status" role="status">{message}</p>
     <pre className="report-preview" tabIndex={0} aria-label="보고서 미리보기">{report}</pre>
   </div>;
 }
