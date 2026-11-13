@@ -581,7 +581,8 @@ details[open] > summary { margin-bottom: var(--space-sm); }
 .js .stepper__stages, .js .stepper__group, .js .stepper__list { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; }
 .js .stepper__stages { margin-top: var(--space-md); }
 .js .stepper__group, .js .stepper__list, .js .stepper__step { grid-area: 1 / 1; min-width: 0; }
-.js .stepper__group:not(.is-current), .js .stepper__step:not(.is-current) { visibility: hidden; }
+/* 후손도 명시해 숨긴다. 자식의 visible(빈 줄 안내 등)이 겹쳐 둔 비활성 단계를 뚫고 지금 단계 위에 비치지 않게. */
+.js .stepper__group:not(.is-current), .js .stepper__step:not(.is-current), .js .stepper__step:not(.is-current) * { visibility: hidden; }
 .stepper__status { display: grid; min-width: 0; }
 .stepper__status > * { grid-area: 1 / 1; }
 .js .stepper__step .stepper__question, html:not(.js) .stepper__ask { display: none; }

@@ -7,7 +7,9 @@ import { mkdir } from 'node:fs/promises';
 import { homedir } from 'node:os';
 const require = createRequire(import.meta.url);
 const { chromium } = require(`${execSync('npm root -g').toString().trim()}/playwright`);
-const origin = process.argv[2] ?? 'http://127.0.0.1:4331';
+const origin = process.argv[2]?.startsWith('http') ? process.argv[2] : 'http://127.0.0.1:4331';
+// --stepper: 원리 그림 단계 검사만(375·1280 × light/dark). 목록·탐색·추가 검사는 건너뛴다.
+const only = process.argv.includes('--stepper');
 const shots = '/tmp/esp32-stable-qa';
 await mkdir(shots, { recursive: true });
 const browser = await chromium.launch({ headless: true, executablePath: `${homedir()}/.agents/bin/test-chromium` });
@@ -35,6 +37,13 @@ async function exercise(page) {
           if (r.width && r.height && (r.left < picture.left - 1 || r.right > picture.right + 1 || r.top < picture.top - 1 || r.bottom > picture.bottom + 1)) issues.push(child.className || child.tagName);
         }
         for (const inactive of el.querySelectorAll('.stepper__step:not(.is-current)')) if (!inactive.inert || getComputedStyle(inactive).visibility !== 'hidden') issues.push(`inactive: ${inactive.textContent.slice(0, 25)} inert=${inactive.inert} visibility=${getComputedStyle(inactive).visibility}`);
+        // 자식의 visibility:visible은 숨긴 조상을 뚫으므로 비활성 단계 안의 보이는 요소도 본다.
+        for (const leak of el.querySelectorAll('.stepper__step:not(.is-current) *')) if (getComputedStyle(leak).visibility === 'visible' && leak.getBoundingClientRect().width) issues.push(`inactive leak: ${leak.className || leak.tagName} "${leak.textContent.slice(0, 20)}"`);
+        // 지금 단계의 빈 줄 안내는 받은 줄과 겹치지 않는다.
+        for (const wait of visible.querySelectorAll('.scan-demo__wait')) {
+          const w = wait.getBoundingClientRect();
+          for (const row of visible.querySelectorAll('.scan-demo tbody tr:not(.is-empty)')) { const r = row.getBoundingClientRect(); if (Math.min(w.bottom, r.bottom) - Math.max(w.top, r.top) > 1) issues.push(`wait overlaps row: ${wait.textContent}`); }
+        }
         return issues;
       });
       assert.deepEqual(issues, [], 'picture content fits and inactive steps are inert');
@@ -83,7 +92,7 @@ try {
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   if (!process.argv.includes('--extras')) for (const theme of ['light', 'dark']) {
     await context.addInitScript(t => localStorage.setItem('esp32div.theme', t), theme);
-    for (const width of [320, 375, 768, 1280]) {
+    for (const width of only ? [375, 1280] : [320, 375, 768, 1280]) {
       await page.setViewportSize({ width, height: 900 });
       for (const path of ['/learn/nfc/', '/learn/network/']) {
         await page.goto(origin + path, { waitUntil: 'networkidle' }); await ready(page);
@@ -99,6 +108,7 @@ try {
           await scan.screenshot({ path: `${shots}/after-scan-next.png` });
         }
       }
+      if (only) continue;
       await page.goto(origin + '/lab/', { waitUntil: 'networkidle' }); await page.evaluate(() => document.fonts.ready);
       const cards = page.locator('.workbook-planned'); assert.equal(await cards.count(), 13);
       assert.equal(await page.locator('.workbook-card__state').filter({ hasText: '추후 개발 예정' }).count(), 0);
@@ -128,6 +138,7 @@ try {
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await exercise(page);
   assert.ok(await page.locator('.scene__dot').first().evaluate(e => parseFloat(getComputedStyle(e).animationDuration) <= .001));
+  if (!only) {
   await page.goto(origin + '/lab/nfc/', { waitUntil: 'networkidle' });
   assert.equal(await page.locator('.nav').getByRole('link', { name: '실습 미션' }).getAttribute('aria-current'), 'true');
   assert.equal(await page.locator('.path-top a[aria-current=step]').getAttribute('href'), '/lab/nfc/');
@@ -138,6 +149,7 @@ try {
   for (const path of ['/learn/projects/', '/learn/security/']) {
     await page.goto(origin + path);
     for (const href of links.filter(href => href.startsWith(path))) assert.equal(await page.locator(`[id="${href.split('#')[1]}"]`).count(), 1, href);
+  }
   }
   const nojs = await browser.newContext({ javaScriptEnabled: false, viewport: { width: 320, height: 900 } });
   const plain = await nojs.newPage();
@@ -151,5 +163,5 @@ try {
   }
   await nojs.close(); await context.close();
   assert.deepEqual(errors, []);
-  console.log(`PASS: ${samples} stable geometry samples; ${process.argv.includes('--extras') ? 'resize/fonts/reduced motion/no-JS and nav/anchors' : '4 steppers/all steps/scenarios/previous/reset/replay/questions; 320/375/768/1280 × light/dark; resize/fonts/reduced motion/no-JS; catalog/nav/anchors/layout'}. Console errors: 0. Screenshots: ${shots}`);
+  console.log(`PASS: ${samples} stable geometry samples; ${only ? 'steppers only: all steps/scenarios/previous/reset/replay/questions; 375/1280 × light/dark; resize/fonts/reduced motion/no-JS' : process.argv.includes('--extras') ? 'resize/fonts/reduced motion/no-JS and nav/anchors' : '4 steppers/all steps/scenarios/previous/reset/replay/questions; 320/375/768/1280 × light/dark; resize/fonts/reduced motion/no-JS; catalog/nav/anchors/layout'}. Console errors: 0. Screenshots: ${shots}`);
 } finally { await browser.close(); }
